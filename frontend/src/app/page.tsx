@@ -21,7 +21,7 @@ const stack = [
   { layer: "Database", value: "PostgreSQL 18.6 · Flyway" },
   { layer: "Cache", value: "Redis 8.10" },
   { layer: "Search", value: "Elasticsearch 9.4.5" },
-  { layer: "Queue", value: "RabbitMQ 4.3" },
+  { layer: "Queue", value: "Apache Kafka 4.3" },
   { layer: "Auth", value: "Spring Security · JWT" },
   { layer: "API docs", value: "springdoc-openapi 3.1.1" },
   { layer: "Testing", value: "JUnit 5 · Mockito · Testcontainers" },
