@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { getPing, type PingResponse } from "@/lib/api/meta";
+import { getHello, getPing, type PingResponse } from "@/lib/api/meta";
 import { publicEnv } from "@/lib/env";
 
 type BackendStatus = { ok: true; data: PingResponse } | { ok: false; reason: string };
@@ -11,6 +11,18 @@ async function readBackendStatus(): Promise<BackendStatus> {
     return { ok: true, data: await getPing() };
   } catch (error) {
     return { ok: false, reason: error instanceof Error ? error.message : "Unknown error" };
+  }
+}
+
+/**
+ * The greeting comes from the backend when it is reachable, so the page also
+ * works with the frontend running on its own.
+ */
+async function readGreeting(): Promise<{ message: string; source: "backend" | "frontend" }> {
+  try {
+    return { message: (await getHello()).message, source: "backend" };
+  } catch {
+    return { message: "Hello World", source: "frontend" };
   }
 }
 
@@ -29,7 +41,7 @@ const stack = [
 ];
 
 export default async function HomePage() {
-  const status = await readBackendStatus();
+  const [status, greeting] = await Promise.all([readBackendStatus(), readGreeting()]);
 
   return (
     <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-12 sm:px-6 sm:py-16">
@@ -44,6 +56,15 @@ export default async function HomePage() {
       </header>
 
       <Separator className="my-8" />
+
+      <section className="rounded-lg border bg-card px-6 py-10 text-center">
+        <p className="text-4xl font-semibold tracking-tight sm:text-5xl">{greeting.message}</p>
+        <p className="mt-3 font-mono text-xs text-muted-foreground">
+          {greeting.source === "backend"
+            ? `served by ${publicEnv.apiBasePath}/hello`
+            : "backend unreachable — rendered locally"}
+        </p>
+      </section>
 
       <Card>
         <CardHeader>
