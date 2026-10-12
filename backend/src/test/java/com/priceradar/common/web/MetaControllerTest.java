@@ -29,4 +29,12 @@ class MetaControllerTest {
 		body.extractingPath("$.timestamp").asString().isNotBlank();
 	}
 
+	@Test
+	void helloGreetsWithoutAuthentication() {
+		var body = assertThat(mockMvc.get().uri("/api/v1/hello")).hasStatusOk().bodyJson();
+
+		body.extractingPath("$.message").asString().isEqualTo("Hello World");
+		body.extractingPath("$.service").asString().isEqualTo("price-radar-backend");
+	}
+
 }
