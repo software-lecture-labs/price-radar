@@ -75,20 +75,37 @@ services:
       retries: 20
       start_period: 60s
 
-  rabbitmq:
-    image: rabbitmq:4.3-management-alpine
-    container_name: price-radar-rabbitmq
+  kafka:
+    image: apache/kafka:4.3.1
+    container_name: price-radar-kafka
     restart: unless-stopped
     environment:
-      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-price_radar}
-      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-price_radar}
+      # Single-node KRaft: this one process is both broker and controller.
+      CLUSTER_ID: iPdOgvK5QiifZO9TMslSqw
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      # HOST is what the backend uses when it runs from the IDE; INTERNAL is
+      # what containers on the compose network use.
+      KAFKA_LISTENERS: HOST://:9092,INTERNAL://:29092,CONTROLLER://:9093
+      KAFKA_ADVERTISED_LISTENERS: HOST://localhost:${KAFKA_PORT:-9092},INTERNAL://kafka:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: HOST:PLAINTEXT,INTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      # Topics are declared by the backend (KafkaConfig); a typo should fail
+      # loudly instead of silently creating a new topic.
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
     ports:
-      - "${RABBITMQ_PORT:-5672}:5672"
-      - "${RABBITMQ_MANAGEMENT_PORT:-15672}:15672"
+      - "${KAFKA_PORT:-9092}:9092"
     volumes:
-      - rabbitmq-data:/var/lib/rabbitmq
+      - kafka-data:/var/lib/kafka/data
     healthcheck:
-      test: ["CMD", "rabbitmq-diagnostics", "-q", "check_running"]
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server localhost:29092 > /dev/null 2>&1"]
       interval: 15s
       timeout: 10s
       retries: 10
@@ -110,7 +127,7 @@ services:
         condition: service_healthy
       elasticsearch:
         condition: service_healthy
-      rabbitmq:
+      kafka:
         condition: service_healthy
     environment:
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-dev}
@@ -120,10 +137,7 @@ services:
       REDIS_HOST: redis
       REDIS_PORT: 6379
       ELASTICSEARCH_URIS: http://elasticsearch:9200
-      RABBITMQ_HOST: rabbitmq
-      RABBITMQ_PORT: 5672
-      RABBITMQ_USER: ${RABBITMQ_USER:-price_radar}
-      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD:-price_radar}
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
       # Blank falls back to the dev-only key in application.yml. The prod
       # profile requires a real value and refuses to start without one.
       JWT_SECRET: ${JWT_SECRET:-}
@@ -206,7 +220,7 @@ volumes:
   postgres-data:
   redis-data:
   elasticsearch-data:
-  rabbitmq-data:
+  kafka-data:
   sonarqube-data:
   sonarqube-extensions:
   sonarqube-logs:

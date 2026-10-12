@@ -6,8 +6,8 @@ import org.springframework.boot.testcontainers.service.connection.Ssl;
 import org.springframework.context.annotation.Bean;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.elasticsearch.ElasticsearchContainer;
+import org.testcontainers.kafka.KafkaContainer;
 import org.testcontainers.postgresql.PostgreSQLContainer;
-import org.testcontainers.rabbitmq.RabbitMQContainer;
 import org.testcontainers.utility.DockerImageName;
 
 /**
@@ -22,7 +22,7 @@ public class TestcontainersConfiguration {
 
 	static final DockerImageName POSTGRES_IMAGE = DockerImageName.parse("postgres:18.6-alpine");
 	static final DockerImageName REDIS_IMAGE = DockerImageName.parse("redis:8.10-alpine");
-	static final DockerImageName RABBITMQ_IMAGE = DockerImageName.parse("rabbitmq:4.3-management-alpine");
+	static final DockerImageName KAFKA_IMAGE = DockerImageName.parse("apache/kafka:4.3.1");
 	static final DockerImageName ELASTICSEARCH_IMAGE =
 			DockerImageName.parse("docker.elastic.co/elasticsearch/elasticsearch:9.4.5");
 
@@ -43,8 +43,8 @@ public class TestcontainersConfiguration {
 
 	@Bean
 	@ServiceConnection
-	RabbitMQContainer rabbitContainer() {
-		return new RabbitMQContainer(RABBITMQ_IMAGE);
+	KafkaContainer kafkaContainer() {
+		return new KafkaContainer(KAFKA_IMAGE);
 	}
 
 	@Bean

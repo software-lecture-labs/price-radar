@@ -15,7 +15,7 @@ henüz yazılmadı.
 | ORM | Spring Data JPA + Hibernate | Boot sürüm yönetimi |
 | Cache | Redis | 8.10 |
 | Search | Elasticsearch | 9.4.5 |
-| Queue | RabbitMQ | 4.3 |
+| Queue | Apache Kafka (KRaft) | 4.3.1 |
 | Auth | Spring Security + JWT (jjwt) | 0.13.0 |
 | DB Migration | Flyway | Boot sürüm yönetimi |
 | API Docs | springdoc-openapi | 3.1.1 |
@@ -49,7 +49,7 @@ Sürüm notları:
 cp .env.example .env
 openssl rand -base64 48      # çıktıyı .env içindeki JWT_SECRET alanına yaz
 
-# 2. Backing servisler (Postgres, Redis, Elasticsearch, RabbitMQ)
+# 2. Backing servisler (Postgres, Redis, Elasticsearch, Kafka)
 docker compose up -d
 
 # 3. Backend
@@ -66,7 +66,7 @@ cd frontend && cp .env.example .env.local && npm install && npm run dev
 | Swagger UI | http://localhost:8080/swagger-ui.html |
 | OpenAPI JSON | http://localhost:8080/v3/api-docs |
 | Actuator health | http://localhost:8080/actuator/health |
-| RabbitMQ yönetim | http://localhost:15672 |
+| Kafka broker | localhost:9092 |
 | Elasticsearch | http://localhost:9200 |
 
 Frontend ana sayfası backend'e `/api/v1/ping` atar ve bağlantı durumunu gösterir —
@@ -119,7 +119,7 @@ cd backend
 - **Birim / web slice** — Docker gerektirmez (`JwtServiceTest`,
   `MetaControllerTest`).
 - **Entegrasyon** — `AbstractIntegrationTest`'ten türer. Gerçek PostgreSQL,
-  Redis, Elasticsearch ve RabbitMQ container'larını Testcontainers ile ayağa
+  Redis, Elasticsearch ve Kafka container'larını Testcontainers ile ayağa
   kaldırıp her birinin yanıt verdiğini doğrular. **Docker Desktop kapalıysa bu
   testler başarısız olur.**
 
@@ -160,7 +160,7 @@ price-radar/
 │   │   ├── common/
 │   │   │   ├── exception/         404 / 409 için alan hataları
 │   │   │   └── web/               ProblemDetail handler + /ping
-│   │   ├── config/                Cache, RabbitMQ, OpenAPI, *Properties
+│   │   ├── config/                Cache, Kafka, OpenAPI, *Properties
 │   │   └── security/              SecurityConfig, JWT servisi ve filtresi
 │   ├── src/main/resources/
 │   │   ├── application.yml        Ortak yapılandırma (env ile override)
@@ -191,10 +191,15 @@ varsayılan TTL ile çalışır. Polimorfik tip bilgisi `com.priceradar.*` ile
 sınırlandırılmıştır. Cache başına TTL gerektiğinde
 `RedisCacheManagerBuilderCustomizer` eklenir.
 
-**RabbitMQ topolojisi dead-letter'lı kurulur.** Bir topic exchange, bir DLX ve
-bir DLQ hazır. Eklenecek her iş kuyruğu `QueueBuilder.deadLetterExchange(...)`
-ile tanımlanmalı — böylece zehirli mesaj sonsuz yeniden teslim yerine DLQ'da
-bekler.
+**Kafka topic'leri dead-letter'lı kurulur.** Olaylar için `price-radar.events`,
+işlenemeyen kayıtlar için `price-radar.dlt` topic'i backend açılırken
+`KafkaConfig` tarafından oluşturulur. Broker'da otomatik topic oluşturma
+kapalıdır; yeni topic bir `NewTopic` bean'i demektir. Her `@KafkaListener`
+hata aldığında üstel bekleme ile 3 kez yeniden dener, sonra kaydı DLT'ye
+yazar — böylece zehirli kayıt partition'ı kilitlemez. JSON'a çevrilemeyen
+kayıtlar da ham byte olarak DLT'ye düşer; kaynak topic
+`kafka_dlt-original-topic` header'ında taşınır. Prod'da topic replika sayısı
+`KAFKA_REPLICATION_FACTOR` ile verilir (varsayılan 1).
 
 **Hatalar RFC 9457 `application/problem+json`.** Frontend'deki `ApiError` bu
 gövdeyi taşır; form hataları `fieldErrors` üzerinden okunur.
@@ -220,6 +225,6 @@ Server Component'ler aynı değeri `serverEnv` üzerinden runtime'da okur.
 - Kimlik doğrulama uçları. `JwtService` ve `JwtAuthenticationFilter` hazır;
   controller ve kullanıcı deposu yazılacak.
 - Elasticsearch indeks tanımları (`SearchProperties.indexFor` adlandırmayı tutar).
-- RabbitMQ tüketicileri ve iş kuyrukları.
+- Kafka olay tipleri ve `@KafkaListener` tüketicileri.
 - Frontend test altyapısı (Vitest / Playwright).
 - Deploy pipeline'ı — CI imajları derler ama hiçbir yere push etmez.

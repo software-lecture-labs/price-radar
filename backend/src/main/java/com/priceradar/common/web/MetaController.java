@@ -12,7 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * Minimal public endpoint used to confirm the API is wired up end to end.
- * Deeper status (database, Redis, Elasticsearch, RabbitMQ) lives in Actuator.
+ * Deeper status (database, Redis, Elasticsearch) lives in Actuator.
  */
 @RestController
 @RequestMapping("/api/v1")

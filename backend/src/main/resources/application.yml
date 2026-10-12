@@ -54,23 +54,26 @@ spring:
     connection-timeout: 5s
     socket-timeout: 30s
 
-  rabbitmq:
-    host: ${RABBITMQ_HOST:localhost}
-    port: ${RABBITMQ_PORT:5672}
-    username: ${RABBITMQ_USER:price_radar}
-    password: ${RABBITMQ_PASSWORD:price_radar}
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    producer:
+      acks: all
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JacksonJsonSerializer
+      properties:
+        enable.idempotence: true
+    consumer:
+      group-id: ${spring.application.name}
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      # A record that cannot be deserialized goes to the error handler (and from
+      # there to the dead-letter topic) instead of failing the poll loop forever.
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JacksonJsonDeserializer
+        spring.json.trusted.packages: com.priceradar.*
     listener:
-      simple:
-        acknowledge-mode: manual
-        prefetch: 20
-        default-requeue-rejected: false
-        retry:
-          enabled: true
-          initial-interval: 2s
-          max-attempts: 4
-          multiplier: 2.0
-    template:
-      mandatory: true
+      ack-mode: record
 
   # TTLs, key prefix and serializers live in com.priceradar.config.CacheConfig
   # so that per-cache TTLs stay next to the cache-name constants.
@@ -115,8 +118,6 @@ management:
       enabled: true
     elasticsearch:
       enabled: true
-    rabbit:
-      enabled: true
   info:
     env:
       enabled: true
@@ -153,6 +154,7 @@ app:
     index-prefix: price-radar
 
   messaging:
-    exchange: price-radar.events
-    dead-letter-exchange: price-radar.dlx
-    dead-letter-queue: price-radar.dlq
+    events-topic: price-radar.events
+    dead-letter-topic: price-radar.dlt
+    partitions: 3
+    replication-factor: ${KAFKA_REPLICATION_FACTOR:1}
