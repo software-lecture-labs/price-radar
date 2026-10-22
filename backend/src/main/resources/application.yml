@@ -75,10 +75,17 @@ spring:
     listener:
       ack-mode: record
 
-  # TTLs, key prefix and serializers live in com.priceradar.config.CacheConfig
+  # TTLs, key prefix and serializers live in com.priceradar.platform.CacheConfig
   # so that per-cache TTLs stay next to the cache-name constants.
   cache:
     type: redis
+
+  modulith:
+    events:
+      jdbc:
+        # Flyway owns the event_publication table (V2__event_publication.sql).
+        schema-initialization:
+          enabled: false
 
   threads:
     virtual:
@@ -132,7 +139,8 @@ springdoc:
     display-request-duration: true
 
 # ---------------------------------------------------------------------------
-# Application-specific configuration (see com.priceradar.config.*Properties)
+# Application-specific configuration, bound by each module's *Properties record
+# (identity.SecurityProperties, search.SearchProperties, platform.MessagingProperties)
 # ---------------------------------------------------------------------------
 app:
   security:

@@ -10,7 +10,7 @@ import org.springframework.test.context.ActiveProfiles;
  * set of containers — for the whole test run.
  */
 @SpringBootTest
-@Import(TestcontainersConfiguration.class)
+@Import({ TestcontainersConfiguration.class, SmokeTestEventListener.class })
 @ActiveProfiles("test")
 public abstract class AbstractIntegrationTest {
 
