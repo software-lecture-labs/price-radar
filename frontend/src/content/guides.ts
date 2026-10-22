@@ -1,29 +1,35 @@
-import { BotIcon, CookingPotIcon, HeadphonesIcon, type LucideIcon } from "lucide-react";
-
 export interface Guide {
+  category: string;
   title: string;
   summary: string;
   searchQuery: string;
-  icon: LucideIcon;
+  imageUrl: string;
+  imageAlt: string;
 }
 
 export const guides: Guide[] = [
   {
-    title: "Robot süpürge seçerken nelere bakmalı?",
-    summary: "Emiş gücü, haritalama ve fiyat aralığına göre modelleri karşılaştır.",
+    category: "Robot süpürgeler",
+    title: "Temizliği biraz hafiflet.",
+    summary: "Günlük işlere küçük bir yardımcı.",
     searchQuery: "robot süpürge",
-    icon: BotIcon,
+    imageUrl: "/discover/robot-vacuum.jpg",
+    imageAlt: "Dreame D20 beyaz robot süpürge",
   },
   {
-    title: "Airfryer alırken bakman gereken 5 şey",
-    summary: "Hazne hacmi, güç ve temizlik kolaylığı.",
+    category: "Airfryer modelleri",
+    title: "Mutfakta yeni bir alışkanlık.",
+    summary: "Tezgâhına ve ihtiyacına uygun modeli bul.",
     searchQuery: "airfryer",
-    icon: CookingPotIcon,
+    imageUrl: "/discover/airfryer.jpg",
+    imageAlt: "Philips 3000 Serisi NA322/00 airfryer",
   },
   {
-    title: "Gürültü engelleyici kulaklık rehberi",
-    summary: "Pil ömrü, konfor ve gürültü engelleme.",
+    category: "Kulaklıklar",
+    title: "Biraz da kendini dinle.",
+    summary: "Yolda, işte, günün sana kalan kısmında.",
     searchQuery: "kulaklık",
-    icon: HeadphonesIcon,
+    imageUrl: "/discover/headphones.jpg",
+    imageAlt: "Sony WH-1000XM5 siyah kulak üstü kulaklık",
   },
 ];

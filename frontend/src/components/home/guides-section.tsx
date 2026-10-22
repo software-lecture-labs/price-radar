@@ -1,69 +1,79 @@
+import { ArrowUpRightIcon } from "lucide-react";
 import Link from "next/link";
 
+import { ProductImage } from "@/components/product/product-image";
 import type { Guide } from "@/content/guides";
 import { routes } from "@/lib/routes";
-import { cn } from "@/lib/utils";
 
 export function GuidesSection({ guides }: { guides: Guide[] }) {
   const [main, ...others] = guides;
-  if (!main) {
-    return null;
-  }
+  if (!main) return null;
 
   return (
-    <section aria-labelledby="guides-heading" className="flex flex-col gap-6">
-      <h2 id="guides-heading" className="text-[26px] font-semibold tracking-tight text-ink">
-        Satın almadan önce oku
+    <section aria-labelledby="guides-heading">
+      <h2
+        id="guides-heading"
+        className="text-2xl font-semibold tracking-[-0.035em] text-ink sm:text-[28px]"
+      >
+        Biraz ilham
       </h2>
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
-        <GuideCard guide={main} large className="lg:col-span-7" />
-        <div className="flex flex-col gap-4 lg:col-span-5">
+      <p className="mt-2 mb-6 text-sm text-ink-muted">Aklındaki ihtiyaca bir yerden başla.</p>
+      <div className="grid gap-5 lg:grid-cols-[1.15fr_1fr]">
+        <Link
+          href={routes.search(main.searchQuery)}
+          className="group flex flex-col justify-between gap-5 rounded-xl bg-radar-lime-surface p-6 sm:flex-row sm:items-center sm:p-8"
+        >
+          <div className="sm:w-1/2">
+            <p className="mb-3 text-xs font-medium text-ink-secondary">{main.category}</p>
+            <h3 className="max-w-[16ch] text-[28px] leading-[1.15] font-semibold tracking-[-0.04em] text-ink">
+              {main.title}
+            </h3>
+            <p className="mt-3 text-sm leading-6 text-ink-muted">{main.summary}</p>
+            <span className="mt-6 inline-flex min-h-11 items-center gap-3 text-sm font-semibold text-ink">
+              Modelleri keşfet{" "}
+              <ArrowUpRightIcon
+                className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                aria-hidden
+              />
+            </span>
+          </div>
+          <ProductImage
+            src={main.imageUrl}
+            alt={main.imageAlt}
+            sizes="(min-width: 1024px) 20vw, (min-width: 640px) 35vw, 70vw"
+            className="h-44 w-full transition-transform duration-300 group-hover:scale-[1.03] sm:h-56 sm:w-1/2"
+          />
+        </Link>
+        <div className="flex flex-col divide-y divide-border-subtle">
           {others.map((guide) => (
-            <GuideCard key={guide.searchQuery} guide={guide} className="flex-1" />
+            <Link
+              key={guide.searchQuery}
+              href={routes.search(guide.searchQuery)}
+              className="group flex flex-1 items-center justify-between gap-4 py-5 first:pt-0 last:pb-0"
+            >
+              <div className="min-w-0">
+                <p className="mb-2 text-xs text-ink-muted">{guide.category}</p>
+                <h3 className="max-w-[22ch] text-xl leading-[1.3] font-semibold tracking-[-0.025em] text-ink">
+                  {guide.title}
+                </h3>
+                <span className="mt-3 inline-flex min-h-10 items-center gap-2 text-xs font-semibold text-ink">
+                  Modelleri keşfet{" "}
+                  <ArrowUpRightIcon
+                    className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                    aria-hidden
+                  />
+                </span>
+              </div>
+              <ProductImage
+                src={guide.imageUrl}
+                alt={guide.imageAlt}
+                sizes="(min-width: 640px) 144px, 104px"
+                className="h-36 w-24 shrink-0 transition-transform duration-300 group-hover:scale-[1.04] sm:w-36"
+              />
+            </Link>
           ))}
         </div>
       </div>
     </section>
-  );
-}
-
-function GuideCard({
-  guide,
-  large = false,
-  className,
-}: {
-  guide: Guide;
-  large?: boolean;
-  className?: string;
-}) {
-  const Icon = guide.icon;
-
-  return (
-    <Link
-      href={routes.search(guide.searchQuery)}
-      className={cn(
-        "group flex gap-5 rounded-[14px] border border-border-subtle bg-card p-5 transition-colors hover:border-border-strong",
-        large ? "flex-col" : "items-center",
-        className,
-      )}
-    >
-      <span
-        className={cn(
-          "flex shrink-0 items-center justify-center rounded-[12px] bg-tile text-ink-secondary",
-          large ? "aspect-[16/9] w-full" : "size-20",
-        )}
-      >
-        <Icon className={large ? "size-14" : "size-8"} strokeWidth={1.25} aria-hidden />
-      </span>
-      <span className="flex min-w-0 flex-col gap-2">
-        <span className="w-fit rounded-full bg-subtle px-2 py-0.5 font-mono text-[11px] text-ink-muted">
-          Rehber yakında
-        </span>
-        <span className={cn("font-semibold text-ink", large ? "text-xl" : "text-[15px]")}>
-          {guide.title}
-        </span>
-        <span className="text-sm text-ink-muted">{guide.summary}</span>
-      </span>
-    </Link>
   );
 }

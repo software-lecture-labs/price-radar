@@ -1,0 +1,20 @@
+[
+  {
+    "asset": "headphones.jpg",
+    "product": "Sony WH-1000XM5 siyah kulak üstü kulaklık",
+    "source": "https://cdn.dsmcdn.com/mnresize/400/-/ty1551/product/media/images/ty1553/prod/QC/20240917/11/590d6b13-4a54-3be3-9689-ffff0cebc664/1_org_zoom.jpg",
+    "catalogRecord": "data/reefapi/raw/2026-10-22/trendyol/search/sony-wh-1000xm5-p1.json"
+  },
+  {
+    "asset": "airfryer.jpg",
+    "product": "Philips 3000 Serisi Airfryer NA322/00",
+    "source": "https://cdn.dsmcdn.com/mnresize/400/-/ty1631/product/media/images/prod/PIM/20250130/12/829fef3e-4fc1-46e1-b29b-04c3a36dfa8d/1_org_zoom.jpg",
+    "catalogRecord": "data/reefapi/raw/2026-10-22/trendyol/search/philips-airfryer-p1.json"
+  },
+  {
+    "asset": "robot-vacuum.jpg",
+    "product": "Dreame D20 Beyaz Robot Süpürge",
+    "source": "https://reimg-teknosa-cloud-prod.mncdn.com/mnresize/300/300/productimage/100000060732/100000060732_0_MC/131846916.jpg",
+    "catalogRecord": "data/reefapi/raw/2026-10-22/teknosa/search/dreame-d30-ultra-p1.json"
+  }
+]
