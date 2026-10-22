@@ -19,10 +19,6 @@ import com.priceradar.config.MessagingProperties;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 
-/**
- * Smoke test for the installed stack: the context starts and every backing
- * service — PostgreSQL, Redis, Elasticsearch, Kafka — actually answers.
- */
 class PriceRadarBackendApplicationTests extends AbstractIntegrationTest {
 
 	@Autowired

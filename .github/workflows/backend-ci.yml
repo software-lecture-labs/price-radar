@@ -23,14 +23,12 @@ defaults:
 jobs:
   build:
     name: Build, test & analyse
-    # Testcontainers needs a Docker daemon, which ubuntu-latest runners provide.
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
     steps:
       - uses: actions/checkout@v7
         with:
-          # SonarQube needs full history to attribute issues to blame info.
           fetch-depth: 0
 
       - name: Set up JDK 25
@@ -59,7 +57,6 @@ jobs:
           if-no-files-found: ignore
 
       - name: SonarQube analysis
-        # Skipped automatically on forks, where the secret is unavailable.
         if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

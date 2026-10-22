@@ -11,9 +11,6 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.validation.annotation.Validated;
 
-/**
- * Binds {@code app.security.*}.
- */
 @Validated
 @ConfigurationProperties(prefix = "app.security")
 public record SecurityProperties(@NotNull @Valid Jwt jwt, @NotNull @Valid Cors cors) {
