@@ -1,11 +1,9 @@
 # syntax=docker/dockerfile:1
 
-# ---------------------------------------------------------------- build stage
 FROM eclipse-temurin:25-jdk-alpine AS build
 
 WORKDIR /build
 
-# Dependency layer: only re-resolved when the POM or wrapper changes.
 COPY .mvn/ .mvn/
 COPY mvnw pom.xml ./
 RUN ./mvnw -B -q dependency:go-offline
@@ -13,10 +11,8 @@ RUN ./mvnw -B -q dependency:go-offline
 COPY src/ src/
 RUN ./mvnw -B -q clean package -DskipTests \
     && mv target/*.jar application.jar \
-    # Unpack so the JVM can load unchanged library layers from cache.
     && java -Djarmode=tools -jar application.jar extract --layers --destination extracted
 
-# ---------------------------------------------------------------- run stage
 FROM eclipse-temurin:25-jre-alpine AS runtime
 
 RUN addgroup -S spring && adduser -S spring -G spring

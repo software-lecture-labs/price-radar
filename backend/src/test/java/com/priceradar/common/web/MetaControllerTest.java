@@ -9,9 +9,6 @@ import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
-/**
- * Web slice only: no database, cache, broker or security filters involved.
- */
 @WebMvcTest(MetaController.class)
 @AutoConfigureMockMvc(addFilters = false)
 @TestPropertySource(properties = "spring.application.name=price-radar-backend")

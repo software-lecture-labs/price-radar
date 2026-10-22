@@ -11,11 +11,8 @@ import org.testcontainers.postgresql.PostgreSQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
 /**
- * Real backing services for integration tests.
- *
- * <p>Image tags are pinned on purpose: {@code latest} makes a green build
- * unreproducible. The Elasticsearch tag tracks the {@code elasticsearch-java}
- * client version managed by Spring Boot.
+ * Pinned images keep test runs reproducible. Elasticsearch matches the client
+ * version managed by Spring Boot.
  */
 @TestConfiguration(proxyBeanMethods = false)
 public class TestcontainersConfiguration {
