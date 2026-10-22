@@ -9,17 +9,11 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import com.priceradar.ingestion.ImportResult.Status;
 
-/**
- * Writes one validated search file to the marketplace tables in a single
- * transaction: either the whole file is imported or nothing is.
- *
- * <p>A product keeps the catalogue values it was first imported with; every
- * file adds its own observations, one per result row.
- */
+// Existing products keep their first catalogue values; later imports add observations.
 @Service
 public class SearchFileImporter {
 
-	/** One file has at most a few dozen rows; anything slower is stuck, usually on a lock. */
+	// Small imports should complete quickly; bound the wait on contended locks.
 	private static final int TIMEOUT_SECONDS = 60;
 
 	private final MarketplaceImportRepository repository;
@@ -35,7 +29,6 @@ public class SearchFileImporter {
 		this.readTransaction.setReadOnly(true);
 	}
 
-	/** Writes the file. Importing the same bytes again changes nothing. */
 	public ImportResult importFile(SearchFile file) {
 		return writeTransaction.execute(status -> {
 			repository.lockForImport();
@@ -62,7 +55,6 @@ public class SearchFileImporter {
 		});
 	}
 
-	/** Reports what {@link #importFile} would do, without writing anything. */
 	public ImportResult checkFile(SearchFile file) {
 		return readTransaction.execute(status -> {
 			if (wasImported(file)) {
@@ -76,11 +68,6 @@ public class SearchFileImporter {
 		});
 	}
 
-	/**
-	 * True when these exact bytes were imported before, at this or another path.
-	 *
-	 * @throws SourceConflictException when this path was imported with different bytes
-	 */
 	private boolean wasImported(SearchFile file) {
 		var recorded = repository.findSources(file.path(), file.sha256());
 		for (var source : recorded) {

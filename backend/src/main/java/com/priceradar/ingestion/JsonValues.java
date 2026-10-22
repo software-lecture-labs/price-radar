@@ -11,17 +11,12 @@ import com.priceradar.ingestion.Marketplace.Field;
 
 import tools.jackson.databind.JsonNode;
 
-/**
- * Typed, validated reads of one search result item. Every method returns
- * {@code null} for a value that is absent, and throws
- * {@link InvalidSearchFileException} for a value that is present but wrong.
- */
 final class JsonValues {
 
-	/** {@code numeric(16, 2)} in the schema: 14 digits before the decimal point, 2 after. */
+	// Matches numeric(16, 2) in the schema.
 	private static final BigDecimal MONEY_LIMIT = new BigDecimal("1e14");
 	private static final int MONEY_SCALE = 2;
-	/** {@code numeric(8, 3)} for rating scales. */
+	// Matches numeric(8, 3) in the schema.
 	private static final BigDecimal RATING_SCALE_LIMIT = new BigDecimal("1e5");
 	private static final int RATING_SCALE_SCALE = 3;
 	private static final Pattern CURRENCY_CODE = Pattern.compile("[A-Z]{3}");
@@ -49,7 +44,7 @@ final class JsonValues {
 		return text;
 	}
 
-	/** Identifiers arrive as text or as whole numbers; both are kept as text, leading zeros intact. */
+	// Keep text identifiers unchanged to preserve leading zeroes.
 	String identifier(Field field) {
 		var node = node(field);
 		if (node == null) {
@@ -110,7 +105,6 @@ final class JsonValues {
 		return node.decimalValue();
 	}
 
-	/** An amount that must fit {@code numeric(16, 2)} exactly, without rounding. */
 	BigDecimal money(Field field) {
 		var amount = decimal(field);
 		check(amount == null || fits(amount, MONEY_SCALE, MONEY_LIMIT), field, "does not fit numeric(16, 2)");
@@ -136,7 +130,6 @@ final class JsonValues {
 		return code;
 	}
 
-	/** An absolute http(s) URL; stored as given. */
 	String requiredUrl(Field field) {
 		var url = requiredText(field);
 		try {
@@ -150,7 +143,6 @@ final class JsonValues {
 		return url;
 	}
 
-	/** The node at the field's location, or {@code null} when it is absent, JSON null or not provided. */
 	private JsonNode node(Field field) {
 		var pointer = marketplace.pointerTo(field);
 		if (pointer == null) {

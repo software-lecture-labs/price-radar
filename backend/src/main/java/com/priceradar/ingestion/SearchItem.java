@@ -3,14 +3,8 @@ package com.priceradar.ingestion;
 import java.math.BigDecimal;
 import java.util.List;
 
-/**
- * One result row of a search response: the product as the marketplace lists it,
- * and the offer seen for it. Values a marketplace did not provide are
- * {@code null}; nothing is guessed.
- */
 public record SearchItem(String externalId, Listing listing, Offer offer, String rawJson) {
 
-	/** Catalogue values, stored once per marketplace product. */
 	public record Listing(
 			String externalGroupId,
 			String title,
@@ -27,7 +21,6 @@ public record SearchItem(String externalId, Listing listing, Offer offer, String
 
 	}
 
-	/** What was offered at observation time; one row per offer, even for repeated products. */
 	public record Offer(
 			String url,
 			BigDecimal price,

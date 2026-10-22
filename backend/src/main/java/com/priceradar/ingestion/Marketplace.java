@@ -4,15 +4,6 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 
-/**
- * The marketplaces ReefAPI collects from, and where each one keeps its values in
- * a search result.
- *
- * <p>Locations are JSON Pointers into one result item. A marketplace only lists
- * the fields that differ from {@link Field#defaultPointer()}; a field with no
- * location is one the marketplace does not provide, and it is stored as NULL.
- * Supporting a new marketplace means adding one constant here.
- */
 public enum Marketplace {
 
 	HEPSIBURADA("hepsiburada", "Hepsiburada", "https://www.hepsiburada.com", "/results", Map.of(
@@ -48,7 +39,6 @@ public enum Marketplace {
 			Field.FREE_SHIPPING, "/free_cargo",
 			Field.REVIEW_COUNT, "/comment_count"));
 
-	/** A value a search result item can carry. */
 	public enum Field {
 
 		ID(null),
@@ -81,7 +71,6 @@ public enum Marketplace {
 			this.defaultPointer = defaultPointer;
 		}
 
-		/** Where every marketplace keeps this field unless it says otherwise; {@code null} if nowhere. */
 		public String defaultPointer() {
 			return defaultPointer;
 		}
@@ -107,7 +96,6 @@ public enum Marketplace {
 		return Arrays.stream(values()).filter(marketplace -> marketplace.code.equals(code)).findFirst();
 	}
 
-	/** Stable identifier, also the folder name the fetch tool uses. */
 	public String code() {
 		return code;
 	}
@@ -120,12 +108,10 @@ public enum Marketplace {
 		return baseUrl;
 	}
 
-	/** Location of the result array inside the response's {@code data} object. */
 	public String resultsPointer() {
 		return resultsPointer;
 	}
 
-	/** Location of {@code field} in a result item, or {@code null} when this marketplace does not provide it. */
 	public String pointerTo(Field field) {
 		return pointerOverrides.getOrDefault(field, field.defaultPointer());
 	}

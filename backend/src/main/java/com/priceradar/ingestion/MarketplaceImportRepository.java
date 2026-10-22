@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
-/** SQL for the marketplace tables created by {@code V2__marketplace_catalog.sql}. */
 @Repository
 public class MarketplaceImportRepository {
 
@@ -20,21 +19,16 @@ public class MarketplaceImportRepository {
 		this.jdbc = jdbc;
 	}
 
-	/** A file already recorded in {@code source_files}. */
 	public record RecordedSource(long id, String path, String sha256) {
 	}
 
-	/**
-	 * Blocks until no other import transaction runs. Without it, two imports
-	 * could both decide that the same product is new.
-	 */
+	// Serialize imports so concurrent transactions cannot both insert the same new product.
 	public void lockForImport() {
 		jdbc.sql("SELECT true FROM pg_advisory_xact_lock(hashtext('price-radar.marketplace-import'))")
 				.query(Boolean.class)
 				.single();
 	}
 
-	/** Sources recorded with this path or these exact bytes. */
 	public List<RecordedSource> findSources(String path, String sha256) {
 		return jdbc.sql("""
 				SELECT id, source_path, sha256
@@ -55,7 +49,6 @@ public class MarketplaceImportRepository {
 				.optional();
 	}
 
-	/** Creates the store on first use; never changes an existing one. */
 	public long ensureStore(Marketplace marketplace) {
 		jdbc.sql("""
 				INSERT INTO stores (code, name, base_url)
@@ -85,7 +78,6 @@ public class MarketplaceImportRepository {
 				.single();
 	}
 
-	/** Database ids of the given marketplace products that already exist, keyed by external id. */
 	public Map<String, Long> findProductIds(long storeId, Collection<String> externalIds) {
 		if (externalIds.isEmpty()) {
 			return Map.of();

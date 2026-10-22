@@ -1,32 +1,4 @@
 #!/usr/bin/env node
-/**
- * One-off fetcher for Trendyol, Hepsiburada, n11 and Teknosa data through ReefAPI.
- *
- * The free plan grants its credits once, so every paid response is written to disk
- * exactly as received and is never requested again. Nothing here touches the
- * database: the backend's ingestion module imports these files later, and can
- * re-import them whenever the schema changes.
- *
- * Usage, from the repository root:
- *   node tools/reefapi/fetch.mjs credits
- *   node tools/reefapi/fetch.mjs search <store> "<query>" [--page N]
- *   node tools/reefapi/fetch.mjs snapshot [--label NAME] [--only STORE] [--product KEY]
- *                                         [--max-credits N] [--dry-run]
- *
- * `snapshot` fetches every product in tools/reefapi/products.json. Each store entry
- * is sent as the request body of that store's product calls:
- *
- *   { "products": [{ "key": "iphone-16-128gb-siyah", "name": "Apple iPhone 16 128 GB Siyah",
- *       "stores": { "trendyol": { "content_id": 762254881 }, "n11": { "product_id": 43821353 } } }] }
- *
- * The API key is read from REEFAPI_API_KEY, set in the shell or in the root .env.
- * REEFAPI_BASE_URL overrides the API host, e.g. to point at a local mock.
- *
- * Output, under data/reefapi/ (git-ignored):
- *   raw/<label>/<store>/<action>/<name>.json  one paid response plus its request
- *   raw/once/<store>/<action>/<product>.json  per-product data that is fetched only once
- *   ledger.jsonl                              every call, including free failures
- */
 
 import { existsSync } from "node:fs";
 import { appendFile, mkdir, readFile, writeFile } from "node:fs/promises";
@@ -46,17 +18,11 @@ loadRootEnv();
 
 const BASE_URL = (process.env.REEFAPI_BASE_URL ?? "https://api.reefapi.com").replace(/\/+$/, "");
 
-/**
- * Request shape and credit cost per store, from the ReefAPI docs (October 2026).
- * `idParam` is the body field that identifies a product. Costs only drive --dry-run
- * and the budget guard; what was really charged is read from meta.charged_credits.
- */
 const STORES = {
   trendyol: {
     idParam: "content_id",
     cost: { search: 2, "product/detail": 1, "product/variants": 1 },
     snapshot: ["product/detail"],
-    // Barcodes are only documented on product/variants, and they do not change.
     once: ["product/variants"],
   },
   hepsiburada: {
@@ -79,12 +45,10 @@ const STORES = {
   },
 };
 
-/** Errors ReefAPI does not charge for, so retrying them costs nothing. */
+// These failures aren't billed.
 const RETRYABLE = new Set(["RATE_LIMITED", "UPSTREAM_TIMEOUT", "TARGET_BLOCKED"]);
-/** Errors that every following call would hit as well. */
 const FATAL = new Set(["AUTH_FAILED", "QUOTA_EXCEEDED"]);
 const RETRY_DELAYS_MS = [2_000, 5_000];
-/** Keeps a run far below the documented limit of 30 requests per 3 seconds. */
 const PAUSE_MS = 250;
 const TIMEOUT_MS = 90_000;
 
@@ -143,8 +107,6 @@ async function main() {
       throw new UsageError(`Unknown command "${command}".`);
   }
 }
-
-// ---------------------------------------------------------------- commands
 
 async function credits() {
   const response = await fetch(`${BASE_URL}/account/v1/credits`, {
@@ -270,9 +232,6 @@ function planSnapshot(products, label, only, productKey) {
   return tasks;
 }
 
-// ---------------------------------------------------------------- HTTP
-
-/** Calls the API, retrying the free failures, and logs every attempt to the ledger. */
 async function call(store, action, params) {
   for (let attempt = 1; ; attempt++) {
     const result = await post(store, action, params);
@@ -309,7 +268,6 @@ async function post(store, action, params) {
       signal: AbortSignal.timeout(TIMEOUT_MS),
     });
   } catch (error) {
-    // No response, so nothing to save and no charge reported.
     return {
       fetchedAt: new Date().toISOString(),
       httpStatus: null,
@@ -342,7 +300,6 @@ function errorCode(body, httpStatus) {
   return error?.code ?? `HTTP_${httpStatus}`;
 }
 
-/** Anything that cost credits is kept, including billed "not found" answers. */
 function isPaid(result) {
   return result.body !== null && (result.body.ok === true || result.charged > 0);
 }
@@ -367,8 +324,6 @@ function apiKey() {
   }
   return key;
 }
-
-// ---------------------------------------------------------------- files
 
 async function loadProducts() {
   let parsed;
@@ -426,7 +381,7 @@ async function save(file, store, action, request, result) {
     response: result.body,
   };
   await mkdir(path.dirname(file), { recursive: true });
-  // "wx" fails instead of overwriting: a paid response is never replaced.
+  // Never overwrite a paid response.
   await writeFile(file, `${JSON.stringify(record, null, 2)}\n`, { flag: "wx" });
   return record;
 }
@@ -444,7 +399,6 @@ async function ledgerTotal() {
   return lines.reduce((total, line) => total + (JSON.parse(line).charged ?? 0), 0);
 }
 
-/** Reads the root .env if there is one. Values already set in the shell are kept. */
 function loadRootEnv() {
   try {
     process.loadEnvFile(path.join(REPO_ROOT, ".env"));
@@ -454,8 +408,6 @@ function loadRootEnv() {
     }
   }
 }
-
-// ---------------------------------------------------------------- output
 
 function printRows(store, data) {
   const rows = findRows(data);
@@ -474,7 +426,6 @@ function printRows(store, data) {
   }
 }
 
-/** Search responses differ per store; take the first list of objects found. */
 function findRows(data) {
   if (Array.isArray(data)) {
     return data;
@@ -500,8 +451,6 @@ function priceOf(row) {
   }
   return price ?? "?";
 }
-
-// ---------------------------------------------------------------- helpers
 
 function requireStore(name) {
   if (!Object.hasOwn(STORES, name ?? "")) {
@@ -537,14 +486,12 @@ function toNumberOrNull(value) {
   return value === null || Number.isNaN(number) ? null : number;
 }
 
-/** Local calendar date, so a snapshot taken late in the evening keeps that day's name. */
 function today() {
   const now = new Date();
   const pad = (value) => String(value).padStart(2, "0");
   return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
 }
 
-/** File-safe name for a search query, folding Turkish letters to ASCII. */
 function slug(text) {
   const folded = text
     .toLocaleLowerCase("tr")

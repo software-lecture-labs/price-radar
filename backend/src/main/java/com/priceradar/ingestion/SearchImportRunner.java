@@ -16,22 +16,6 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-/**
- * Imports saved search files when the application starts with the
- * {@code import} profile, then stops the application.
- *
- * <p>Arguments:
- * <ul>
- * <li>{@code --source=<path>}: a file or a folder under the raw directory, relative to it;
- * may be repeated. Without it, everything under the raw directory is imported.</li>
- * <li>{@code --commit}: write to the database. Without it, nothing is written and
- * the run only reports what would happen.</li>
- * </ul>
- *
- * <p>Every file is read and validated before the first one is written, and each
- * file is its own transaction. A failed run can be repeated: files already
- * imported are skipped.
- */
 @Component
 @Profile("import")
 class SearchImportRunner implements ApplicationRunner {
@@ -79,10 +63,6 @@ class SearchImportRunner implements ApplicationRunner {
 		log.info("Done: {} files", files.size());
 	}
 
-	/**
-	 * Every saved search response at or under the given sources, in a stable order.
-	 * Other responses the fetch tool saves (product details) live in other folders.
-	 */
 	private List<Path> findFiles(List<String> sources) {
 		return sources.stream()
 				.map(properties.rawDirectoryPath()::resolve)

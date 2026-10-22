@@ -7,14 +7,7 @@ import org.springframework.validation.annotation.Validated;
 
 import jakarta.validation.constraints.NotBlank;
 
-/**
- * Binds {@code app.ingestion.*}: where the saved ReefAPI responses are. Bound as
- * text because Spring reads a {@link Path} property as a resource location, which
- * does not allow relative paths such as {@code ..}.
- *
- * @param repositoryRoot stored source paths are relative to this directory
- * @param rawDirectory where {@code tools/reefapi/fetch.mjs} saves responses
- */
+// String binding permits relative paths such as ".."; Spring treats Path properties as resource locations.
 @Validated
 @ConfigurationProperties(prefix = "app.ingestion")
 public record IngestionProperties(@NotBlank String repositoryRoot, @NotBlank String rawDirectory) {

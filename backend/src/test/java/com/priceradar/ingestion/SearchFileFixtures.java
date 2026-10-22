@@ -7,7 +7,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-/** Writes saved search responses, in the fetch tool's layout, into a temporary repository. */
 final class SearchFileFixtures {
 
 	static final String FETCHED_AT = "2026-10-22T09:03:59.354Z";
@@ -26,7 +25,6 @@ final class SearchFileFixtures {
 		return new SearchFileReader(repositoryRoot, rawDirectory());
 	}
 
-	/** A valid envelope around the given result items. */
 	Path write(Marketplace marketplace, String name, List<String> items) {
 		var results = marketplace.resultsPointer().substring(1);
 		return writeRaw(marketplace.code(), name, """
@@ -50,7 +48,6 @@ final class SearchFileFixtures {
 		return reader().read(file);
 	}
 
-	/** A minimal Hepsiburada result item. */
 	static String hepsiburada(String sku, String price) {
 		return """
 				{"sku":"%s","title":"Test ürünü","url":"https://www.hepsiburada.com/%s","price":%s}"""

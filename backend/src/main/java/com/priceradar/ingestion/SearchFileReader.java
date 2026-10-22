@@ -21,17 +21,10 @@ import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
 
-/**
- * Reads a search response saved by {@code tools/reefapi/fetch.mjs} and checks
- * everything the database would otherwise reject or silently change, so that a
- * file is either imported completely or not at all.
- *
- * <p>Files must sit at {@code <raw directory>/<label>/<marketplace>/search/<name>.json}.
- */
 public class SearchFileReader {
 
 	private static final JsonMapper JSON = JsonMapper.builder()
-			// Exact decimals: 1234.56 must not become 1234.5599999.
+			// Preserve source prices exactly before checking database precision.
 			.enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS)
 			.enable(DeserializationFeature.FAIL_ON_READING_DUP_TREE_KEY)
 			.enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS)
@@ -39,16 +32,12 @@ public class SearchFileReader {
 
 	private static final String SEARCH_ACTION = "search";
 	private static final int HTTP_OK = 200;
-	/** PostgreSQL stores timestamps with microsecond precision. */
+	// PostgreSQL timestamps have microsecond precision.
 	private static final int NANOS_PER_MICRO = 1_000;
 
 	private final Path repositoryRoot;
 	private final Path rawDirectory;
 
-	/**
-	 * @param repositoryRoot stored paths are relative to this directory
-	 * @param rawDirectory files outside it are refused
-	 */
 	public SearchFileReader(Path repositoryRoot, Path rawDirectory) {
 		this.repositoryRoot = repositoryRoot.toAbsolutePath().normalize();
 		this.rawDirectory = rawDirectory.toAbsolutePath().normalize();
@@ -77,7 +66,6 @@ public class SearchFileReader {
 			throw new InvalidSearchFileException(file + ": not a file under " + rawDirectory);
 		}
 
-		// <label>/<marketplace>/search/<name>.json
 		var relative = rawDirectory.relativize(absolute);
 		if (relative.getNameCount() != 4 || !SEARCH_ACTION.equals(relative.getName(2).toString())
 				|| !relative.getFileName().toString().endsWith(".json")) {
@@ -88,7 +76,16 @@ public class SearchFileReader {
 		var marketplace = Marketplace.fromCode(folder)
 				.orElseThrow(() -> new InvalidSearchFileException(file + ": unknown marketplace folder " + folder));
 		var storedPath = repositoryRoot.relativize(absolute).toString().replace('\\', '/');
-		return new Location(absolute, storedPath, marketplace);
+		try {
+			var realFile = absolute.toRealPath();
+			if (!realFile.startsWith(rawDirectory.toRealPath())) {
+				throw new InvalidSearchFileException(file + ": not a file under " + rawDirectory);
+			}
+			return new Location(realFile, storedPath, marketplace);
+		}
+		catch (IOException ex) {
+			throw new InvalidSearchFileException(storedPath + ": cannot be read", ex);
+		}
 	}
 
 	private SearchFile parse(Location location, String sha256, String document) {
@@ -180,7 +177,6 @@ public class SearchFileReader {
 		}
 	}
 
-	/** Refuses bytes that are not valid UTF-8 instead of replacing them. */
 	private static String decodeUtf8(byte[] bytes) {
 		try {
 			return StandardCharsets.UTF_8.newDecoder()

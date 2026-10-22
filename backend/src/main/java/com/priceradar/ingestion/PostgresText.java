@@ -2,16 +2,12 @@ package com.priceradar.ingestion;
 
 import tools.jackson.databind.JsonNode;
 
-/**
- * PostgreSQL {@code text} and {@code jsonb} cannot hold the NUL character or a
- * lone UTF-16 surrogate. JSON can, so documents are checked before import.
- */
+// PostgreSQL text/jsonb reject NUL and unpaired UTF-16 surrogates, although JSON permits them.
 final class PostgresText {
 
 	private PostgresText() {
 	}
 
-	/** Checks every string and property name in the document. */
 	static void requireStorable(JsonNode node) {
 		if (node.isString()) {
 			requireStorable(node.stringValue());

@@ -3,8 +3,11 @@ package com.priceradar.ingestion;
 import static com.priceradar.ingestion.SearchFileFixtures.hepsiburada;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.FileSystemException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
@@ -16,7 +19,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-/** Reading and validating saved files; no database involved. */
 class SearchFileReaderTest {
 
 	@TempDir
@@ -145,6 +147,54 @@ class SearchFileReaderTest {
 		for (var path : List.of(broken, wrongStore, wrongCount, unknownFolder, outside)) {
 			assertThatThrownBy(() -> fixtures.read(path)).as(path.toString())
 					.isInstanceOf(InvalidSearchFileException.class);
+		}
+	}
+
+	@Test
+	void rejectsAFileLinkToAResponseOutsideTheRawDirectory() throws Exception {
+		var original = fixtures.write(Marketplace.HEPSIBURADA, "external", List.of(hepsiburada("A", "10.00")));
+		var outside = Files.move(original, repositoryRoot.resolve("external.json"));
+		createSymbolicLink(original, outside);
+
+		assertThatThrownBy(() -> fixtures.read(original))
+				.isInstanceOf(InvalidSearchFileException.class)
+				.hasMessageContaining("not a file under");
+	}
+
+	@Test
+	void rejectsADirectoryLinkToResponsesOutsideTheRawDirectory() throws Exception {
+		var original = fixtures.write(Marketplace.HEPSIBURADA, "external-directory",
+				List.of(hepsiburada("A", "10.00")));
+		var searchDirectory = original.getParent();
+		var outside = Files.move(searchDirectory, repositoryRoot.resolve("external-search"));
+		createSymbolicLink(searchDirectory, outside);
+
+		assertThatThrownBy(() -> fixtures.read(original))
+				.isInstanceOf(InvalidSearchFileException.class)
+				.hasMessageContaining("not a file under");
+	}
+
+	@Test
+	void readsALinkWithinTheRawDirectoryAndKeepsItsOriginalProvenance() throws Exception {
+		var original = fixtures.write(Marketplace.HEPSIBURADA, "original", List.of(hepsiburada("A", "10.00")));
+		var link = original.resolveSibling("linked.json");
+		createSymbolicLink(link, original);
+
+		var file = fixtures.read(link);
+
+		assertThat(file.path()).isEqualTo("data/reefapi/raw/2026-10-22/hepsiburada/search/linked.json");
+		assertThat(file.sha256()).isEqualTo(sha256(Files.readAllBytes(original)));
+		assertThat(file.items().getFirst().externalId()).isEqualTo("A");
+	}
+
+	private static void createSymbolicLink(Path link, Path target) throws IOException {
+		try {
+			Files.createSymbolicLink(link, target);
+		}
+		catch (FileSystemException | UnsupportedOperationException ex) {
+			assumeTrue(!System.getProperty("os.name").startsWith("Windows"),
+					"Symbolic link creation is unavailable on this Windows host: " + ex.getMessage());
+			throw ex;
 		}
 	}
 

@@ -1,11 +1,3 @@
-# Runs the backend's Maven wrapper against the database configured in the root .env.
-# Dot-source it from another script:  . (Join-Path $PSScriptRoot 'backend.ps1')
-#
-# Spring Boot reads neither .env nor postgres:// URLs, so POSTGRES_URL, or a full
-# PostgreSQL URL in POSTGRES_DB, is turned into the POSTGRES_URL, POSTGRES_USER and
-# POSTGRES_PASSWORD variables application.yml reads. They exist only while Maven
-# runs and are never printed.
-
 function Get-DatabaseSettings {
     param([Parameter(Mandatory)][string]$EnvFile)
 
@@ -24,7 +16,6 @@ function Get-DatabaseSettings {
         throw 'The PostgreSQL URL in .env needs a host and a database name.'
     }
 
-    # Credentials in the URL win over POSTGRES_USER / POSTGRES_PASSWORD.
     $user = $values['POSTGRES_USER']
     $password = $values['POSTGRES_PASSWORD']
     if ($uri.UserInfo) {
@@ -34,7 +25,7 @@ function Get-DatabaseSettings {
     }
 
     $port = if ($uri.Port -gt 0) { $uri.Port } else { 5432 }
-    # libpq writes channel_binding; the JDBC driver calls the same setting channelBinding.
+    # JDBC calls libpq's channel_binding option channelBinding.
     $query = $uri.Query -replace '([?&])channel_binding=', '$1channelBinding='
     return @{
         POSTGRES_URL      = "jdbc:postgresql://$($uri.Host):$port$($uri.AbsolutePath)$query"
@@ -57,7 +48,6 @@ function Invoke-Backend {
         finally { Pop-Location }
     }
     finally {
-        # Leave the calling shell as it was, without the credentials.
         foreach ($name in $previous.Keys) { [Environment]::SetEnvironmentVariable($name, $previous[$name]) }
     }
 }

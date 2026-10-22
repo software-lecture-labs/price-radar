@@ -23,7 +23,6 @@ import org.testcontainers.utility.DockerImageName;
 
 import com.priceradar.ingestion.ImportResult.Status;
 
-/** Writing validated files to the real schema; no Spring context. */
 @Testcontainers
 class SearchFileImporterTest {
 
