@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="320" viewBox="0 0 1280 320" role="img" aria-labelledby="title desc">
+  <title id="title">Price Radar</title>
+  <desc id="desc">Price Radar: ürün, teklif ve fiyat geçmişi için Spring Boot ve Next.js tabanlı altyapı. Durum: altyapı kurulu, uygulama özellikleri geliştirme aşamasında.</desc>
+  <defs>
+    <style>
+      .t { font-family: 'Segoe UI', Inter, -apple-system, 'Helvetica Neue', Arial, sans-serif; }
+      .m { font-family: 'JetBrains Mono', 'Cascadia Code', Consolas, 'SFMono-Regular', Menlo, monospace; }
+    </style>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0B2530"/>
+      <stop offset="1" stop-color="#0F3542"/>
+    </linearGradient>
+    <linearGradient id="sweep" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#2DD4BF" stop-opacity="0.32"/>
+      <stop offset="1" stop-color="#2DD4BF" stop-opacity="0"/>
+    </linearGradient>
+    <clipPath id="frame">
+      <rect width="1280" height="320" rx="16"/>
+    </clipPath>
+  </defs>
+
+  <rect width="1280" height="320" rx="16" fill="url(#bg)"/>
+
+  <!-- Radar -->
+  <g clip-path="url(#frame)">
+    <g fill="none" stroke="#2DD4BF">
+      <circle cx="1110" cy="160" r="60" stroke-opacity="0.35"/>
+      <circle cx="1110" cy="160" r="110" stroke-opacity="0.25"/>
+      <circle cx="1110" cy="160" r="160" stroke-opacity="0.18"/>
+      <circle cx="1110" cy="160" r="210" stroke-opacity="0.12"/>
+      <line x1="880" y1="160" x2="1280" y2="160" stroke-opacity="0.12"/>
+      <line x1="1110" y1="0" x2="1110" y2="320" stroke-opacity="0.12"/>
+    </g>
+    <path d="M1110 160 L1110 -50 A210 210 0 0 1 1258.5 11.5 Z" fill="url(#sweep)"/>
+    <line x1="1110" y1="160" x2="1258.5" y2="11.5" stroke="#2DD4BF" stroke-opacity="0.7" stroke-width="1.5"/>
+    <circle cx="1110" cy="160" r="4" fill="#2DD4BF"/>
+    <!-- Blips: price points -->
+    <g fill="#2DD4BF">
+      <circle cx="1176" cy="88" r="4"/>
+      <circle cx="1176" cy="88" r="10" fill-opacity="0.18"/>
+      <circle cx="1046" cy="118" r="3" fill-opacity="0.8"/>
+      <circle cx="1196" cy="214" r="3" fill-opacity="0.6"/>
+      <circle cx="1060" cy="236" r="3.5" fill-opacity="0.7"/>
+      <circle cx="1232" cy="140" r="2.5" fill-opacity="0.5"/>
+    </g>
+    <circle cx="1176" cy="88" r="4" fill="#F2B652"/>
+  </g>
+
+  <!-- Copy -->
+  <text x="64" y="90" class="m" font-size="13" letter-spacing="2" fill="#5EEAD4">FİYAT KARŞILAŞTIRMA PLATFORMU</text>
+  <text x="64" y="152" class="t" font-size="60" font-weight="700" fill="#FFFFFF">Price Radar</text>
+  <text x="64" y="192" class="t" font-size="18" fill="#B5CCC8">Ürün, teklif ve fiyat geçmişi için Spring Boot ve Next.js tabanlı altyapı</text>
+
+  <!-- Stack chips -->
+  <g class="m" font-size="13" fill="#DCEBE8">
+    <rect x="64" y="220" width="84" height="30" rx="15" fill="#2DD4BF" fill-opacity="0.10" stroke="#2DD4BF" stroke-opacity="0.45"/>
+    <text x="106" y="240" text-anchor="middle">Java 25</text>
+    <rect x="158" y="220" width="146" height="30" rx="15" fill="#2DD4BF" fill-opacity="0.10" stroke="#2DD4BF" stroke-opacity="0.45"/>
+    <text x="231" y="240" text-anchor="middle">Spring Boot 4.1</text>
+    <rect x="314" y="220" width="106" height="30" rx="15" fill="#2DD4BF" fill-opacity="0.10" stroke="#2DD4BF" stroke-opacity="0.45"/>
+    <text x="367" y="240" text-anchor="middle">Next.js 16</text>
+    <rect x="430" y="220" width="130" height="30" rx="15" fill="#2DD4BF" fill-opacity="0.10" stroke="#2DD4BF" stroke-opacity="0.45"/>
+    <text x="495" y="240" text-anchor="middle">PostgreSQL 18</text>
+    <rect x="570" y="220" width="84" height="30" rx="15" fill="#2DD4BF" fill-opacity="0.10" stroke="#2DD4BF" stroke-opacity="0.45"/>
+    <text x="612" y="240" text-anchor="middle">Redis 8</text>
+    <rect x="664" y="220" width="146" height="30" rx="15" fill="#2DD4BF" fill-opacity="0.10" stroke="#2DD4BF" stroke-opacity="0.45"/>
+    <text x="737" y="240" text-anchor="middle">Elasticsearch 9</text>
+    <rect x="820" y="220" width="84" height="30" rx="15" fill="#2DD4BF" fill-opacity="0.10" stroke="#2DD4BF" stroke-opacity="0.45"/>
+    <text x="862" y="240" text-anchor="middle">Kafka 4</text>
+  </g>
+
+  <circle cx="70" cy="284" r="5" fill="#F2B652"/>
+  <text x="84" y="289" class="m" font-size="13" fill="#9FBDB8">durum: altyapı kurulu · uygulama özellikleri geliştirme aşamasında</text>
+</svg>

@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="600" viewBox="0 0 1200 600" role="img" aria-labelledby="title desc">
+  <title id="title">Temel kullanım akışı: bağlantı doğrulama</title>
+  <desc id="desc">Tarayıcı ana sayfayı ister. Next.js sunucusu backend'e paralel olarak GET /api/v1/ping ve GET /api/v1/hello atar. Spring Security bu uçlara token istemeden izin verir, MetaController yanıt verir. Sayfa Hello World mesajı ve connected rozetiyle döner; hata olursa unreachable rozeti ve yerel mesaj gösterilir.</desc>
+  <defs>
+    <style>
+      .t { font-family: 'Segoe UI', Inter, -apple-system, 'Helvetica Neue', Arial, sans-serif; }
+      .m { font-family: 'JetBrains Mono', 'Cascadia Code', Consolas, 'SFMono-Regular', Menlo, monospace; }
+      .h1 { font-size: 22px; font-weight: 700; fill: #10242C; }
+      .sub { font-size: 14px; fill: #5A6E75; }
+      .h2 { font-size: 16px; font-weight: 600; fill: #10242C; }
+      .h3 { font-size: 14px; font-weight: 600; fill: #10242C; }
+      .sm { font-size: 12.5px; fill: #5A6E75; }
+      .code { font-size: 12.5px; fill: #10242C; }
+      .card { fill: #FFFFFF; stroke: #0B7A6C; stroke-width: 1.5; }
+      .life { stroke: #BFD0CC; stroke-width: 1.5; stroke-dasharray: 4 5; }
+      .call { fill: none; stroke: #0B7A6C; stroke-width: 1.75; }
+      .ret { fill: none; stroke: #5A6E75; stroke-width: 1.5; stroke-dasharray: 6 4; }
+      .step { fill: #0B7A6C; }
+      .num { font-size: 11px; font-weight: 700; fill: #FFFFFF; }
+    </style>
+    <marker id="a-call" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#0B7A6C"/>
+    </marker>
+    <marker id="a-ret" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#5A6E75"/>
+    </marker>
+  </defs>
+
+  <rect width="1200" height="600" rx="16" fill="#F3F6F5" stroke="#D3DDDA"/>
+
+  <text x="40" y="56" class="t h1">Temel kullanım akışı: bağlantı doğrulama</text>
+  <text x="40" y="80" class="t sub">Ana sayfa açıldığında sunucu tarafında çalışan istek zinciri (frontend/src/app/page.tsx)</text>
+
+  <!-- Lanes -->
+  <rect x="40" y="104" width="200" height="56" rx="10" class="card"/>
+  <text x="140" y="128" class="t h2" text-anchor="middle">Tarayıcı</text>
+  <text x="140" y="148" class="t sm" text-anchor="middle">localhost:3000</text>
+
+  <rect x="340" y="104" width="200" height="56" rx="10" class="card"/>
+  <text x="440" y="128" class="t h2" text-anchor="middle">Next.js sunucusu</text>
+  <text x="440" y="148" class="t sm" text-anchor="middle">page.tsx · apiFetch</text>
+
+  <rect x="660" y="104" width="200" height="56" rx="10" class="card"/>
+  <text x="760" y="128" class="t h2" text-anchor="middle">Spring Security</text>
+  <text x="760" y="148" class="t sm" text-anchor="middle">SecurityFilterChain</text>
+
+  <rect x="960" y="104" width="200" height="56" rx="10" class="card"/>
+  <text x="1060" y="128" class="t h2" text-anchor="middle">MetaController</text>
+  <text x="1060" y="148" class="t sm" text-anchor="middle">backend · :8080</text>
+
+  <line x1="140" y1="160" x2="140" y2="490" class="life"/>
+  <line x1="440" y1="160" x2="440" y2="490" class="life"/>
+  <line x1="760" y1="160" x2="760" y2="490" class="life"/>
+  <line x1="1060" y1="160" x2="1060" y2="490" class="life"/>
+
+  <!-- 1 -->
+  <circle cx="140" cy="200" r="11" class="step"/>
+  <text x="140" y="204" class="t num" text-anchor="middle">1</text>
+  <line x1="153" y1="200" x2="436" y2="200" class="call" marker-end="url(#a-call)"/>
+  <text x="290" y="190" class="m code" text-anchor="middle">GET /</text>
+
+  <!-- 2 -->
+  <circle cx="440" cy="256" r="11" class="step"/>
+  <text x="440" y="260" class="t num" text-anchor="middle">2</text>
+  <line x1="453" y1="256" x2="756" y2="256" class="call" marker-end="url(#a-call)"/>
+  <text x="600" y="246" class="m code" text-anchor="middle">GET /api/v1/ping · /hello</text>
+  <text x="600" y="276" class="t sm" text-anchor="middle">paralel · BACKEND_INTERNAL_URL · no-store</text>
+
+  <!-- 3 -->
+  <circle cx="760" cy="316" r="11" class="step"/>
+  <text x="760" y="320" class="t num" text-anchor="middle">3</text>
+  <line x1="773" y1="316" x2="1056" y2="316" class="call" marker-end="url(#a-call)"/>
+  <text x="910" y="306" class="m code" text-anchor="middle">ping() · hello()</text>
+  <text x="910" y="336" class="t sm" text-anchor="middle">permitAll · token gerekmez</text>
+
+  <!-- 4 -->
+  <circle cx="1060" cy="390" r="11" class="step"/>
+  <text x="1060" y="394" class="t num" text-anchor="middle">4</text>
+  <line x1="1047" y1="390" x2="444" y2="390" class="ret" marker-end="url(#a-ret)"/>
+  <text x="750" y="380" class="m code" text-anchor="middle">200 · PingResponse · HelloResponse</text>
+
+  <!-- 5 -->
+  <circle cx="440" cy="450" r="11" class="step"/>
+  <text x="440" y="454" class="t num" text-anchor="middle">5</text>
+  <line x1="427" y1="450" x2="144" y2="450" class="ret" marker-end="url(#a-ret)"/>
+  <text x="290" y="440" class="m code" text-anchor="middle">HTML · "Hello World" · connected</text>
+
+  <!-- Error path -->
+  <rect x="40" y="508" width="1120" height="62" rx="10" fill="#FDF1DC" stroke="#C98A1B" stroke-width="1"/>
+  <text x="60" y="533" class="t h3" style="fill:#9A5B07">Hata yolu</text>
+  <text x="60" y="554" class="t sm" style="fill:#6B4A12">Backend'e ulaşılamazsa ya da 2xx dışı bir yanıt (problem+json → ApiError) dönerse hata yakalanır; sayfa "unreachable" rozetiyle ve yerel "Hello World" metniyle yine render edilir.</text>
+</svg>

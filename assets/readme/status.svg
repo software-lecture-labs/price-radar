@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="690" viewBox="0 0 1200 690" role="img" aria-labelledby="title desc">
+  <title id="title">Geliştirme durumu</title>
+  <desc id="desc">Tamamlanan 13 altyapı başlığı, 7 planlanan başlık (5 geliştirme aşaması dahil) ve CI iş akışlarının şu an başarısız olduğu notu.</desc>
+  <defs>
+    <style>
+      .t { font-family: 'Segoe UI', Inter, -apple-system, 'Helvetica Neue', Arial, sans-serif; }
+      .m { font-family: 'JetBrains Mono', 'Cascadia Code', Consolas, 'SFMono-Regular', Menlo, monospace; }
+      .h1 { font-size: 22px; font-weight: 700; fill: #10242C; }
+      .sub { font-size: 14px; fill: #5A6E75; }
+      .h2 { font-size: 16px; font-weight: 600; }
+      .item { font-size: 14px; fill: #10242C; }
+      .done { fill: #0B7A6C; }
+      .plan { fill: #9A5B07; }
+      .badge { font-size: 12px; font-weight: 700; fill: #FFFFFF; }
+    </style>
+    <g id="check">
+      <circle r="9" fill="#0B7A6C"/>
+      <path d="M-4 0.5 L-1 3.5 L4.5 -3" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+    <g id="todo">
+      <circle r="8" fill="#FFFFFF" stroke="#C98A1B" stroke-width="2"/>
+    </g>
+  </defs>
+
+  <rect width="1200" height="690" rx="16" fill="#F3F6F5" stroke="#D3DDDA"/>
+
+  <text x="40" y="56" class="t h1">Geliştirme durumu</text>
+  <text x="40" y="80" class="t sub">Depo içeriğine göre (feat/modular-monolith dalı). Uygulama özellikleri henüz yazılmadı.</text>
+
+  <!-- Done -->
+  <rect x="40" y="104" width="550" height="486" rx="12" fill="#FFFFFF" stroke="#0B7A6C" stroke-width="1.5"/>
+  <text x="64" y="140" class="t h2 done">Tamamlandı · altyapı</text>
+  <rect x="534" y="124" width="32" height="22" rx="11" fill="#0B7A6C"/>
+  <text x="550" y="140" class="t badge" text-anchor="middle">13</text>
+  <line x1="64" y1="158" x2="566" y2="158" stroke="#D3DDDA"/>
+
+  <g class="t item">
+    <use href="#check" x="74" y="186"/><text x="94" y="191">Spring Boot 4.1.1 backend iskeleti · Java 25</text>
+    <use href="#check" x="74" y="217"/><text x="94" y="222">Modüler monolit: 12 modül, Spring Modulith doğrulaması</text>
+    <use href="#check" x="74" y="248"/><text x="94" y="253">Hexagonal katman kuralları · mimari karar kayıtları</text>
+    <use href="#check" x="74" y="279"/><text x="94" y="284">PostgreSQL + Flyway (V1 uzantılar, V2 olay kaydı)</text>
+    <use href="#check" x="74" y="310"/><text x="94" y="315">Redis cache: JSON değerler, önek, 10 dk TTL</text>
+    <use href="#check" x="74" y="341"/><text x="94" y="346">Kafka topic'leri, 3 deneme ve dead-letter topic</text>
+    <use href="#check" x="74" y="372"/><text x="94" y="377">Elasticsearch istemci bağlantısı</text>
+    <use href="#check" x="74" y="403"/><text x="94" y="408">Stateless güvenlik: JWT servisi ve filtresi</text>
+    <use href="#check" x="74" y="434"/><text x="94" y="439">RFC 9457 hata yanıtları · OpenAPI / Swagger UI</text>
+    <use href="#check" x="74" y="465"/><text x="94" y="470">/api/v1/ping, /api/v1/hello ve bağlantı sayfası</text>
+    <use href="#check" x="74" y="496"/><text x="94" y="501">Docker Compose: servisler, app ve quality profilleri</text>
+    <use href="#check" x="74" y="527"/><text x="94" y="532">GitHub Actions: backend ve frontend CI</text>
+    <use href="#check" x="74" y="558"/><text x="94" y="563">Testcontainers ile entegrasyon testleri</text>
+  </g>
+
+  <!-- Planned -->
+  <rect x="610" y="104" width="550" height="486" rx="12" fill="#FFFFFF" stroke="#C98A1B" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <text x="634" y="140" class="t h2 plan">Planlanan · aşamalar</text>
+  <rect x="1104" y="124" width="32" height="22" rx="11" fill="#C98A1B"/>
+  <text x="1120" y="140" class="t badge" text-anchor="middle">7</text>
+  <line x1="634" y1="158" x2="1136" y2="158" stroke="#D3DDDA"/>
+
+  <g class="t item">
+    <use href="#todo" x="644" y="186"/><text x="664" y="191">Aşama 1: ürün, mağaza, teklif ve fiyat modelleri</text>
+    <use href="#todo" x="644" y="220"/><text x="664" y="225">Aşama 2: veri toplama ve eşleştirme (ADR 0006 açık)</text>
+    <use href="#todo" x="644" y="254"/><text x="664" y="259">Aşama 3: Elasticsearch senkronizasyonu, cache TTL'leri</text>
+    <use href="#todo" x="644" y="288"/><text x="664" y="293">Aşama 4: olay sözleşmeleri, Kafka, fiyat alarmları</text>
+    <use href="#todo" x="644" y="322"/><text x="664" y="327">Aşama 5: production hazırlığı</text>
+    <use href="#todo" x="644" y="356"/><text x="664" y="361">Kimlik doğrulama uçları (login, refresh token)</text>
+    <use href="#todo" x="644" y="390"/><text x="664" y="395">Frontend test altyapısı (Vitest / Playwright)</text>
+  </g>
+  <text x="634" y="551" class="t sub">Aşamalar sırayla ilerler · ayrıntı: docs/architecture</text>
+
+  <!-- Known issue -->
+  <rect x="40" y="606" width="1120" height="56" rx="10" fill="#FDECEA" stroke="#C2410C" stroke-width="1"/>
+  <circle cx="64" cy="634" r="6" fill="#C2410C"/>
+  <text x="80" y="639" class="t item"><tspan font-weight="600" style="fill:#9A2A0A">Bilinen sorun:</tspan> GitHub Actions'ta backend ve frontend CI şu an başarısız (ayrıntılar README'de).</text>
+</svg>
