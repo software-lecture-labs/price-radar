@@ -7,7 +7,12 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
 
   images: {
-    remotePatterns: [],
+    remotePatterns: [
+      { protocol: "https", hostname: "cdn.dsmcdn.com" },
+      { protocol: "https", hostname: "productimages.hepsiburada.net" },
+      { protocol: "https", hostname: "n11scdn.akamaized.net" },
+      { protocol: "https", hostname: "reimg-teknosa-cloud-prod.mncdn.com" },
+    ],
   },
 
   rewrites() {
