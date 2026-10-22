@@ -158,3 +158,9 @@ app:
     dead-letter-topic: price-radar.dlt
     partitions: 3
     replication-factor: ${KAFKA_REPLICATION_FACTOR:1}
+
+  # Saved ReefAPI responses, read by the "import" profile (SearchImportRunner).
+  ingestion:
+    # Relative to backend/, where the application starts.
+    repository-root: ..
+    raw-directory: ../data/reefapi/raw

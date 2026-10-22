@@ -1,58 +1,37 @@
+<#
+.SYNOPSIS
+Imports saved ReefAPI search responses into the database configured in .env.
+
+.DESCRIPTION
+Runs the backend with the "import" profile (SearchImportRunner). Every file is
+validated before anything is written, and each file is its own transaction.
+Without -Commit nothing is written: the run only reports what would happen.
+Files that were already imported are skipped, so a run can always be repeated.
+
+.EXAMPLE
+.\tools\reefapi\import.ps1
+Dry run over everything under data/reefapi/raw.
+
+.EXAMPLE
+.\tools\reefapi\import.ps1 -Source 2026-10-22 -Commit
+Imports one fetch.
+#>
 param(
-    [Parameter(Mandatory = $true)][string]$File,
-    [switch]$DryRun,
-    [switch]$Commit,
-    [switch]$Batch,
-    [string]$ExpectedSha256 = ''
+    # A file or folder under data/reefapi/raw, relative to it. Can be given more than once.
+    [string[]]$Source = @(),
+    # Write to the database.
+    [switch]$Commit
 )
 
 $ErrorActionPreference = 'Stop'
-if ($DryRun -and $Commit) { throw 'Choose either -DryRun or -Commit.' }
-if ($Commit -and $ExpectedSha256 -cnotmatch '^[0-9a-f]{64}$') {
-    throw '-Commit requires -ExpectedSha256 from the reviewed preview.'
-}
-$repoRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
-$sourcePath = if ([IO.Path]::IsPathRooted($File)) { $File } else { Join-Path $repoRoot $File }
-$classes = Join-Path $repoRoot 'backend/target/classes'
-$jar = Join-Path $repoRoot 'backend/target/backend-0.0.1-SNAPSHOT.jar'
-if (-not (Test-Path -LiteralPath (Join-Path $classes 'com/priceradar/ingestion/ReefImportCommand.class'))) {
-    throw 'Compile the importer first: run .\mvnw.cmd -Dtest=ReefSearchImporterTest test from backend.'
-}
-if (-not (Test-Path -LiteralPath $jar)) {
-    throw 'Build existing runtime libraries first: run .\mvnw.cmd -DskipTests package from backend.'
-}
-$mode = if ($Commit) { 'commit' } elseif ($DryRun) { 'dry-run' } else { 'preview' }
-if ($Batch) { $mode = 'batch-' + $mode }
-$tempRoot = [IO.Path]::GetFullPath([IO.Path]::GetTempPath())
-$temporaryName = 'price-radar-import-' + [guid]::NewGuid().ToString('N')
-$temporaryDir = Join-Path $tempRoot $temporaryName
-New-Item -ItemType Directory -Path $temporaryDir | Out-Null
-try {
-    # Reuse the application's pinned dependencies; no packages are installed.
-    Add-Type -AssemblyName System.IO.Compression.FileSystem
-    $archive = [IO.Compression.ZipFile]::OpenRead($jar)
-    try {
-        foreach ($entry in $archive.Entries) {
-            if ($entry.FullName -match '^BOOT-INF/lib/[^/]+\.jar$') {
-                [IO.Compression.ZipFileExtensions]::ExtractToFile(
-                    $entry, (Join-Path $temporaryDir $entry.Name))
-            }
-        }
-    }
-    finally { $archive.Dispose() }
-    $classPath = $classes + [IO.Path]::PathSeparator + (Join-Path $temporaryDir '*')
-    $expectedArgument = if ($ExpectedSha256) { $ExpectedSha256 } else { '-' }
-    & java '-Dfile.encoding=UTF-8' -cp $classPath com.priceradar.ingestion.ReefImportCommand `
-        $repoRoot $sourcePath $mode $expectedArgument
-    $importExit = $LASTEXITCODE
-}
-finally {
-    $resolved = (Resolve-Path -LiteralPath $temporaryDir).ProviderPath
-    if ($resolved -ne $temporaryDir -or
-        -not $resolved.StartsWith($tempRoot, [StringComparison]::OrdinalIgnoreCase) -or
-        [IO.Path]::GetFileName($resolved) -ne $temporaryName) {
-        throw 'Unexpected temporary cleanup target.'
-    }
-    Remove-Item -LiteralPath $resolved -Recurse -Force
-}
-exit $importExit
+. (Join-Path $PSScriptRoot '..\backend.ps1')
+
+$applicationArguments = @($Source | ForEach-Object { "--source=$_" })
+if ($Commit) { $applicationArguments += '--commit' }
+
+Invoke-Backend @(
+    '-q', 'spring-boot:run',
+    '-Dspring-boot.run.profiles=import',
+    "-Dspring-boot.run.arguments=$($applicationArguments -join ' ')"
+)
+exit $LASTEXITCODE

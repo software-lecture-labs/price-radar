@@ -1,0 +1,10 @@
+# Profile for importing saved ReefAPI responses (com.priceradar.ingestion.SearchImportRunner).
+# The application imports, then stops. Run it with tools/reefapi/import.ps1.
+spring:
+  main:
+    banner-mode: off
+
+server:
+  # The security configuration needs the web stack, so it starts, but on a free
+  # random port: the import can run while the backend is running on 8080.
+  port: 0
