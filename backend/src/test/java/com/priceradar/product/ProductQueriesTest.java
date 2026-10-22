@@ -127,4 +127,47 @@ class ProductQueriesTest extends MarketplaceDatabaseTest {
 		assertThat(queries.findDetail(42)).isEmpty();
 	}
 
+	@Test
+	void comparisonUsesLatestMatchingOffersAcrossStoresAndKeepsMissingVariantsUnavailable() {
+		var hepsiburada = store("hepsiburada", "Hepsiburada");
+		var n11 = store("n11", "N11");
+		var teknosa = store("teknosa", "Teknosa");
+		var trendyol = store("trendyol", "Trendyol");
+		var title = "Apple iPhone 15 128 GB Siyah";
+		var selected = product(hepsiburada, "HB-1", title, "Apple");
+		var sameBarcode = product(n11, "N-1", "Apple 128GB Siyah Türkiye Garantili Akıllı Telefon", "Apple");
+		var sameTitle = product(teknosa, "T-1", title, "Apple");
+		var differentStorage = product(trendyol, "TR-1", "Apple iPhone 15 256 GB Siyah", "Apple");
+		jdbc.sql("UPDATE marketplace_products SET barcode = '0195949018558' WHERE id IN (:ids)")
+				.param("ids", java.util.List.of(selected, sameBarcode)).update();
+		observe(source(hepsiburada, LATER), selected, 0, "50000", null);
+		observe(source(n11, EARLIER), sameBarcode, 0, "10000", null);
+		var latest = source(n11, LATER);
+		observe(latest, sameBarcode, 0, "46000", null);
+		observe(latest, sameBarcode, 1, "45000", null);
+		observe(source(teknosa, LATER), sameTitle, 0, "48000", null);
+		observe(source(trendyol, LATER), differentStorage, 0, "30000", null);
+		jdbc.sql("UPDATE product_observations SET currency = 'TRY'").update();
+		jdbc.sql("UPDATE product_observations SET source_url = 'https://www.n11.com/real-product', "
+				+ "seller_name = 'Actual seller', free_shipping = true WHERE marketplace_product_id = :id "
+				+ "AND price = 45000").param("id", sameBarcode).update();
+
+		var comparisons = queries.findDetail(selected).orElseThrow().comparisonOffers();
+
+		assertThat(comparisons).extracting(offer -> offer.store().code())
+				.containsExactly("hepsiburada", "n11", "teknosa", "trendyol");
+		assertThat(comparisons.get(1).productId()).isEqualTo(sameBarcode);
+		assertThat(comparisons.get(1).matchType()).isEqualTo("barcode");
+		assertThat(comparisons.get(1).price()).isEqualByComparingTo("45000");
+		assertThat(comparisons.get(1).observedAt()).isEqualTo(LATER);
+		assertThat(comparisons.get(1).url()).isEqualTo("https://www.n11.com/real-product");
+		assertThat(comparisons.get(1).sellerName()).isEqualTo("Actual seller");
+		assertThat(comparisons.get(1).freeShipping()).isTrue();
+		assertThat(comparisons.get(1).offerCount()).isEqualTo(2);
+		assertThat(comparisons.get(2).productId()).isEqualTo(sameTitle);
+		assertThat(comparisons.get(2).matchType()).isEqualTo("exact_title");
+		assertThat(comparisons.get(3).price()).isNull();
+		assertThat(comparisons.get(3).url()).isNull();
+	}
+
 }
