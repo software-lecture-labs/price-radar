@@ -39,6 +39,22 @@ export interface PricePoint {
   price: number;
 }
 
+export interface ProductComparisonOffer {
+  store: StoreRef;
+  productId: number | null;
+  title: string | null;
+  price: number | null;
+  listPrice: number | null;
+  currency: string | null;
+  inStock: boolean | null;
+  freeShipping: boolean | null;
+  url: string | null;
+  observedAt: string | null;
+  sellerName: string | null;
+  offerCount: number;
+  matchType: "listing" | "barcode" | "mpn" | "exact_title" | null;
+}
+
 export interface ProductDetail {
   product: ProductSummary;
   externalId: string;
@@ -48,6 +64,7 @@ export interface ProductDetail {
   offers: ProductOffer[];
   /** Lowest price at each observation, oldest first. */
   priceHistory: PricePoint[];
+  comparisonOffers?: ProductComparisonOffer[];
 }
 
 export interface Page<T> {
