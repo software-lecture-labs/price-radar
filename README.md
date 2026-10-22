@@ -1,2 +1,1 @@
-# logistic-os
-Logistic OS project...
+
