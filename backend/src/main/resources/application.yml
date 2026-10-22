@@ -18,7 +18,6 @@ spring:
   jpa:
     open-in-view: false
     hibernate:
-      # Flyway owns the schema. Never let Hibernate touch DDL.
       ddl-auto: validate
     properties:
       hibernate:
@@ -36,50 +35,6 @@ spring:
     baseline-on-migrate: true
     validate-on-migrate: true
 
-  data:
-    redis:
-      host: ${REDIS_HOST:localhost}
-      port: ${REDIS_PORT:6379}
-      password: ${REDIS_PASSWORD:}
-      timeout: 2s
-      connect-timeout: 2s
-    elasticsearch:
-      repositories:
-        enabled: true
-
-  elasticsearch:
-    uris: ${ELASTICSEARCH_URIS:http://localhost:9200}
-    username: ${ELASTICSEARCH_USER:}
-    password: ${ELASTICSEARCH_PASSWORD:}
-    connection-timeout: 5s
-    socket-timeout: 30s
-
-  kafka:
-    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
-    producer:
-      acks: all
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JacksonJsonSerializer
-      properties:
-        enable.idempotence: true
-    consumer:
-      group-id: ${spring.application.name}
-      auto-offset-reset: earliest
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      # A record that cannot be deserialized goes to the error handler (and from
-      # there to the dead-letter topic) instead of failing the poll loop forever.
-      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
-      properties:
-        spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JacksonJsonDeserializer
-        spring.json.trusted.packages: com.priceradar.*
-    listener:
-      ack-mode: record
-
-  # TTLs, key prefix and serializers live in com.priceradar.config.CacheConfig
-  # so that per-cache TTLs stay next to the cache-name constants.
-  cache:
-    type: redis
-
   threads:
     virtual:
       enabled: true
@@ -88,7 +43,6 @@ spring:
     default-property-inclusion: non_null
     datatype:
       datetime:
-        # Jackson 3 moved this off SerializationFeature; ISO-8601 over epoch millis.
         write-dates-as-timestamps: false
 
 server:
@@ -113,11 +67,6 @@ management:
       probes:
         enabled: true
       show-details: when-authorized
-  health:
-    redis:
-      enabled: true
-    elasticsearch:
-      enabled: true
   info:
     env:
       enabled: true
@@ -131,13 +80,10 @@ springdoc:
     tags-sorter: alpha
     display-request-duration: true
 
-# ---------------------------------------------------------------------------
-# Application-specific configuration (see com.priceradar.config.*Properties)
-# ---------------------------------------------------------------------------
 app:
   security:
     jwt:
-      # Base64-encoded HMAC-SHA256 secret. MUST be overridden outside dev.
+      # Development key.
       secret: ${JWT_SECRET:ZGV2LW9ubHktc2VjcmV0LWRvLW5vdC11c2UtaW4tcHJvZHVjdGlvbi0zMi1ieXRlcyE=}
       issuer: price-radar
       access-token-ttl: 15m
@@ -150,11 +96,6 @@ app:
       allow-credentials: true
       max-age: 3600
 
-  search:
-    index-prefix: price-radar
-
-  messaging:
-    events-topic: price-radar.events
-    dead-letter-topic: price-radar.dlt
-    partitions: 3
-    replication-factor: ${KAFKA_REPLICATION_FACTOR:1}
+  ingestion:
+    repository-root: ..
+    raw-directory: ../data/reefapi/raw

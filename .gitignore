@@ -4,6 +4,10 @@
 .env.*.local
 !.env.example
 
+# --- Local data -------------------------------------------------------------
+# Raw marketplace responses fetched with tools/reefapi. Kept local, never committed.
+/data/
+
 # --- Java / Maven -----------------------------------------------------------
 target/
 *.class
