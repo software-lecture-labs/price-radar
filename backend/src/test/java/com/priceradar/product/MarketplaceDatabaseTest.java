@@ -5,37 +5,34 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.UUID;
 
-import org.flywaydb.core.Flyway;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.jdbc.core.simple.JdbcClient;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.postgresql.PostgreSQLContainer;
-import org.testcontainers.utility.DockerImageName;
 
-@Testcontainers
+import com.priceradar.TestDatabase;
+
+@Tag("integration")
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 abstract class MarketplaceDatabaseTest {
 
-	@Container
-	static final PostgreSQLContainer POSTGRES = new PostgreSQLContainer(
-			DockerImageName.parse("postgres:18.6-alpine"))
-			.withDatabaseName("marketplace_queries_test")
-			.withUsername("price_radar")
-			.withPassword("price_radar");
-
-	static JdbcClient jdbc;
+	private TestDatabase database;
+	JdbcClient jdbc;
 
 	@BeforeAll
-	static void migrate() {
-		Flyway.configure()
-				.dataSource(POSTGRES.getJdbcUrl(), POSTGRES.getUsername(), POSTGRES.getPassword())
-				.locations("classpath:db/migration")
-				.load()
-				.migrate();
-		jdbc = JdbcClient.create(new DriverManagerDataSource(POSTGRES.getJdbcUrl(), POSTGRES.getUsername(),
-				POSTGRES.getPassword()));
+	void migrate() {
+		database = TestDatabase.open();
+		database.flyway().migrate();
+		jdbc = JdbcClient.create(database.dataSource());
+	}
+
+	@AfterAll
+	void dropSchema() {
+		if (database != null) {
+			database.close();
+		}
 	}
 
 	@BeforeEach
@@ -47,7 +44,7 @@ abstract class MarketplaceDatabaseTest {
 	record Source(long id, long store, Instant fetchedAt) {
 	}
 
-	static long store(String code, String name) {
+	long store(String code, String name) {
 		return jdbc.sql("INSERT INTO stores (code, name, base_url) VALUES (:code, :name, :url) RETURNING id")
 				.param("code", code)
 				.param("name", name)
@@ -56,11 +53,11 @@ abstract class MarketplaceDatabaseTest {
 				.single();
 	}
 
-	static long product(long store, String externalId, String title, String brand) {
+	long product(long store, String externalId, String title, String brand) {
 		return product(store, externalId, title, brand, null, null);
 	}
 
-	static long product(long store, String externalId, String title, String brand, String category,
+	long product(long store, String externalId, String title, String brand, String category,
 			String imageUrl) {
 
 		return jdbc.sql("""
@@ -76,7 +73,7 @@ abstract class MarketplaceDatabaseTest {
 				.single();
 	}
 
-	static Source source(long store, Instant fetchedAt) {
+	Source source(long store, Instant fetchedAt) {
 		var id = jdbc.sql("""
 				INSERT INTO source_files (store_id, source_path, sha256, action, fetched_at, result_count, raw_document)
 				VALUES (:store, :path, :sha, 'search', :fetchedAt, 0, '{}'::jsonb) RETURNING id""")
@@ -89,7 +86,7 @@ abstract class MarketplaceDatabaseTest {
 		return new Source(id, store, fetchedAt);
 	}
 
-	static void observe(Source source, long product, int rowIndex, String price, String listPrice) {
+	void observe(Source source, long product, int rowIndex, String price, String listPrice) {
 		jdbc.sql("""
 				INSERT INTO product_observations (store_id, marketplace_product_id, source_file_id, row_index,
 					observed_at, source_url, price, list_price, raw_item)

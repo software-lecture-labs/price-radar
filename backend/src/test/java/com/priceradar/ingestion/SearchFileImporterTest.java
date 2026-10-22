@@ -7,33 +7,26 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.nio.file.Path;
 import java.util.List;
 
-import org.flywaydb.core.Flyway;
+import javax.sql.DataSource;
+
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.postgresql.PostgreSQLContainer;
-import org.testcontainers.utility.DockerImageName;
 
+import com.priceradar.TestDatabase;
 import com.priceradar.ingestion.ImportResult.Status;
 
-@Testcontainers
+@Tag("integration")
 class SearchFileImporterTest {
 
-	@Container
-	static final PostgreSQLContainer POSTGRES = new PostgreSQLContainer(
-			DockerImageName.parse("postgres:18.6-alpine"))
-			.withDatabaseName("marketplace_import_test")
-			.withUsername("price_radar")
-			.withPassword("price_radar");
-
-	private static DriverManagerDataSource dataSource;
+	private static TestDatabase database;
+	private static DataSource dataSource;
 	private static JdbcClient jdbc;
 
 	@TempDir
@@ -44,14 +37,17 @@ class SearchFileImporterTest {
 
 	@BeforeAll
 	static void migrate() {
-		Flyway.configure()
-				.dataSource(POSTGRES.getJdbcUrl(), POSTGRES.getUsername(), POSTGRES.getPassword())
-				.locations("classpath:db/migration")
-				.load()
-				.migrate();
-		dataSource = new DriverManagerDataSource(POSTGRES.getJdbcUrl(), POSTGRES.getUsername(),
-				POSTGRES.getPassword());
+		database = TestDatabase.open();
+		database.flyway().migrate();
+		dataSource = database.dataSource();
 		jdbc = JdbcClient.create(dataSource);
+	}
+
+	@AfterAll
+	static void dropSchema() {
+		if (database != null) {
+			database.close();
+		}
 	}
 
 	@BeforeEach

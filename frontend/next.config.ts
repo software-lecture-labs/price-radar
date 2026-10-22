@@ -2,7 +2,6 @@ import type { NextConfig } from "next";
 import { publicEnv, serverEnv } from "./src/lib/env";
 
 const nextConfig: NextConfig = {
-  output: "standalone",
   reactStrictMode: true,
   poweredByHeader: false,
 

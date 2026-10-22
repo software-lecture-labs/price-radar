@@ -28,13 +28,10 @@ const stack = [
   { layer: "Backend", value: "Java 25 · Spring Boot 4.1.1" },
   { layer: "Frontend", value: "Next.js 16.3.8 · React 19.2.8 · TypeScript 5" },
   { layer: "UI", value: "Tailwind CSS 4 · shadcn/ui" },
-  { layer: "Database", value: "PostgreSQL 18.6 · Flyway" },
-  { layer: "Cache", value: "Redis 8.10" },
-  { layer: "Search", value: "Elasticsearch 9.4.5" },
-  { layer: "Queue", value: "Apache Kafka 4.3" },
+  { layer: "Database", value: "PostgreSQL · Flyway" },
   { layer: "Auth", value: "Spring Security · JWT" },
   { layer: "API docs", value: "springdoc-openapi 3.1.1" },
-  { layer: "Testing", value: "JUnit 5 · Mockito · Testcontainers" },
+  { layer: "Testing", value: "JUnit 5 · Mockito" },
   { layer: "Code quality", value: "SonarQube · JaCoCo" },
 ];
 
@@ -93,8 +90,7 @@ export default async function StatusPage() {
           ) : (
             <div className="space-y-2 text-sm">
               <p className="text-muted-foreground">
-                Start the services with <code className="font-mono">docker compose up -d</code>,
-                then run the backend.
+                Check the PostgreSQL connection and make sure the backend is running.
               </p>
               <p className="font-mono text-xs text-destructive">{status.reason}</p>
             </div>

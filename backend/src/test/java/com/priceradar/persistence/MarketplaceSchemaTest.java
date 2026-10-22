@@ -5,46 +5,43 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import org.flywaydb.core.Flyway;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.postgresql.PostgreSQLContainer;
-import org.testcontainers.utility.DockerImageName;
 
-@Testcontainers
+import com.priceradar.TestDatabase;
+
+@Tag("integration")
 class MarketplaceSchemaTest {
 
-	@Container
-	static final PostgreSQLContainer POSTGRES = new PostgreSQLContainer(
-			DockerImageName.parse("postgres:18.6-alpine"))
-			.withDatabaseName("marketplace_schema_test")
-			.withUsername("price_radar")
-			.withPassword("price_radar");
-
+	private static TestDatabase database;
 	private static Flyway flyway;
 
 	private Connection connection;
 
 	@BeforeAll
 	static void migrateSchema() {
-		flyway = Flyway.configure()
-				.dataSource(POSTGRES.getJdbcUrl(), POSTGRES.getUsername(), POSTGRES.getPassword())
-				.locations("classpath:db/migration")
-				.load();
+		database = TestDatabase.open();
+		flyway = database.flyway();
 		assertThat(flyway.migrate().migrationsExecuted).isEqualTo(2);
+	}
+
+	@AfterAll
+	static void dropSchema() {
+		if (database != null) {
+			database.close();
+		}
 	}
 
 	@BeforeEach
 	void openTransaction() throws SQLException {
-		connection = DriverManager.getConnection(
-				POSTGRES.getJdbcUrl(), POSTGRES.getUsername(), POSTGRES.getPassword());
+		connection = database.dataSource().getConnection();
 		connection.setAutoCommit(false);
 	}
 
