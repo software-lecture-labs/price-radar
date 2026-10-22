@@ -140,8 +140,48 @@ public class ProductQueries {
 				.param("id", id)
 				.query((rs, rowNum) -> new ProductDetail(summary.get(), rs.getString("external_id"),
 						rs.getString("external_group_id"), rs.getString("mpn"), textArray(rs, "category_path"),
-						offers, history))
+						offers, comparisonOffers(summary.get(), rs.getString("mpn")), history))
 				.optional();
+	}
+
+	private List<ProductDetail.ComparisonOffer> comparisonOffers(ProductSummary product, String mpn) {
+		var selected = new ProductComparison.Identity(product.id(), product.title(), product.brand(),
+				product.barcode(), mpn, product.currency());
+		// Fetch potential exact identities, then validate GTIN, brand, variants and currency in Java.
+		// Marketplace group IDs and search terms are deliberately excluded: neither identifies a variant.
+		var candidates = jdbc.sql("""
+				SELECT p.id, p.title, p.brand, p.barcode, p.mpn, s.code AS store_code, s.name AS store_name,
+					o.price, o.list_price, o.currency, o.in_stock, o.free_shipping, o.source_url,
+					o.observed_at, o.seller_name, count(*) OVER (PARTITION BY p.id) AS offer_count
+				FROM marketplace_products p
+				JOIN stores s ON s.id = p.store_id
+				JOIN product_observations o ON o.marketplace_product_id = p.id AND o.store_id = p.store_id
+				WHERE o.observed_at = (
+					SELECT max(latest.observed_at) FROM product_observations latest
+					WHERE latest.marketplace_product_id = p.id AND latest.store_id = p.store_id)
+					AND (p.id = :id
+						OR ltrim(regexp_replace(p.barcode, '\\s+', '', 'g'), '0') = :barcode
+						OR btrim(regexp_replace(lower(p.title), '\\s+', ' ', 'g')) = :title
+						OR (:mpn <> '' AND regexp_replace(lower(p.mpn), '\\s+', '', 'g') = :mpn
+							AND btrim(regexp_replace(lower(p.brand), '\\s+', ' ', 'g')) = :brand))
+				ORDER BY p.id, o.id
+				""")
+				.param("id", product.id())
+				.param("barcode", product.barcode() == null ? null
+						: product.barcode().replaceAll("\\s+", "").replaceFirst("^0+", ""))
+				.param("title", ProductComparison.normalize(product.title()))
+				.param("mpn", ProductComparison.normalizeMpn(mpn))
+				.param("brand", ProductComparison.normalize(product.brand()))
+				.query((rs, rowNum) -> new ProductComparison.Candidate(
+						new ProductComparison.Identity(rs.getLong("id"), rs.getString("title"), rs.getString("brand"),
+								rs.getString("barcode"), rs.getString("mpn"), rs.getString("currency")),
+						new StoreRef(rs.getString("store_code"), rs.getString("store_name")),
+						rs.getBigDecimal("price"), rs.getBigDecimal("list_price"),
+						rs.getObject("in_stock", Boolean.class), rs.getObject("free_shipping", Boolean.class),
+						rs.getString("source_url"), instant(rs, "observed_at"), rs.getString("seller_name"),
+						rs.getInt("offer_count")))
+				.list();
+		return ProductComparison.offers(selected, candidates);
 	}
 
 	private static ProductSummary mapSummary(ResultSet rs, int rowNum) throws SQLException {
