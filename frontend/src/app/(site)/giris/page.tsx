@@ -1,7 +1,12 @@
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "Giriş yap" };
+import { LoginForm } from "@/components/auth/login-form";
+
+export const metadata: Metadata = {
+  title: "Giriş yap",
+  description: "Price Radar hesabınıza giriş yapın.",
+};
 
 export default function LoginPage() {
-  return <h1 className="text-2xl font-semibold tracking-tight">Giriş yap</h1>;
+  return <LoginForm />;
 }
