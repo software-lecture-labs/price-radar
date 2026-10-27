@@ -16,6 +16,7 @@ export function RegisterForm() {
   const router = useRouter();
   const [fullName, setFullName] = React.useState("");
   const [email, setEmail] = React.useState("");
+  const [phone, setPhone] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [confirmPassword, setConfirmPassword] = React.useState("");
   const [showPassword, setShowPassword] = React.useState(false);
@@ -25,7 +26,7 @@ export function RegisterForm() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!fullName || !email || !password || !confirmPassword) {
+    if (!fullName || !email || !phone || !password || !confirmPassword) {
       toast.error("Lütfen tüm alanları doldurun.");
       return;
     }
@@ -122,6 +123,24 @@ export function RegisterForm() {
               placeholder="ornek@alanadi.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              className="h-11 rounded-lg border-border-strong/40 bg-white px-3.5 text-sm text-ink placeholder:text-ink-muted/70 transition-colors focus-visible:border-ink focus-visible:ring-2 focus-visible:ring-radar-lime focus-visible:ring-offset-0"
+            />
+          </div>
+
+          {/* Telefon numarası input */}
+          <div className="space-y-2">
+            <Label htmlFor="register-phone" className="text-sm font-medium text-ink">
+              Telefon numarası
+            </Label>
+            <Input
+              id="register-phone"
+              name="phone"
+              type="tel"
+              autoComplete="tel"
+              required
+              placeholder="05XX XXX XX XX"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
               className="h-11 rounded-lg border-border-strong/40 bg-white px-3.5 text-sm text-ink placeholder:text-ink-muted/70 transition-colors focus-visible:border-ink focus-visible:ring-2 focus-visible:ring-radar-lime focus-visible:ring-offset-0"
             />
           </div>
