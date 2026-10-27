@@ -20,12 +20,6 @@ import com.priceradar.common.exception.ResourceNotFoundException;
 
 import jakarta.validation.ConstraintViolationException;
 
-/**
- * Translates exceptions into RFC 9457 {@code application/problem+json}.
- *
- * <p>Messages are written for API consumers; internal failures are logged with
- * their stack trace but answered with a generic body so nothing leaks.
- */
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
@@ -72,7 +66,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 				"The request could not be completed.", TYPE_INTERNAL);
 	}
 
-	/** Field-level validation errors, exposed as a {@code errors} extension. */
 	@Override
 	protected ProblemDetail createProblemDetail(Exception ex, org.springframework.http.HttpStatusCode status,
 			String defaultDetail, String detailMessageCode, Object[] detailMessageArguments, WebRequest request) {

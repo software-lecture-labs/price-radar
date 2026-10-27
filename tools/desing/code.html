@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+
+<html lang="tr"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"on-primary-container":"#848387","radar-lime-dim":"#AECF28","on-error-container":"#93000a","radar-lime":"#C8F031","error-container":"#ffdad6","outline":"#76777b","on-surface-variant":"#46464b","border-subtle":"#E4E4E7","on-primary":"#ffffff","surface-container":"#F1F5F9","outline-variant":"#c7c6cb","border-strong":"#D4D4D8","on-tertiary-container":"#75859d","ink-muted":"#52525B","secondary-fixed-dim":"#afd505","secondary-fixed":"#caf233","inverse-on-surface":"#f1effa","surface-tint":"#5e5e62","surface-variant":"#e3e1ec","surface-dim":"#dad9e3","inverse-primary":"#c7c6ca","on-background":"#1a1b22","delta-negative":"#DC2626","tertiary":"#000000","radar-lime-surface":"#F6FDE8","on-primary-fixed":"#1b1b1f","error":"#ba1a1a","on-secondary":"#ffffff","ink-secondary":"#27272A","tertiary-fixed-dim":"#b7c8e1","on-tertiary":"#ffffff","surface-container-high":"#e8e7f1","surface-container-highest":"#e3e1ec","on-secondary-fixed-variant":"#3d4c00","secondary":"#526600","surface":"#fbf8ff","on-error":"#ffffff","background":"#fbf8ff","tertiary-container":"#0b1c30","surface-canvas":"#F8FAFC","primary-fixed-dim":"#c7c6ca","on-tertiary-fixed":"#0b1c30","secondary-container":"#caf233","on-tertiary-fixed-variant":"#38485d","primary-fixed":"#e3e2e6","tertiary-fixed":"#d3e4fe","on-secondary-fixed":"#171e00","ink-primary":"#121316","surface-container-lowest":"#ffffff","on-secondary-container":"#576c00","on-surface":"#1a1b22","surface-card":"#FFFFFF","primary-container":"#1b1b1f","surface-bright":"#fbf8ff","surface-container-low":"#f4f2fd","primary":"#000000","delta-positive":"#15803D","on-primary-fixed-variant":"#46464a","inverse-surface":"#2f3038"},"borderRadius":{"DEFAULT":"0.125rem","lg":"0.25rem","xl":"0.5rem","full":"0.75rem"},"spacing":{"margin-tablet":"1.5rem","space-sm":"0.5rem","gutter-sm":"0.5rem","space-xs":"0.25rem","gutter-lg":"1.5rem","gutter":"1rem","space-md":"0.75rem","space-2xl":"2rem","space-2xs":"0.125rem","margin-desktop":"2.5rem","space-xl":"1.5rem","space-3xl":"3rem","space-lg":"1rem","margin":"1rem"},"fontFamily":{"display-lg-mobile":["Geist"],"headline-lg":["Geist"],"body-md":["Geist"],"body-sm":["Geist"],"data-price-md":["Geist Mono"],"data-price-lg":["Geist Mono"],"display-lg":["Geist"],"label-caps":["Geist Mono"],"headline-md":["Geist"],"body-lg":["Geist"],"headline-sm":["Geist"],"data-meta":["Geist Mono"]},"fontSize":{"display-lg-mobile":["28px",{"lineHeight":"36px","letterSpacing":"-0.02em","fontWeight":"600"}],"headline-lg":["24px",{"lineHeight":"32px","letterSpacing":"-0.02em","fontWeight":"600"}],"body-md":["14px",{"lineHeight":"20px","letterSpacing":"0em","fontWeight":"400"}],"body-sm":["12px",{"lineHeight":"16px","letterSpacing":"0em","fontWeight":"400"}],"data-price-md":["16px",{"lineHeight":"20px","letterSpacing":"-0.01em","fontWeight":"600"}],"data-price-lg":["24px",{"lineHeight":"28px","letterSpacing":"-0.02em","fontWeight":"600"}],"display-lg":["36px",{"lineHeight":"44px","letterSpacing":"-0.03em","fontWeight":"600"}],"label-caps":["10px",{"lineHeight":"14px","letterSpacing":"0.06em","fontWeight":"500"}],"headline-md":["20px",{"lineHeight":"28px","letterSpacing":"-0.01em","fontWeight":"500"}],"body-lg":["16px",{"lineHeight":"24px","letterSpacing":"-0.005em","fontWeight":"400"}],"headline-sm":["16px",{"lineHeight":"24px","letterSpacing":"-0.01em","fontWeight":"500"}],"data-meta":["12px",{"lineHeight":"16px","letterSpacing":"0em","fontWeight":"400"}]}}}};</script></head><body class="bg-surface-canvas font-body-md text-ink-primary antialiased"><header class="fixed top-0 left-0 w-full z-50 h-16 bg-surface-card/85 backdrop-blur-[12px] border-b border-border-subtle"><div class="h-16 max-w-[1280px] mx-auto px-margin md:px-margin-tablet lg:px-margin-desktop flex items-center justify-between gap-space-lg"><div class="flex items-center gap-space-md shrink-0"><a class="flex items-center gap-space-xs" data-path="karsilastirma" href="#"><img alt="Fiyat Radar Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1VzoPKnpdH4I3SVbCXr7nAbuRrHRQ0de38cIDQfjT49uY8IAlXbXzCyeTYUWAKgari10hkDj56GNR4yvvFN6VwrZcT3uvNigrDKwXtW_-WrRBgC3RSHOW5tLM3zdL1XcfU7CB8cHe2WWbirErlPyDNd_NOEA-Gf4jWxMLdTOpK2KKQG6-vKETrFnCZJS3iyTP6upC8mYYjDtC82ao5jWdbhe6oahCVIdlJinhI8PEw"/><span class="font-headline-sm text-headline-sm text-ink-primary font-bold tracking-tight">Fiyat Radar</span></a></div><div class="flex-1 max-w-xl mx-auto"><form action="#" class="relative flex items-center h-[44px] w-full bg-surface-card border border-border-strong rounded-[10px] pl-space-md pr-space-xs" method="GET"><span class="material-symbols-outlined text-[20px] text-ink-muted mr-space-xs shrink-0">search</span><input class="w-full h-full bg-transparent border-0 font-body-md text-body-md text-ink-primary placeholder:text-ink-muted focus:outline-none" placeholder="Ürün, marka veya model ara" type="text"/><button class="h-[34px] px-space-md bg-ink-primary hover:bg-ink-secondary text-surface-card font-body-sm text-body-sm font-medium rounded-[8px] transition-colors shrink-0" type="submit">Ara</button></form></div><div class="flex items-center gap-space-md shrink-0"><nav class="flex items-center gap-space-md" data-active-classes="text-ink-primary font-medium"><a class="font-body-md text-body-md text-ink-muted hover:text-ink-primary transition-colors" data-path="kategoriler" href="#">Kategoriler</a><a class="font-body-md text-body-md text-ink-muted hover:text-ink-primary transition-colors" data-path="firsatlar" href="#">Fırsatlar</a><a class="font-body-md text-body-md text-ink-muted hover:text-ink-primary transition-colors" data-path="rehberler" href="#">Rehberler</a></nav><a class="relative flex items-center gap-space-2xs h-[44px] px-space-md text-ink-muted hover:text-ink-primary transition-colors" data-path="alarmlarim" href="#"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="font-body-md text-body-md hidden sm:inline">Alarmlarım</span><span class="ml-space-2xs px-1.5 py-0.5 rounded-full bg-radar-lime text-ink-primary font-label-caps text-label-caps font-bold">3</span></a><a class="flex items-center justify-center h-[44px] px-space-lg bg-transparent border border-border-strong rounded-[10px] font-body-md text-body-md text-ink-primary hover:bg-surface-container transition-colors" data-path="giris-yap" href="#">Giriş yap</a><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-16 bg-surface-canvas min-h-screen"><div class="flex flex-col w-full">
+<!-- MAIN CONTAINER (Max 1320px) -->
+<div class="w-full max-w-[1320px] mx-auto px-4 md:px-6 lg:px-8 py-8 md:py-12 flex flex-col gap-16 md:gap-24">
+<!-- 1. HERO SECTION (Split 7/5 cols) -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+<!-- Left Column (7 cols) -->
+<div class="lg:col-span-7 flex flex-col items-start">
+<h1 class="text-ink-primary font-headline-lg text-[40px] md:text-[44px] leading-[1.15] font-semibold tracking-[-0.02em] mb-4">
+          Aynı ürün. En düşük fiyat.
+        </h1>
+<p class="font-body-lg text-body-lg text-ink-muted max-w-xl mb-8 leading-relaxed">
+          Binlerce mağazanın fiyatını tek aramada karşılaştır, fiyat düştüğünde ilk sen öğren.
+        </p>
+<!-- Hero Search Bar -->
+<div class="w-full max-w-xl bg-surface-card rounded-[10px] p-1.5 flex items-center shadow-sm relative mb-4">
+<div class="pl-3.5 pr-2 flex items-center justify-center text-ink-muted">
+<span class="material-symbols-outlined text-[24px]">search</span>
+</div>
+<input class="w-full bg-transparent border-0 font-body-lg text-ink-primary placeholder:text-ink-muted focus:outline-none text-[16px]" placeholder="Ürün, marka veya model ara" type="text"/>
+<button class="h-[48px] px-6 bg-ink-primary hover:bg-ink-secondary text-surface-card font-body-md font-semibold rounded-[10px] transition-colors shrink-0 flex items-center justify-center" type="button">
+            Ara
+          </button>
+</div>
+<!-- Popular Searches Chips -->
+<div class="flex flex-wrap items-center gap-2 text-ink-muted font-body-sm text-body-sm">
+<span class="font-medium text-ink-secondary mr-1">Popüler:</span>
+<a class="px-3 py-1 bg-surface-container hover:bg-border-subtle rounded-full text-ink-secondary transition-colors" href="#">iPhone 16</a>
+<a class="px-3 py-1 bg-surface-container hover:bg-border-subtle rounded-full text-ink-secondary transition-colors" href="#">Airfryer</a>
+<a class="px-3 py-1 bg-surface-container hover:bg-border-subtle rounded-full text-ink-secondary transition-colors" href="#">PlayStation 5</a>
+<a class="px-3 py-1 bg-surface-container hover:bg-border-subtle rounded-full text-ink-secondary transition-colors" href="#">Dyson V15</a>
+<a class="px-3 py-1 bg-surface-container hover:bg-border-subtle rounded-full text-ink-secondary transition-colors" href="#">Robot süpürge</a>
+</div>
+</div>
+<!-- Right Column (5 cols) -->
+<div class="lg:col-span-5 relative w-full flex justify-center">
+<!-- Main Packshot Tile -->
+<div class="w-full bg-[#EDEFF1] rounded-[14px] p-8 md:p-12 flex items-center justify-center aspect-square relative overflow-hidden">
+<img alt="Sony WH-1000XM5 Kablosuz Kulaklık" class="w-full h-full object-contain relative z-10 transition-transform duration-500 hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDk4kig6kTFJNN9Z9FFZAGU2XwsLhYi8tQCabGYpACObN6DzLESXMKCzwcYPvbh1l1cVwW28ccvbMzw1fjdjmRJrdLGLbFvdGLE8Lc_H1rJTTbgpFpK1_g7UuQNFPjFTTe0Went-e9RDda1-ioaG0S6PnyFJhT6CPmdfaEdScegVJNBt3LmAeLs4NQaAlVzJOS8tB3p0wIZ_LxuAPyxhEChIpBqSAcyNI4Co79LUXQ"/>
+<div class="absolute inset-0 bg-radial from-transparent to-black/5 pointer-events-none"></div>
+</div>
+<!-- Floating Analytics Card -->
+<div class="absolute -bottom-6 -left-4 md:-left-6 bg-surface-card rounded-[14px] p-4 shadow-sm w-[240px] z-20 flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<span class="font-data-meta text-[12px] text-ink-muted">Son 30 gün</span>
+<!-- Delta badge -->
+<span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full bg-[#E4F7D2] text-[#0F6E40] font-label-caps text-[11px] font-semibold">
+<span class="material-symbols-outlined text-[13px] font-bold">south_east</span>
+              %12 düştü
+            </span>
+</div>
+<!-- Sparkline Chart -->
+<div class="h-10 w-full flex items-center py-1">
+<svg class="w-full h-full overflow-visible" preserveaspectratio="none" viewbox="0 0 100 32">
+<path d="M0,8 L20,10 L35,6 L50,14 L65,12 L80,24 L100,28" fill="none" stroke="#121316" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+<circle cx="100" cy="28" fill="#C8F031" r="4" stroke="#121316" stroke-width="1.5"></circle>
+</svg>
+</div>
+<!-- Lowest Price Display -->
+<div class="flex items-baseline gap-1 mt-0.5">
+<span class="font-data-price-lg text-[20px] font-bold text-ink-primary tracking-tight [font-variant-numeric:tabular-nums]">11.479</span>
+<span class="font-body-sm text-[12px] font-medium text-ink-muted">TL</span>
+</div>
+</div>
+</div>
+</section>
+<!-- 2. CATEGORIES SECTION -->
+<section class="flex flex-col gap-6">
+<div class="flex items-center justify-between">
+<h2 class="font-headline-md text-[26px] font-semibold text-ink-primary tracking-tight">Kategoriler</h2>
+<div class="flex gap-2 text-ink-muted">
+<button aria-label="Geri" class="w-8 h-8 rounded-full bg-surface-card shadow-sm flex items-center justify-center hover:bg-surface-container transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">chevron_left</span>
+</button>
+<button aria-label="İleri" class="w-8 h-8 rounded-full bg-surface-card shadow-sm flex items-center justify-center hover:bg-surface-container transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Horizontal Scrollable Row (8 Items) -->
+<div class="flex gap-4 overflow-x-auto pb-4 scroll-smooth snap-x snap-mandatory no-scrollbar [scrollbar-width:none]">
+<!-- 1. Telefon -->
+<a class="group shrink-0 w-[150px] sm:w-[164px] bg-surface-card rounded-[14px] p-3 flex flex-col gap-3 shadow-sm hover:shadow-md transition-all snap-start" href="#">
+<div class="w-full aspect-[4/5] bg-[#EDEFF1] rounded-[12px] flex items-center justify-center text-ink-secondary group-hover:scale-[0.98] transition-transform">
+<span class="material-symbols-outlined text-[36px]">smartphone</span>
+</div>
+<span class="font-body-md text-[15px] font-semibold text-ink-primary text-center">Telefon</span>
+</a>
+<!-- 2. Bilgisayar -->
+<a class="group shrink-0 w-[150px] sm:w-[164px] bg-surface-card rounded-[14px] p-3 flex flex-col gap-3 shadow-sm hover:shadow-md transition-all snap-start" href="#">
+<div class="w-full aspect-[4/5] bg-[#EDEFF1] rounded-[12px] flex items-center justify-center text-ink-secondary group-hover:scale-[0.98] transition-transform">
+<span class="material-symbols-outlined text-[36px]">laptop_mac</span>
+</div>
+<span class="font-body-md text-[15px] font-semibold text-ink-primary text-center">Bilgisayar</span>
+</a>
+<!-- 3. Kulaklık -->
+<a class="group shrink-0 w-[150px] sm:w-[164px] bg-surface-card rounded-[14px] p-3 flex flex-col gap-3 shadow-sm hover:shadow-md transition-all snap-start" href="#">
+<div class="w-full aspect-[4/5] bg-[#EDEFF1] rounded-[12px] flex items-center justify-center text-ink-secondary group-hover:scale-[0.98] transition-transform">
+<span class="material-symbols-outlined text-[36px]">headphones</span>
+</div>
+<span class="font-body-md text-[15px] font-semibold text-ink-primary text-center">Kulaklık</span>
+</a>
+<!-- 4. Küçük ev aletleri -->
+<a class="group shrink-0 w-[150px] sm:w-[164px] bg-surface-card rounded-[14px] p-3 flex flex-col gap-3 shadow-sm hover:shadow-md transition-all snap-start" href="#">
+<div class="w-full aspect-[4/5] bg-[#EDEFF1] rounded-[12px] flex items-center justify-center text-ink-secondary group-hover:scale-[0.98] transition-transform">
+<span class="material-symbols-outlined text-[36px]">blender</span>
+</div>
+<span class="font-body-md text-[15px] font-semibold text-ink-primary text-center truncate">Küçük ev aletleri</span>
+</a>
+<!-- 5. Oyun konsolu -->
+<a class="group shrink-0 w-[150px] sm:w-[164px] bg-surface-card rounded-[14px] p-3 flex flex-col gap-3 shadow-sm hover:shadow-md transition-all snap-start" href="#">
+<div class="w-full aspect-[4/5] bg-[#EDEFF1] rounded-[12px] flex items-center justify-center text-ink-secondary group-hover:scale-[0.98] transition-transform">
+<span class="material-symbols-outlined text-[36px]">sports_esports</span>
+</div>
+<span class="font-body-md text-[15px] font-semibold text-ink-primary text-center truncate">Oyun konsolu</span>
+</a>
+<!-- 6. Spor ayakkabı -->
+<a class="group shrink-0 w-[150px] sm:w-[164px] bg-surface-card rounded-[14px] p-3 flex flex-col gap-3 shadow-sm hover:shadow-md transition-all snap-start" href="#">
+<div class="w-full aspect-[4/5] bg-[#EDEFF1] rounded-[12px] flex items-center justify-center text-ink-secondary group-hover:scale-[0.98] transition-transform">
+<span class="material-symbols-outlined text-[36px]">steps</span>
+</div>
+<span class="font-body-md text-[15px] font-semibold text-ink-primary text-center truncate">Spor ayakkabı</span>
+</a>
+<!-- 7. Kozmetik -->
+<a class="group shrink-0 w-[150px] sm:w-[164px] bg-surface-card rounded-[14px] p-3 flex flex-col gap-3 shadow-sm hover:shadow-md transition-all snap-start" href="#">
+<div class="w-full aspect-[4/5] bg-[#EDEFF1] rounded-[12px] flex items-center justify-center text-ink-secondary group-hover:scale-[0.98] transition-transform">
+<span class="material-symbols-outlined text-[36px]">health_and_beauty</span>
+</div>
+<span class="font-body-md text-[15px] font-semibold text-ink-primary text-center">Kozmetik</span>
+</a>
+<!-- 8. Bebek (Peeking) -->
+<a class="group shrink-0 w-[150px] sm:w-[164px] bg-surface-card rounded-[14px] p-3 flex flex-col gap-3 shadow-sm hover:shadow-md transition-all snap-start" href="#">
+<div class="w-full aspect-[4/5] bg-[#EDEFF1] rounded-[12px] flex items-center justify-center text-ink-secondary group-hover:scale-[0.98] transition-transform">
+<span class="material-symbols-outlined text-[36px]">child_care</span>
+</div>
+<span class="font-body-md text-[15px] font-semibold text-ink-primary text-center">Bebek</span>
+</a>
+</div>
+</section>
+<!-- 3. TOP DROPS BENTO GRID ("En çok fiyatı düşenler") -->
+<section class="flex flex-col gap-6">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-2">
+<div>
+<span class="font-body-sm text-[13px] font-semibold text-ink-muted uppercase tracking-wider block mb-1">Son 24 saat</span>
+<h2 class="font-headline-md text-[26px] font-semibold text-ink-primary tracking-tight">En çok fiyatı düşenler</h2>
+</div>
+<a class="group inline-flex items-center gap-1.5 font-body-md font-semibold text-ink-primary hover:text-ink-secondary transition-colors" href="#">
+<span>Tüm fırsatlar</span>
+<span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</a>
+</div>
+<!-- Bento Grid (1 big 2x2, 4 small 1x1) -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-stretch">
+<!-- 1 Large Featured Deal Cell (2x2 on desktop) -->
+<div class="md:col-span-2 lg:col-span-2 lg:row-span-2 bg-[#E4F7D2]/50 rounded-[14px] p-6 sm:p-8 flex flex-col justify-between shadow-sm relative overflow-hidden group">
+<div class="flex items-start justify-between z-10">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#E4F7D2] text-[#0F6E40] font-label-caps text-[12px] font-bold">
+<span class="material-symbols-outlined text-[14px] font-bold">south_east</span>
+              -%18
+            </span>
+<span class="font-body-sm text-body-sm text-ink-muted">14 mağazada</span>
+</div>
+<div class="py-8 flex items-center justify-center z-10">
+<img alt="Sony WH-1000XM5 Kablosuz Kulaklık" class="max-h-[220px] w-auto object-contain transition-transform duration-300 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDk4kig6kTFJNN9Z9FFZAGU2XwsLhYi8tQCabGYpACObN6DzLESXMKCzwcYPvbh1l1cVwW28ccvbMzw1fjdjmRJrdLGLbFvdGLE8Lc_H1rJTTbgpFpK1_g7UuQNFPjFTTe0Went-e9RDda1-ioaG0S6PnyFJhT6CPmdfaEdScegVJNBt3LmAeLs4NQaAlVzJOS8tB3p0wIZ_LxuAPyxhEChIpBqSAcyNI4Co79LUXQ"/>
+</div>
+<div class="flex flex-col gap-2 z-10">
+<h3 class="font-headline-sm text-[18px] font-semibold text-ink-primary">Sony WH-1000XM5 Kablosuz Kulaklık</h3>
+<div class="flex items-baseline gap-3">
+<span class="font-data-meta text-[15px] text-ink-muted line-through [font-variant-numeric:tabular-nums]">13.999 TL</span>
+<div class="flex items-baseline gap-1">
+<span class="font-data-price-lg text-[32px] font-semibold text-ink-primary tracking-tight [font-variant-numeric:tabular-nums]">11.479</span>
+<span class="font-body-md text-[14px] font-medium text-ink-muted">TL</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Small Cell 1: Airfryer -->
+<div class="bg-[#EDEFF1] rounded-[14px] p-5 flex flex-col justify-between shadow-sm group">
+<div class="flex items-start justify-between mb-3">
+<span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full bg-[#E4F7D2] text-[#0F6E40] font-label-caps text-[11px] font-semibold">
+<span class="material-symbols-outlined text-[13px] font-bold">south_east</span>
+              -%12
+            </span>
+<span class="font-body-sm text-[12px] text-ink-muted">9 mağazada</span>
+</div>
+<div class="h-28 w-full flex items-center justify-center my-1">
+<img class="max-h-24 w-auto object-contain group-hover:scale-105 transition-transform" data-alt="Minimalist modern matte grey airfryer kitchen appliance packshot studio light high end e-commerce neutral background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDpoxvSyotgCUaaSebRUrypkU3uaTphsTWnjW0o3H0ZmN5mDXz2j1E15osTWAlVYeX1kG2pSLXDnSBGPqmt4-YrY-RclpPam7h3IFLdg21PXcNiH7DIr5DWN-h5oCzox4RBdY_puLuQ3R0mrMlNZkrQYUMOY3EMCq7oiGp7G1pYr-2jV574OAcgrzkYNq7b7RWTJoEugQdpAUvEcD4bvKuJUzGa4oiiatqpFnriSD0"/>
+</div>
+<div class="flex flex-col mt-2">
+<h4 class="font-headline-sm text-[15px] font-semibold text-ink-primary truncate">Philips Airfryer XXL HD9285</h4>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-data-meta text-[13px] text-ink-muted line-through [font-variant-numeric:tabular-nums]">8.749 TL</span>
+<div class="flex items-baseline gap-1">
+<span class="font-data-price-md text-[18px] font-semibold text-ink-primary [font-variant-numeric:tabular-nums]">7.699</span>
+<span class="font-body-sm text-[11px] text-ink-muted">TL</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Small Cell 2: iPhone 16 -->
+<div class="bg-[#EDEFF1] rounded-[14px] p-5 flex flex-col justify-between shadow-sm group">
+<div class="flex items-start justify-between mb-3">
+<span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full bg-[#E4F7D2] text-[#0F6E40] font-label-caps text-[11px] font-semibold">
+<span class="material-symbols-outlined text-[13px] font-bold">south_east</span>
+              -%5
+            </span>
+<span class="font-body-sm text-[12px] text-ink-muted">22 mağazada</span>
+</div>
+<div class="h-28 w-full flex items-center justify-center my-1">
+<img class="max-h-24 w-auto object-contain group-hover:scale-105 transition-transform" data-alt="Apple smartphone flagship model in titanium studio packshot front view neutral minimal soft shadow" src="https://lh3.googleusercontent.com/aida-public/AB6AXuARtayX1lkfbTytmua5RfRq7ytG4t6CoPOrmKBy0brHNG8p8FhY69ZDqifUubZoPN-dQku4u1nYbNbA_hc4xUfH9JgfUxm9S4Ll8DTCDkMhz6YENQ5rs-8ZYpM68HneAEzwUmmtCYx82e07qe96ltxIW-NY5VVwad3bMEcUbaGVbXBG_CDk98iDuFUo6CJJ6LV8P9ATVpV14zQ6s9MWIwyE31WOSxXwROvHFYf_Uso"/>
+</div>
+<div class="flex flex-col mt-2">
+<h4 class="font-headline-sm text-[15px] font-semibold text-ink-primary truncate">Apple iPhone 16 128 GB</h4>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-data-meta text-[13px] text-ink-muted line-through [font-variant-numeric:tabular-nums]">64.999 TL</span>
+<div class="flex items-baseline gap-1">
+<span class="font-data-price-md text-[18px] font-semibold text-ink-primary [font-variant-numeric:tabular-nums]">61.749</span>
+<span class="font-body-sm text-[11px] text-ink-muted">TL</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Small Cell 3: Dyson V15 -->
+<div class="bg-[#EDEFF1] rounded-[14px] p-5 flex flex-col justify-between shadow-sm group">
+<div class="flex items-start justify-between mb-3">
+<span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full bg-[#E4F7D2] text-[#0F6E40] font-label-caps text-[11px] font-semibold">
+<span class="material-symbols-outlined text-[13px] font-bold">south_east</span>
+              -%11
+            </span>
+<span class="font-body-sm text-[12px] text-ink-muted">16 mağazada</span>
+</div>
+<div class="h-28 w-full flex items-center justify-center my-1">
+<img class="max-h-24 w-auto object-contain group-hover:scale-105 transition-transform" data-alt="Modern cordless stick vacuum cleaner metallic gold and iron clean isolated backdrop packshot" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCLJ8AeArQGtnBgn0En-4-eGbBoXz8qH7LDJ7V204uLXw6HFwQwafX9ZJ-1_quoW_kpvCql1T6-nQK2Jkf2d8EY1vb1rYXc3FJiDgcR1YS_fCKoAAnKGwFxJeVCDq4wzVd0nEChx-pnnsHShiISu90Ow-IEFxuvFB7TV53c0RQj3xhWaHZviZsbNveswgzKQIjW7BBllCdzZV2gisbpdugu84iv5sc2Ay7htz7bjdU"/>
+</div>
+<div class="flex flex-col mt-2">
+<h4 class="font-headline-sm text-[15px] font-semibold text-ink-primary truncate">Dyson V15 Detect Absolute</h4>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-data-meta text-[13px] text-ink-muted line-through [font-variant-numeric:tabular-nums]">32.990 TL</span>
+<div class="flex items-baseline gap-1">
+<span class="font-data-price-md text-[18px] font-semibold text-ink-primary [font-variant-numeric:tabular-nums]">29.490</span>
+<span class="font-body-sm text-[11px] text-ink-muted">TL</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Small Cell 4: Nike Pegasus -->
+<div class="bg-[#EDEFF1] rounded-[14px] p-5 flex flex-col justify-between shadow-sm group">
+<div class="flex items-start justify-between mb-3">
+<span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full bg-[#E4F7D2] text-[#0F6E40] font-label-caps text-[11px] font-semibold">
+<span class="material-symbols-outlined text-[13px] font-bold">south_east</span>
+              -%17
+            </span>
+<span class="font-body-sm text-[12px] text-ink-muted">8 mağazada</span>
+</div>
+<div class="h-28 w-full flex items-center justify-center my-1">
+<img class="max-h-24 w-auto object-contain group-hover:scale-105 transition-transform" data-alt="Premium athletic running shoe side profile clean modern sneaker studio illumination isolated background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDV16aqQW-nPVjK2nyMMg4KwqNpdsSaU92LLMEyd0-3lIRzKZVAEGzUiiiMIpnXr44sQvov5Kl3vRljMqZykAt61H5n3rjNHRelNK5c5fA7MR0-Fg21zqm0cO1JhYs5tAZaIkSd65eSFRjFh_3hYZA0pMzDFyLcuwkP1YxZka8WMXtX5_CfT6mYBfkheD-Bcf-ul0R0n0L8mzM9qkoSpBZYzD3I-i29eH5dbG401qc"/>
+</div>
+<div class="flex flex-col mt-2">
+<h4 class="font-headline-sm text-[15px] font-semibold text-ink-primary truncate">Nike Pegasus 41</h4>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-data-meta text-[13px] text-ink-muted line-through [font-variant-numeric:tabular-nums]">5.299 TL</span>
+<div class="flex items-baseline gap-1">
+<span class="font-data-price-md text-[18px] font-semibold text-ink-primary [font-variant-numeric:tabular-nums]">4.399</span>
+<span class="font-body-sm text-[11px] text-ink-muted">TL</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 4. PRICE ALARM PROMO SECTION ("Fiyat alarmı") -->
+<section class="bg-[#ECEEF0] rounded-[14px] p-6 sm:p-10">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+<!-- Left Column (5 cols) -->
+<div class="lg:col-span-5 flex flex-col items-start">
+<div class="inline-flex items-center gap-2 px-3 py-1 bg-surface-card rounded-full text-ink-primary font-label-caps text-[11px] font-semibold mb-4 shadow-sm">
+<span class="material-symbols-outlined text-[14px] text-ink-primary">notifications_active</span>
+            Otomatik Takip
+          </div>
+<h2 class="font-headline-lg text-[28px] sm:text-[32px] font-semibold text-ink-primary tracking-tight leading-tight mb-4">
+            Fiyat düşünce biz haber veririz.
+          </h2>
+<p class="font-body-lg text-body-lg text-ink-muted mb-8 leading-relaxed">
+            Hedef fiyatını yaz, ürün o fiyata indiğinde e-posta ya da bildirim al.
+          </p>
+<button class="h-[44px] px-6 bg-ink-primary hover:bg-ink-secondary text-surface-card font-body-md font-semibold rounded-[10px] transition-colors flex items-center gap-2 shadow-sm" type="button">
+<span class="material-symbols-outlined text-[18px]">add_alert</span>
+            Fiyat alarmı kur
+          </button>
+</div>
+<!-- Right Column (7 cols): Interactive Interactive Mockup -->
+<div class="lg:col-span-7">
+<div class="bg-surface-card rounded-[14px] p-6 shadow-sm flex flex-col gap-5">
+<!-- Product Header Row -->
+<div class="flex items-center gap-3.5 pb-4 bg-surface-card">
+<div class="w-12 h-12 bg-[#EDEFF1] rounded-[10px] flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[24px] text-ink-secondary">smartphone</span>
+</div>
+<div class="flex flex-col min-w-0">
+<h4 class="font-headline-sm text-[15px] font-semibold text-ink-primary truncate">Apple iPhone 16 128 GB</h4>
+<div class="flex items-baseline gap-1 mt-0.5">
+<span class="font-body-sm text-[12px] text-ink-muted">Şu an:</span>
+<span class="font-data-price-md text-[14px] text-ink-muted [font-variant-numeric:tabular-nums]">61.749</span>
+<span class="font-body-sm text-[11px] text-ink-muted">TL</span>
+</div>
+</div>
+</div>
+<!-- Target Price Input -->
+<div class="flex flex-col gap-1.5">
+<label class="font-body-md text-[14px] font-medium text-ink-primary">Hedef fiyat</label>
+<div class="w-full h-10 bg-surface-container rounded-[10px] px-3.5 flex items-center justify-between">
+<div class="flex items-baseline gap-1">
+<span class="font-data-price-md text-[15px] font-bold text-ink-primary [font-variant-numeric:tabular-nums]">40.000</span>
+<span class="font-body-sm text-[12px] text-ink-muted">TL</span>
+</div>
+<span class="material-symbols-outlined text-[18px] text-ink-muted">tune</span>
+</div>
+<span class="font-data-meta text-[12px] text-ink-muted">Şu anki en düşük fiyat: 61.749 TL</span>
+</div>
+<!-- Segmented Control for Notifications -->
+<div class="flex flex-col gap-1.5">
+<label class="font-body-md text-[14px] font-medium text-ink-primary">Bildirim yöntemi</label>
+<div class="grid grid-cols-3 gap-1.5 p-1 bg-surface-container rounded-[10px]">
+<button class="py-1.5 text-center font-body-sm text-[13px] text-ink-muted hover:text-ink-primary transition-colors rounded-[8px]" type="button">
+                  E-posta
+                </button>
+<button class="py-1.5 text-center font-body-sm text-[13px] bg-ink-primary text-surface-card font-medium rounded-[8px] shadow-sm" type="button">
+                  Bildirim
+                </button>
+<button class="py-1.5 text-center font-body-sm text-[13px] text-ink-muted hover:text-ink-primary transition-colors rounded-[8px]" type="button">
+                  İkisi de
+                </button>
+</div>
+</div>
+<!-- Notification Preview Card -->
+<div class="mt-2 bg-[#F4F5F6] border-l-4 border-l-[#C8F031] p-3 rounded-r-[10px] flex items-center justify-between gap-3">
+<div class="flex items-center gap-2.5 min-w-0">
+<span class="material-symbols-outlined text-[18px] text-ink-primary shrink-0">bolt</span>
+<p class="font-body-sm text-[13px] text-ink-primary truncate font-medium">
+                  Fiyat düştü: iPhone 16 128 GB şimdi <span class="font-data-meta font-bold [font-variant-numeric:tabular-nums]">39.899 TL</span>
+</p>
+</div>
+<span class="font-data-meta text-[11px] text-ink-muted shrink-0">2 dk önce</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 5. MONOCHROME STORE LOGOS MARQUEE -->
+<section class="flex flex-col items-center gap-8 py-4">
+<span class="font-body-md text-[14px] text-ink-muted text-center tracking-wide">
+        Fiyatları karşılaştırdığımız mağazalardan bazıları
+      </span>
+<div class="w-full flex flex-wrap items-center justify-center gap-x-8 gap-y-6 md:gap-x-12 opacity-70">
+<span class="font-headline-sm text-[16px] font-semibold text-ink-primary tracking-tight">HEPSİBURADA</span>
+<span class="font-headline-sm text-[16px] font-semibold text-ink-primary tracking-tight">TRENDYOL</span>
+<span class="font-headline-sm text-[16px] font-semibold text-ink-primary tracking-tight">AMAZON</span>
+<span class="font-headline-sm text-[16px] font-semibold text-ink-primary tracking-tight">TEKNOSA</span>
+<span class="font-headline-sm text-[16px] font-semibold text-ink-primary tracking-tight">MEDIAMARKT</span>
+<span class="font-headline-sm text-[16px] font-semibold text-ink-primary tracking-tight">VATAN BİLGİSAYAR</span>
+<span class="font-headline-sm text-[16px] font-semibold text-ink-primary tracking-tight">N11</span>
+<span class="font-headline-sm text-[16px] font-semibold text-ink-primary tracking-tight">PAZARAMA</span>
+</div>
+</section>
+<!-- 6. BUYING GUIDES ("Satın almadan önce oku") -->
+<section class="flex flex-col gap-6">
+<div class="flex items-center justify-between">
+<h2 class="font-headline-md text-[26px] font-semibold text-ink-primary tracking-tight">Satın almadan önce oku</h2>
+<a class="group inline-flex items-center gap-1 font-body-md font-semibold text-ink-primary hover:text-ink-secondary transition-colors" href="#">
+<span>Tüm rehberler</span>
+<span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</a>
+</div>
+<!-- Asymmetric Editorial Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+<!-- Left: Large Editorial Guide Card (7 cols) -->
+<a class="lg:col-span-7 bg-surface-card rounded-[14px] p-6 shadow-sm flex flex-col justify-between group hover:shadow-md transition-shadow" href="#">
+<div>
+<div class="w-full aspect-[16/10] bg-[#EDEFF1] rounded-[12px] overflow-hidden mb-5">
+<img class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" data-alt="Editorial clean photography of smart robot vacuum cleaning sleek minimalist hardwood floor architectural interior natural morning light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBA4m9WR7ITvVj0stIUF4g_pLsYQHkuWDq6gzVL6UGnDnrAlsZuWjah8Hx9haHY4a1q3t3kUbIhQMtp511V5Rmhr4doWeGnm37_gSRWLDuvRcILkRp2g_mNV7SSfe-wtXQTUWvBkOp2TCwZSjgp-lBVDe2sptirb-eZgbMa-MGLNMHpZuLRWAogehRLKq9teSWHWsrif_r_f7FTN3tjX_GSsGHitkp4uSnbBKcGTmY"/>
+</div>
+<h3 class="font-headline-md text-[22px] font-semibold text-ink-primary mb-2 group-hover:text-ink-secondary transition-colors">
+              2026'da hangi robot süpürgeyi almalı?
+            </h3>
+<p class="font-body-md text-body-md text-ink-muted leading-relaxed">
+              Emiş gücü, harita ve fiyat aralığına göre 6 model karşılaştırdık.
+            </p>
+</div>
+<div class="flex items-center gap-1.5 text-ink-muted font-data-meta text-[12px] mt-6 pt-4 bg-surface-card">
+<span class="material-symbols-outlined text-[16px]">schedule</span>
+<span>7 dk okuma</span>
+</div>
+</a>
+<!-- Right: 2 Compact Guide Rows Stacked (5 cols) -->
+<div class="lg:col-span-5 flex flex-col gap-6">
+<!-- Guide 1 -->
+<a class="bg-surface-card rounded-[14px] p-5 shadow-sm flex items-center gap-4 group hover:shadow-md transition-shadow flex-1" href="#">
+<div class="w-24 h-24 bg-[#EDEFF1] rounded-[10px] shrink-0 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="Compact stylish airfryer frying basket cooking hot healthy meal modern kitchen lifestyle close up" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGAw6n8qXezUqx3h2Y83UwDV4cZhxhoVWvvbKrxkgl8bxhwJA2BrWVLC5q4Nis4WDz9Ksx9tTXQAJHJ4_A2IO8JjDLClXtYS1D1Zail80Z_pbHYC5uyva5Nn8jiC8P1JPvRW8rEbSylhIb176Y1fHwEtcxSwI_XVXjC_aOiD8sH40Csctsvovjg2lN_Z893FwhD3r90OIweYmiqaJB3I5Z3ynmQcVef2xUIeh57HI"/>
+</div>
+<div class="flex flex-col justify-center min-w-0">
+<h4 class="font-headline-sm text-[16px] font-semibold text-ink-primary mb-1.5 group-hover:text-ink-secondary transition-colors line-clamp-2">
+                Airfryer alırken bakman gereken 5 şey
+              </h4>
+<div class="flex items-center gap-1 text-ink-muted font-data-meta text-[12px]">
+<span class="material-symbols-outlined text-[15px]">schedule</span>
+<span>4 dk okuma</span>
+</div>
+</div>
+</a>
+<!-- Guide 2 -->
+<a class="bg-surface-card rounded-[14px] p-5 shadow-sm flex items-center gap-4 group hover:shadow-md transition-shadow flex-1" href="#">
+<div class="w-24 h-24 bg-[#EDEFF1] rounded-[10px] shrink-0 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="Analytical graphic price tracking chart analytics dashboard graph screen financial audit concept" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_cMT_8uDFLybxatP0Tj0LE6TkyelGvuCGSHDboeqclDGci_qvpwyqgRcSxsTszmaUmbl0u1LIDntc1zOaZVO8GcO9PLcgG0p2JxQo5jQp2b1a4RfwMuyKG7NEey11RNs1KrC6EvJ7FQB1AaPeUEDkmE1RUfLQyce-alt7geujuA7CwvHEyPEPYm3EtmlKB26kEzfZ10ia5n5L3njvmQMUTMM-GBCd6EC7SXgNvh0"/>
+</div>
+<div class="flex flex-col justify-center min-w-0">
+<h4 class="font-headline-sm text-[16px] font-semibold text-ink-primary mb-1.5 group-hover:text-ink-secondary transition-colors line-clamp-2">
+                Kampanya fiyatı gerçekten indirim mi?
+              </h4>
+<div class="flex items-center gap-1 text-ink-muted font-data-meta text-[12px]">
+<span class="material-symbols-outlined text-[15px]">schedule</span>
+<span>5 dk okuma</span>
+</div>
+</div>
+</a>
+</div>
+</div>
+</section>
+</div>
+</div></main><footer class="w-full bg-surface-card border-t border-border-subtle mt-space-3xl"><div class="max-w-[1280px] mx-auto px-margin md:px-margin-tablet lg:px-margin-desktop py-space-3xl"><div class="grid grid-cols-2 md:grid-cols-4 gap-space-xl pb-space-2xl border-b border-border-subtle"><div><h4 class="font-headline-sm text-headline-sm text-ink-primary mb-space-md font-semibold">Fiyat Radar</h4><ul class="space-y-space-sm"><li class="list-none"><a class="font-body-md text-body-md text-ink-muted hover:text-ink-primary transition-colors" data-path="hakkimizda" href="#">Hakkımızda</a></li><li class="list-none"><a class="font-body-md text-body-md text-ink-muted hover:text-ink-primary transition-colors" data-path="nasil-calisir" href="#">Nasıl çalışır</a></li><li class="list-none"><a class="font-body-md text-body-md text-ink-muted hover:text-ink-primary transition-colors" data-path="iletisim" href="#">İletişim</a></li></ul></div><div><h4 class="font-headline-sm text-headline-sm text-ink-primary mb-space-md font-semibold">Kategoriler</h4><ul class="space-y-space-sm"><li class="list-none"><a class="font-body-md text-body-md text-ink-muted hover:text-ink-primary transition-colors" data-path="telefon" href="#">Telefon</a></li><li class="list-none"><a class="font-body-md text-body-md text-ink-muted hover:text-ink-primary transition-colors" data-path="bilgisayar" href="#">Bilgisayar</a></li><li class="list-none"><a class="font-body-md text-body-md text-ink-muted hover:text-ink-primary transition-colors" data-path="kulaklik" href="#">Kulaklık</a></li><li class="list-none"><a class="font-body-md text-body-md text-ink-muted hover:text-ink-primary transition-colors" data-path="kucuk-ev-aletleri" href="#">Küçük ev aletleri</a></li><li class="list-none"><a class="font-body-md text-body-md text-ink-muted hover:text-ink-primary transition-colors" data-path="oyun-konsolu" href="#">Oyun konsolu</a></li></ul></div><div><h4 class="font-headline-sm text-headline-sm text-ink-primary mb-space-md font-semibold">Yardım</h4><ul class="space-y-space-sm"><li class="list-none"><a class="font-body-md text-body-md text-ink-muted hover:text-ink-primary transition-colors" data-path="sik-sorulan-sorular" href="#">Sık sorulan sorular</a></li><li class="list-none"><a class="font-body-md text-body-md text-ink-muted hover:text-ink-primary transition-colors" data-path="magaza-basvurusu" href="#">Mağaza başvurusu</a></li></ul></div><div><h4 class="font-headline-sm text-headline-sm text-ink-primary mb-space-md font-semibold">Yasal</h4><ul class="space-y-space-sm"><li class="list-none"><a class="font-body-md text-body-md text-ink-muted hover:text-ink-primary transition-colors" data-path="kvkk-aydinlatma-metni" href="#">KVKK Aydınlatma Metni</a></li><li class="list-none"><a class="font-body-md text-body-md text-ink-muted hover:text-ink-primary transition-colors" data-path="cerez-politikasi" href="#">Çerez Politikası</a></li><li class="list-none"><a class="font-body-md text-body-md text-ink-muted hover:text-ink-primary transition-colors" data-path="kullanim-kosullari" href="#">Kullanım Koşulları</a></li></ul></div></div><div class="pt-space-xl flex flex-col md:flex-row items-center justify-between gap-space-md"><div class="flex items-center gap-space-sm"><img alt="Fiyat Radar Logo" class="h-6 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1VzoPKnpdH4I3SVbCXr7nAbuRrHRQ0de38cIDQfjT49uY8IAlXbXzCyeTYUWAKgari10hkDj56GNR4yvvFN6VwrZcT3uvNigrDKwXtW_-WrRBgC3RSHOW5tLM3zdL1XcfU7CB8cHe2WWbirErlPyDNd_NOEA-Gf4jWxMLdTOpK2KKQG6-vKETrFnCZJS3iyTP6upC8mYYjDtC82ao5jWdbhe6oahCVIdlJinhI8PEw"/><span class="font-data-meta text-data-meta text-ink-muted">© 2026 Fiyat Radar</span></div><p class="font-data-meta text-data-meta text-ink-muted text-center md:text-right">Fiyatlar mağazalardan otomatik olarak alınır, satın almadan önce mağaza sayfasını kontrol et.</p></div></div></footer></body></html>
