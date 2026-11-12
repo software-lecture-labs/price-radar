@@ -63,7 +63,7 @@ export function SiteHeader() {
               variant="ghost"
               className="hidden h-11 gap-2 rounded-md px-2 text-sm sm:inline-flex lg:rounded-none lg:border-l lg:border-border lg:pr-0 lg:pl-6 lg:hover:bg-transparent"
             >
-              <Link href={routes.login}>
+              <Link href={routes.login()}>
                 <UserIcon className="size-[18px]" strokeWidth={1.7} aria-hidden />
                 Giriş yap
               </Link>
@@ -158,7 +158,7 @@ function MobileMenu() {
           ))}
           <SheetClose asChild>
             <Button asChild className="mt-5 h-12 rounded-lg">
-              <Link href={routes.login}>Giriş yap</Link>
+              <Link href={routes.login()}>Giriş yap</Link>
             </Button>
           </SheetClose>
         </nav>

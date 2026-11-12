@@ -16,8 +16,8 @@ const sections = [
   {
     title: "Hesabım",
     links: [
-      { href: routes.login, label: "Giriş yap" },
-      { href: routes.register, label: "Kayıt ol" },
+      { href: routes.login(), label: "Giriş yap" },
+      { href: routes.register(), label: "Kayıt ol" },
       { href: routes.favorites, label: "Favoriler" },
       { href: routes.alerts, label: "Fiyat alarmları" },
     ],
