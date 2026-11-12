@@ -6,7 +6,6 @@ export interface PingResponse {
   timestamp: string;
 }
 
-/** Mirrors `GET /api/v1/ping` on the backend. */
 export function getPing(): Promise<PingResponse> {
   return apiFetch<PingResponse>("/ping", { cache: "no-store" });
 }
@@ -16,7 +15,6 @@ export interface HelloResponse {
   service: string;
 }
 
-/** Mirrors `GET /api/v1/hello` on the backend. */
 export function getHello(): Promise<HelloResponse> {
   return apiFetch<HelloResponse>("/hello", { cache: "no-store" });
 }
