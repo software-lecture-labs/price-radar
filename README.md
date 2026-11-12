@@ -22,6 +22,14 @@ npm.cmd run dev
 ```
 
 Frontend `http://localhost:3000`, backend `http://localhost:8080` adresindedir.
+
+Kayıt ve giriş `/kayit` ve `/giris` sayfalarındadır. Oturum HttpOnly cookie'lerde tutulur:
+15 dakikalık bir erişim token'ı ve çıkışta iptal edilen 30 günlük bir yenileme token'ı.
+Bir hesaba yönetim paneli (`/yonetim`) yetkisi vermek için:
+
+```sql
+UPDATE users SET role = 'ADMIN' WHERE email = 'ornek@alanadi.com';
+```
 Birim testleri veritabanı veya ağ bağlantısı gerektirmez:
 
 ```powershell

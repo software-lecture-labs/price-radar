@@ -1,7 +1,9 @@
 import { ArrowRightIcon, MenuIcon, RadarIcon, SearchIcon, UserIcon, XIcon } from "lucide-react";
 import Form from "next/form";
 import Link from "next/link";
+import { Suspense } from "react";
 
+import { AccountMenu, SignOutButton } from "@/components/layout/account-menu";
 import { NavLink } from "@/components/layout/nav-link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,6 +15,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { Skeleton } from "@/components/ui/skeleton";
+import { findCurrentUser } from "@/lib/auth/dal";
 import { publicEnv } from "@/lib/env";
 import { routes, SEARCH_PARAM } from "@/lib/routes";
 import { cn } from "@/lib/utils";
@@ -21,6 +25,9 @@ const mainNav = [
   { href: routes.categories, label: "Kategoriler" },
   { href: routes.merchants, label: "Mağazalar" },
 ];
+
+const accountButtonClass =
+  "hidden h-11 gap-2 rounded-md px-2 text-sm sm:inline-flex lg:rounded-none lg:border-l lg:border-border lg:pr-0 lg:pl-6 lg:hover:bg-transparent";
 
 const navLinkClass =
   "inline-flex min-h-11 items-center rounded-md px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring aria-[current=page]:text-foreground";
@@ -58,17 +65,9 @@ export function SiteHeader() {
           </nav>
 
           <div className="ml-auto flex shrink-0 items-center gap-2 md:ml-0">
-            <Button
-              asChild
-              variant="ghost"
-              className="hidden h-11 gap-2 rounded-md px-2 text-sm sm:inline-flex lg:rounded-none lg:border-l lg:border-border lg:pr-0 lg:pl-6 lg:hover:bg-transparent"
-            >
-              <Link href={routes.login()}>
-                <UserIcon className="size-[18px]" strokeWidth={1.7} aria-hidden />
-                Giriş yap
-              </Link>
-            </Button>
-            <MobileMenu />
+            <Suspense fallback={<HeaderActionsFallback />}>
+              <HeaderActions />
+            </Suspense>
           </div>
         </div>
 
@@ -76,6 +75,39 @@ export function SiteHeader() {
           <SearchForm />
         </div>
       </header>
+    </>
+  );
+}
+
+// Reads the session, so it is streamed in after the rest of the header.
+async function HeaderActions() {
+  const user = await findCurrentUser();
+
+  return (
+    <>
+      {user ? (
+        <AccountMenu
+          user={{ fullName: user.fullName, email: user.email, isAdmin: user.role === "ADMIN" }}
+          className={accountButtonClass}
+        />
+      ) : (
+        <Button asChild variant="ghost" className={accountButtonClass}>
+          <Link href={routes.login()}>
+            <UserIcon className="size-[18px]" strokeWidth={1.7} aria-hidden />
+            Giriş yap
+          </Link>
+        </Button>
+      )}
+      <MobileMenu signedIn={user !== null} />
+    </>
+  );
+}
+
+function HeaderActionsFallback() {
+  return (
+    <>
+      <Skeleton className="hidden h-9 w-24 sm:block lg:ml-6" />
+      <MobileMenu signedIn={false} />
     </>
   );
 }
@@ -107,7 +139,7 @@ function SearchForm({ className }: { className?: string }) {
   );
 }
 
-function MobileMenu() {
+function MobileMenu({ signedIn }: { signedIn: boolean }) {
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -157,9 +189,13 @@ function MobileMenu() {
             </SheetClose>
           ))}
           <SheetClose asChild>
-            <Button asChild className="mt-5 h-12 rounded-lg">
-              <Link href={routes.login()}>Giriş yap</Link>
-            </Button>
+            {signedIn ? (
+              <SignOutButton variant="outline" className="mt-5 h-12 rounded-lg" />
+            ) : (
+              <Button asChild className="mt-5 h-12 rounded-lg">
+                <Link href={routes.login()}>Giriş yap</Link>
+              </Button>
+            )}
           </SheetClose>
         </nav>
       </SheetContent>

@@ -3,17 +3,19 @@
 import * as React from "react";
 import { EyeIcon, EyeOffIcon, RadarIcon } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
+import { register } from "@/app/actions/auth";
+import { errorProps, FieldError } from "@/components/auth/field-error";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PASSWORD_MIN_LENGTH } from "@/lib/auth/validation";
 import { publicEnv } from "@/lib/env";
-import { routes } from "@/lib/routes";
+import { NEXT_PARAM, routes } from "@/lib/routes";
 
-export function RegisterForm() {
-  const router = useRouter();
+/** @param next where to go after signing up; already checked with `safeRedirectPath` */
+export function RegisterForm({ next }: { next: string }) {
   const [fullName, setFullName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [phone, setPhone] = React.useState("");
@@ -21,39 +23,18 @@ export function RegisterForm() {
   const [confirmPassword, setConfirmPassword] = React.useState("");
   const [showPassword, setShowPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [state, formAction, isLoading] = React.useActionState(register, undefined);
+  const errors = state?.fieldErrors;
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  React.useEffect(() => {
+    if (state?.message) toast.error(state.message);
+  }, [state]);
+
+  // Dispatched by hand rather than with <form action>, which would clear the fields after a failed attempt.
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    if (!fullName || !email || !phone || !password || !confirmPassword) {
-      toast.error("Lütfen tüm alanları doldurun.");
-      return;
-    }
-
-    if (password.length < 6) {
-      toast.error("Şifreniz en az 6 karakter olmalıdır.");
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      toast.error("Şifreler birbiriyle eşleşmiyor.");
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      // Simüle edilen kayıt işlemi
-      await new Promise((resolve) => setTimeout(resolve, 800));
-      toast.success("Hesabınız başarıyla oluşturuldu! Giriş yapabilirsiniz.");
-      setTimeout(() => {
-        router.push(routes.login());
-      }, 1000);
-    } catch {
-      toast.error("Kayıt olurken bir hata oluştu. Lütfen tekrar deneyin.");
-    } finally {
-      setIsLoading(false);
-    }
+    const formData = new FormData(e.currentTarget);
+    React.startTransition(() => formAction(formData));
   };
 
   return (
@@ -81,7 +62,7 @@ export function RegisterForm() {
           <p className="mt-2 text-sm text-ink-muted">
             Zaten hesabınız var mı?{" "}
             <Link
-              href={routes.login()}
+              href={routes.login(next === routes.account ? undefined : next)}
               className="font-semibold text-ink underline decoration-radar-lime decoration-2 underline-offset-4 transition-colors hover:text-ink-secondary hover:decoration-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
             >
               Giriş yap
@@ -91,6 +72,8 @@ export function RegisterForm() {
 
         {/* Kayıt Formu */}
         <form onSubmit={handleSubmit} className="mt-8 space-y-4">
+          <input type="hidden" name={NEXT_PARAM} value={next} />
+
           {/* Ad Soyad input */}
           <div className="space-y-2">
             <Label htmlFor="fullName" className="text-sm font-medium text-ink">
@@ -102,11 +85,14 @@ export function RegisterForm() {
               type="text"
               autoComplete="name"
               required
+              maxLength={100}
               placeholder="Ahmet Yılmaz"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
+              {...errorProps("fullName-error", errors?.fullName)}
               className="h-11 rounded-lg border-border-strong/40 bg-white px-3.5 text-sm text-ink transition-colors placeholder:text-ink-muted/70 focus-visible:border-ink focus-visible:ring-2 focus-visible:ring-radar-lime focus-visible:ring-offset-0"
             />
+            <FieldError id="fullName-error" message={errors?.fullName} />
           </div>
 
           {/* E-posta adresi input */}
@@ -123,8 +109,10 @@ export function RegisterForm() {
               placeholder="ornek@alanadi.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              {...errorProps("register-email-error", errors?.email)}
               className="h-11 rounded-lg border-border-strong/40 bg-white px-3.5 text-sm text-ink transition-colors placeholder:text-ink-muted/70 focus-visible:border-ink focus-visible:ring-2 focus-visible:ring-radar-lime focus-visible:ring-offset-0"
             />
+            <FieldError id="register-email-error" message={errors?.email} />
           </div>
 
           {/* Telefon numarası input */}
@@ -141,8 +129,10 @@ export function RegisterForm() {
               placeholder="05XX XXX XX XX"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
+              {...errorProps("register-phone-error", errors?.phone)}
               className="h-11 rounded-lg border-border-strong/40 bg-white px-3.5 text-sm text-ink transition-colors placeholder:text-ink-muted/70 focus-visible:border-ink focus-visible:ring-2 focus-visible:ring-radar-lime focus-visible:ring-offset-0"
             />
+            <FieldError id="register-phone-error" message={errors?.phone} />
           </div>
 
           {/* Şifre input ve sağında görünürlük ikonu */}
@@ -157,9 +147,11 @@ export function RegisterForm() {
                 type={showPassword ? "text" : "password"}
                 autoComplete="new-password"
                 required
-                placeholder="En az 6 karakter"
+                minLength={PASSWORD_MIN_LENGTH}
+                placeholder={`En az ${PASSWORD_MIN_LENGTH} karakter`}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                {...errorProps("register-password-error", errors?.password)}
                 className="h-11 rounded-lg border-border-strong/40 bg-white pr-11 pl-3.5 text-sm text-ink transition-colors placeholder:text-ink-muted/70 focus-visible:border-ink focus-visible:ring-2 focus-visible:ring-radar-lime focus-visible:ring-offset-0"
               />
               <button
@@ -175,6 +167,7 @@ export function RegisterForm() {
                 )}
               </button>
             </div>
+            <FieldError id="register-password-error" message={errors?.password} />
           </div>
 
           {/* Şifre Tekrarı input ve sağında görünürlük ikonu */}
@@ -192,6 +185,7 @@ export function RegisterForm() {
                 placeholder="Şifrenizi tekrar girin"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
+                {...errorProps("confirm-password-error", errors?.confirmPassword)}
                 className="h-11 rounded-lg border-border-strong/40 bg-white pr-11 pl-3.5 text-sm text-ink transition-colors placeholder:text-ink-muted/70 focus-visible:border-ink focus-visible:ring-2 focus-visible:ring-radar-lime focus-visible:ring-offset-0"
               />
               <button
@@ -209,6 +203,7 @@ export function RegisterForm() {
                 )}
               </button>
             </div>
+            <FieldError id="confirm-password-error" message={errors?.confirmPassword} />
           </div>
 
           {/* Formun en altında genişliği kaplayan 'Kayıt ol' butonu */}
