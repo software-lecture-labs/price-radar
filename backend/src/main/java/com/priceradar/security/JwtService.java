@@ -1,6 +1,7 @@
 package com.priceradar.security;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -17,12 +18,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
-/**
- * Issues and verifies the HMAC-signed access tokens used by the API.
- *
- * <p>Refresh tokens are deliberately <em>not</em> JWTs: they are opaque random
- * values stored hashed in {@code refresh_tokens} so they can be revoked.
- */
 @Service
 public class JwtService {
 
@@ -36,7 +31,6 @@ public class JwtService {
 		this.signingKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(this.properties.secret()));
 	}
 
-	/** Signs an access token for the given subject and authorities. */
 	public String issueAccessToken(String subject, Collection<String> roles) {
 		var now = Instant.now();
 		return Jwts.builder()
@@ -49,11 +43,6 @@ public class JwtService {
 				.compact();
 	}
 
-	/**
-	 * Verifies signature, issuer and expiry.
-	 *
-	 * @throws JwtException when the token is not a valid, unexpired token issued by us
-	 */
 	public Claims parse(String token) {
 		return Jwts.parser()
 				.verifyWith(signingKey)
@@ -63,10 +52,19 @@ public class JwtService {
 				.getPayload();
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<String> rolesOf(Claims claims) {
 		var roles = claims.get(CLAIM_ROLES);
-		return roles instanceof Collection<?> collection ? List.copyOf((Collection<String>) collection) : List.of();
+		if (!(roles instanceof Collection<?> collection)) {
+			return List.of();
+		}
+		var authorities = new ArrayList<String>(collection.size());
+		for (var role : collection) {
+			if (!(role instanceof String authority) || authority.isBlank()) {
+				throw new IllegalArgumentException("JWT roles must contain only non-blank strings");
+			}
+			authorities.add(authority);
+		}
+		return List.copyOf(authorities);
 	}
 
 }
