@@ -5,8 +5,11 @@ import java.util.Comparator;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -66,19 +69,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 				"The request could not be completed.", TYPE_INTERNAL);
 	}
 
+	// MethodArgumentNotValidException carries its own body, so createProblemDetail is never called for it.
 	@Override
-	protected ProblemDetail createProblemDetail(Exception ex, org.springframework.http.HttpStatusCode status,
-			String defaultDetail, String detailMessageCode, Object[] detailMessageArguments, WebRequest request) {
+	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+			HttpHeaders headers, HttpStatusCode status, WebRequest request) {
 
-		var problemDetail = super.createProblemDetail(ex, status, defaultDetail, detailMessageCode,
-				detailMessageArguments, request);
-
-		if (ex instanceof MethodArgumentNotValidException validationException) {
-			problemDetail.setType(TYPE_VALIDATION);
-			problemDetail.setTitle("Validation failed");
-			problemDetail.setProperty("errors", fieldErrors(validationException));
-		}
-		return problemDetail;
+		var problemDetail = ex.getBody();
+		problemDetail.setType(TYPE_VALIDATION);
+		problemDetail.setTitle("Validation failed");
+		problemDetail.setProperty("errors", fieldErrors(ex));
+		return handleExceptionInternal(ex, problemDetail, headers, status, request);
 	}
 
 	private static Map<String, String> fieldErrors(MethodArgumentNotValidException ex) {
