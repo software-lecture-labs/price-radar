@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -17,12 +18,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.priceradar.config.SecurityProperties;
 
-/**
- * Stateless, token-authenticated API.
- *
- * <p>Only infrastructure endpoints and the API documentation are open. Add
- * application-specific rules above {@code anyRequest()} as endpoints are built.
- */
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
@@ -36,11 +31,12 @@ public class SecurityConfig {
 				.cors(cors -> cors.configurationSource(corsConfigurationSource))
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(auth -> auth
-						// Infrastructure
 						.requestMatchers("/actuator/health/**", "/actuator/info", "/api/v1/ping", "/api/v1/hello")
 						.permitAll()
 						.requestMatchers("/actuator/**").hasRole("ADMIN")
-						// API documentation
+						.requestMatchers(HttpMethod.GET, "/api/v1/products", "/api/v1/products/**", "/api/v1/stores",
+								"/api/v1/categories", "/api/v1/brands")
+						.permitAll()
 						.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
 						.anyRequest().authenticated())
 				.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

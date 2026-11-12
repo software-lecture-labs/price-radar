@@ -1,0 +1,7 @@
+spring:
+  main:
+    banner-mode: off
+
+server:
+  # SecurityConfig requires a web server.
+  port: 0
