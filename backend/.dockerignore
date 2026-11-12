@@ -1,8 +1,0 @@
-target/
-.mvn/wrapper/*.jar
-*.iml
-.idea/
-.vscode/
-HELP.md
-Dockerfile
-.dockerignore
