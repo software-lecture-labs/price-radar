@@ -18,12 +18,14 @@ import org.testcontainers.utility.DockerImageName;
 @Testcontainers
 abstract class MarketplaceDatabaseTest {
 
+	// Same locale as docker-compose, so text matching behaves as it does in development.
 	@Container
 	static final PostgreSQLContainer POSTGRES = new PostgreSQLContainer(
 			DockerImageName.parse("postgres:18.6-alpine"))
 			.withDatabaseName("marketplace_queries_test")
 			.withUsername("price_radar")
-			.withPassword("price_radar");
+			.withPassword("price_radar")
+			.withEnv("POSTGRES_INITDB_ARGS", "--locale=C --encoding=UTF8");
 
 	static JdbcClient jdbc;
 
