@@ -47,6 +47,9 @@ public class ProductQueries {
 			EXISTS (SELECT 1 FROM product_observations o
 				WHERE o.marketplace_product_id = p.id AND o.store_id = p.store_id)""";
 
+	private static final String MATCHES_QUERY = "(%s LIKE %s OR %s LIKE %s)"
+			.formatted(folded("p.title"), folded(":pattern"), folded("p.brand"), folded(":pattern"));
+
 	// Discounts over 90% usually indicate an inflated list price.
 	private static final String PLAUSIBLE_DISCOUNT = "cur.list_price > cur.price AND cur.price >= cur.list_price * 0.1";
 
@@ -62,7 +65,7 @@ public class ProductQueries {
 		var conditions = new ArrayList<String>();
 		var params = new HashMap<String, Object>();
 		if (query != null) {
-			conditions.add("(p.title ILIKE :pattern OR p.brand ILIKE :pattern)");
+			conditions.add(MATCHES_QUERY);
 			params.put("pattern", "%" + escapeLike(query) + "%");
 		}
 		if (storeCode != null) {
@@ -197,6 +200,13 @@ public class ProductQueries {
 
 	private static String where(List<String> conditions) {
 		return conditions.isEmpty() ? "" : "WHERE " + String.join("\nAND ", conditions) + "\n";
+	}
+
+	// lower() leaves non-ASCII letters unchanged under the C locale, so Turkish capitals
+	// are mapped explicitly. Dotted and dotless i fold to the same letter because users
+	// type them interchangeably; chr(775) is the combining dot some locales add to "İ".
+	private static String folded(String expression) {
+		return "translate(lower(" + expression + "), 'ÇĞİÖŞÜı' || chr(775), 'çğiöşüi')";
 	}
 
 	static String escapeLike(String text) {

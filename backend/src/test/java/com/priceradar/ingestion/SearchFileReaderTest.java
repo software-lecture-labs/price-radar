@@ -56,7 +56,7 @@ class SearchFileReaderTest {
 		assertThat(item.offer().currency()).isNull();
 		assertThat(item.offer().inStock()).isNull();
 		assertThat(item.offer().sellerName()).isNull();
-		assertThat(item.rawJson()).contains("İstanbul");
+		assertThat(file.rawJson()).contains("İstanbul");
 	}
 
 	@Test
