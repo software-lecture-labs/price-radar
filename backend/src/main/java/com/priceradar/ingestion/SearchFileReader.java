@@ -154,7 +154,7 @@ public class SearchFileReader {
 				ratingScale,
 				values.count(Field.REVIEW_COUNT));
 
-		return new SearchItem(values.requiredIdentifier(Field.ID), listing, offer, JSON.writeValueAsString(node));
+		return new SearchItem(values.requiredIdentifier(Field.ID), listing, offer);
 	}
 
 	private static OffsetDateTime fetchedAt(JsonNode envelope) {

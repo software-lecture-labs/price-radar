@@ -3,7 +3,7 @@ package com.priceradar.ingestion;
 import java.math.BigDecimal;
 import java.util.List;
 
-public record SearchItem(String externalId, Listing listing, Offer offer, String rawJson) {
+public record SearchItem(String externalId, Listing listing, Offer offer) {
 
 	public record Listing(
 			String externalGroupId,

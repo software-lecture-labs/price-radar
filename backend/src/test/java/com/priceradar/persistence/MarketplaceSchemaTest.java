@@ -218,9 +218,9 @@ class MarketplaceSchemaTest {
 			String price, String currency, String seller) throws SQLException {
 		return queryLong("""
 				INSERT INTO product_observations (store_id, marketplace_product_id, source_file_id, row_index,
-				    observed_at, source_url, price, currency, seller_external_id, raw_item)
+				    observed_at, source_url, price, currency, seller_external_id)
 				VALUES (?, ?, ?, ?, '2026-10-22T12:00:00Z', 'https://example.test/product/123',
-				    CAST(? AS numeric), ?, ?, '{}'::jsonb) RETURNING id
+				    CAST(? AS numeric), ?, ?) RETURNING id
 				""", store, product, source, rowIndex, price, currency, seller);
 	}
 

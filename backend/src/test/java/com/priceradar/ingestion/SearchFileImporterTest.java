@@ -156,6 +156,24 @@ class SearchFileImporterTest {
 				+ "FROM product_observations")).isEqualTo("0:Mağaza A:499.90,1:Mağaza B:510.25");
 	}
 
+	@Test
+	void theOriginalItemIsFoundInTheSourceDocumentByRowIndex() {
+		importer.importFile(read(Marketplace.N11, "badges", """
+				{"product_id":1,"title":"Kulaklık","url":"https://www.n11.com/a","price":100,"currency":"TRY"}""", """
+				{"product_id":2,"title":"Hoparlör","url":"https://www.n11.com/b","price":200,"currency":"TRY",
+				 "badges":["Hızlı Kargo"]}"""));
+
+		assertThat(text("""
+				SELECT string_agg(o.row_index || ':' || (item ->> 'title') || ':' || coalesce(item -> 'badges' ->> 0, '-'),
+					',' ORDER BY o.row_index)
+				FROM product_observations o
+				JOIN source_files f ON f.id = o.source_file_id
+				CROSS JOIN LATERAL (SELECT coalesce(
+					f.raw_document #> ARRAY['response', 'data', 'results', o.row_index::text],
+					f.raw_document #> ARRAY['response', 'data', 'products', o.row_index::text]) AS item) raw
+				""")).isEqualTo("0:Kulaklık:-,1:Hoparlör:Hızlı Kargo");
+	}
+
 	private SearchFile read(Marketplace marketplace, String name, String... items) {
 		return fixtures.read(fixtures.write(marketplace, name, List.of(items)));
 	}
