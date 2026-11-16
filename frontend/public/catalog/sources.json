@@ -1,0 +1,212 @@
+[
+  {
+    "asset": "/catalog/iphone-17-pro-max.jpg",
+    "product": "iPhone 17 Pro Max 256GB Abis",
+    "source": "https://cdn.dsmcdn.com/mnresize/400/-/ty1745/product/media/images/prod/PIM/20250911/08/3b79af15-6907-4e80-ac91-070f403074d8/1_org_zoom.jpg",
+    "catalogRecord": "data/reefapi/raw/2026-10-22/trendyol/search/iphone-17-pro-max-p1.json"
+  },
+  {
+    "asset": "/catalog/lenovo-ideapad-slim-5.jpg",
+    "product": "IdeaPad Slim 5 AMD Ryzen 7 7735HS 16 GB LPDDR5x 6400 MHz 512 GB Freedos 13.3 Inç 83J2004STR",
+    "source": "https://cdn.dsmcdn.com/mnresize/400/-/ty1913/prod/QC_ENRICHMENT/20260817/13/11ef5083-3b30-38f8-ae46-8472d2e57c29/1_org_zoom.jpg",
+    "catalogRecord": "data/reefapi/raw/2026-10-22/trendyol/search/lenovo-ideapad-slim-5-p1.json"
+  },
+  {
+    "asset": "/catalog/apple-ipad.jpg",
+    "product": "11\" iPad Wi-Fi 128GB - Gümüş",
+    "source": "https://cdn.dsmcdn.com/mnresize/400/-/ty1645/product/media/images/prod/PIM/20250305/07/6434ca80-2aaa-4a81-9baf-39b478f51e21/1_org_zoom.jpg",
+    "catalogRecord": "data/reefapi/raw/2026-10-22/trendyol/search/apple-ipad-p1.json"
+  },
+  {
+    "asset": "/catalog/samsung-galaxy-s26.jpg",
+    "product": "Galaxy S26 12GB/256GB Gök Mavisi Cep Telefonu",
+    "source": "https://cdn.dsmcdn.com/mnresize/400/-/ty1000323/product/media/images/prod/PIM/20260224/12/2ad4dafb-a378-49ee-97d9-693eb18fae33/1_org_zoom.jpg",
+    "catalogRecord": "data/reefapi/raw/2026-10-22/trendyol/search/samsung-galaxy-s25-ultra-p1.json"
+  },
+  {
+    "asset": "/discover/headphones.jpg",
+    "product": "Sony WH-1000XM5 siyah kulak üstü kulaklık",
+    "source": "https://cdn.dsmcdn.com/mnresize/400/-/ty1551/product/media/images/ty1553/prod/QC/20240917/11/590d6b13-4a54-3be3-9689-ffff0cebc664/1_org_zoom.jpg",
+    "catalogRecord": "data/reefapi/raw/2026-10-22/trendyol/search/sony-wh-1000xm5-p1.json"
+  },
+  {
+    "asset": "/discover/airfryer.jpg",
+    "product": "Philips 3000 Serisi Airfryer NA322/00",
+    "source": "https://cdn.dsmcdn.com/mnresize/400/-/ty1631/product/media/images/prod/PIM/20250130/12/829fef3e-4fc1-46e1-b29b-04c3a36dfa8d/1_org_zoom.jpg",
+    "catalogRecord": "data/reefapi/raw/2026-10-22/trendyol/search/philips-airfryer-p1.json"
+  },
+  {
+    "asset": "/discover/robot-vacuum.jpg",
+    "product": "Dreame D20 Beyaz Robot Süpürge",
+    "source": "https://reimg-teknosa-cloud-prod.mncdn.com/mnresize/300/300/productimage/100000060732/100000060732_0_MC/131846916.jpg",
+    "catalogRecord": "data/reefapi/raw/2026-10-22/teknosa/search/dreame-d30-ultra-p1.json"
+  },
+  {
+    "asset": "/catalog/ee29e635f83db041.jpg",
+    "product": "iPhone 17 Pro Max 256GB Gümüş (İthalatçı Garantili)",
+    "source": "https://cdn.dsmcdn.com/mnresize/400/-/ty1780/prod/QC_ENRICHMENT/20251024/13/936bc236-2746-3ab1-9dac-1219b48b063a/1_org_zoom.jpg",
+    "catalogRecord": "/api/v1/products/3508"
+  },
+  {
+    "asset": "/catalog/2d9b84dc38ebf1ec.jpg",
+    "product": "Galaxy S25 Ultra 512 GB Titanyum Gümüş (Samsung Türkiye Garantili)",
+    "source": "https://cdn.dsmcdn.com/mnresize/400/-/ty1627/product/media/images/prod/PIM/20250121/10/3b70206b-bb6c-489f-83a8-e5e1b7130f03/1_org_zoom.jpg",
+    "catalogRecord": "/api/v1/products/4190"
+  },
+  {
+    "asset": "/catalog/2e140caeb2007e8f.jpg",
+    "product": "IDEAPAD Slim 3 14IRH10 Intel Core i5 13420H 16 GB 512 GB Ssd Freedos 14 İnç OLED 83K000ARTR",
+    "source": "https://cdn.dsmcdn.com/mnresize/400/-/ty1928/prod/QC_ENRICHMENT/20260817/13/df1b3233-d3c8-3a5e-92ef-115cf2741674/1_org_zoom.jpg",
+    "catalogRecord": "/api/v1/products/3652"
+  },
+  {
+    "asset": "/catalog/7046264849291cf3.jpg",
+    "product": "Sony WH-1000XM5 Bluetooth Kulak Üstü Kulaklık",
+    "source": "https://n11scdn.akamaized.net/a1/org/06/49/38/34/IMG-2801835500538858692.jpg",
+    "catalogRecord": "/api/v1/products/1999"
+  },
+  {
+    "asset": "/catalog/b6e405aac09adf12.jpg",
+    "product": "MG004TU/A iPhone 17 Pro Max 2 TB Akıllı Telefon Kozmik Turuncu",
+    "source": "https://cdn.dsmcdn.com/mnresize/400/-/ty1857/prod/QC_PREP/20260421/08/753f9dc9-2a93-37c6-8e29-b1705e007b82/1_org_zoom.jpg",
+    "catalogRecord": "/api/v1/products/3501"
+  },
+  {
+    "asset": "/catalog/55cad59f4916e61f.jpg",
+    "product": "Yenilenmiş Samsung Galaxy S25 Ultra 256 GB Titanyum Gri Cep Telefonu (12 Ay Garantili) - A Kalite",
+    "source": "https://cdn.dsmcdn.com/mnresize/400/-/ty1850/prod/QC_PREP/20260403/11/651e0395-5c45-37bb-b1d8-172a58ff1793/1_org_zoom.jpg",
+    "catalogRecord": "/api/v1/products/4173"
+  },
+  {
+    "asset": "/catalog/f3217b142e71c4b7.jpg",
+    "product": "IdeaPad Slim 3/ AMD Ryzen 5 7520U/ 8GB Ram/ 512GB SSD/ 15.6\" FHD/ W11/ Laptop 82XQ00JKTX",
+    "source": "https://cdn.dsmcdn.com/mnresize/400/-/ty1773/prod/QC_ENRICHMENT/20251016/13/49854da4-36ed-37b9-8a9b-91b77c2de22d/1_org_zoom.jpg",
+    "catalogRecord": "/api/v1/products/3651"
+  },
+  {
+    "asset": "/catalog/e3c4520940547c54.jpg",
+    "product": "Sony WH-1000XM5 Kulaklık",
+    "source": "https://productimages.hepsiburada.net/s/777/222-222/110000731638246.jpg",
+    "catalogRecord": "/api/v1/products/1159"
+  },
+  {
+    "asset": "/catalog/00f5a69336a440c5.jpg",
+    "product": "iPhone 17 Pro Max 2TB Kozmik Turuncu",
+    "source": "https://cdn.dsmcdn.com/mnresize/400/-/ty1743/product/media/images/prod/PIM/20250911/08/b35f74d4-ad74-4cba-a4de-0b3cfbefa837/1_org_zoom.jpg",
+    "catalogRecord": "/api/v1/products/3500"
+  },
+  {
+    "asset": "/catalog/10bab265c158d0f6.jpg",
+    "product": "TCL 55T8D 55\" 4K Premium QLED Gaming TV",
+    "source": "https://reimg-teknosa-cloud-prod.mncdn.com/mnresize/300/300/productimage/780680877/780680877_0_MC/e910b6f6a69c4672b3a59ac92fb438dd.jpg",
+    "catalogRecord": "/api/v1/products/2735"
+  },
+  {
+    "asset": "/catalog/ff697b70b1be5450.jpg",
+    "product": "Apple MEWY4TU/A Watch Ultra 3 Gps + Cellular 49MM Natural Titanium Case With Natural Titanium Milan",
+    "source": "https://productimages.hepsiburada.net/s/777/222-222/110001426677469.jpg",
+    "catalogRecord": "/api/v1/products/127"
+  },
+  {
+    "asset": "/catalog/0443c91ef4f68826.jpg",
+    "product": "Apple Watch Ultra 3 Gps + Cellular, 49 mm Natürel Titanyum Kasa ve Demir mavisi Ocean kordon",
+    "source": "https://productimages.hepsiburada.net/s/777/222-222/110001197731187.jpg",
+    "catalogRecord": "/api/v1/products/131"
+  },
+  {
+    "asset": "/catalog/e7437cb0d9fd8470.jpg",
+    "product": "Apple iPhone 17 Pro Max 512 GB Kozmik Turuncu",
+    "source": "https://productimages.hepsiburada.net/s/777/222-222/110001191546407.jpg",
+    "catalogRecord": "/api/v1/products/572"
+  },
+  {
+    "asset": "/catalog/7cb44ae0484a4613.jpg",
+    "product": "Lenovo Ideapad Slim 3 16IRH10 Intel Core I5-13420H 8gb 512GB SSD 16\" Wuxga (1920X1200) IPS Panel Windows 11 Pro  83K20009TR +Compmarktçanta",
+    "source": "https://productimages.hepsiburada.net/s/777/222-222/110001893186818.jpg",
+    "catalogRecord": "/api/v1/products/650"
+  },
+  {
+    "asset": "/catalog/82ed209162fe61af.jpg",
+    "product": "Tablet",
+    "source": "https://n11scdn.akamaized.net/a1/org/16/88/98/47/IMG-3520288254644019954.png",
+    "catalogRecord": "/api/v1/categories"
+  },
+  {
+    "asset": "/catalog/2e250233c847c54c.jpg",
+    "product": "Dizüstü Bilgisayar",
+    "source": "https://n11scdn.akamaized.net/a1/org/13/37/93/05/IMG-2929315656750771481.jpg",
+    "catalogRecord": "/api/v1/categories"
+  },
+  {
+    "asset": "/catalog/ef4ab1fe149a1c0e.jpg",
+    "product": "Akıllı Saat",
+    "source": "https://n11scdn.akamaized.net/a1/org/14/74/03/07/IMG-4287108472312234915.webp",
+    "catalogRecord": "/api/v1/categories"
+  },
+  {
+    "asset": "/catalog/554b0d3a60eecc45.jpg",
+    "product": "Bilgisayar & Tablet",
+    "source": "https://reimg-teknosa-cloud-prod.mncdn.com/mnresize/300/300/productimage/100000063315/100000063315_0_MC/2a36b01e.jpg",
+    "catalogRecord": "/api/v1/categories"
+  },
+  {
+    "asset": "/catalog/34beec88f729c93e.jpg",
+    "product": "Cep Telefonu",
+    "source": "https://n11scdn.akamaized.net/a1/org/03/34/86/95/IMG-2383689326384668696.jpg",
+    "catalogRecord": "/api/v1/categories"
+  },
+  {
+    "asset": "/catalog/4b50f2de3f4a6f86.jpg",
+    "product": "Kedi Kuru Maması",
+    "source": "https://cdn.dsmcdn.com/mnresize/400/-/ty1684/prod/QC/20250527/08/01d6d2de-860f-3808-b1c8-d3cc0c15ad3c/1_org_zoom.jpg",
+    "catalogRecord": "/api/v1/categories"
+  },
+  {
+    "asset": "/catalog/1cb6e979a66899d6.jpg",
+    "product": "Bulaşık Makinesi",
+    "source": "https://n11scdn.akamaized.net/a1/org/12/79/04/21/IMG-2923273493484043965.jpg",
+    "catalogRecord": "/api/v1/categories"
+  },
+  {
+    "asset": "/catalog/76b2e3a09de8b4dc.jpg",
+    "product": "Televizyon",
+    "source": "https://reimg-teknosa-cloud-prod.mncdn.com/mnresize/300/300/productimage/100000062918/100000062918_0_MC/147139137.jpg",
+    "catalogRecord": "/api/v1/categories"
+  },
+  {
+    "asset": "/catalog/d2844af1d0b83b8c.jpg",
+    "product": "Giyilebilir Teknoloji",
+    "source": "https://reimg-teknosa-cloud-prod.mncdn.com/mnresize/300/300/productimage/100000058971/100000058971_0_MC/117154968.jpg",
+    "catalogRecord": "/api/v1/categories"
+  },
+  {
+    "asset": "/catalog/bdde940f9be48214.jpg",
+    "product": "Bebek Bezi",
+    "source": "https://n11scdn.akamaized.net/a1/org/01/16/71/93/IMG-2803294956914193267.jpg",
+    "catalogRecord": "/api/v1/categories"
+  },
+  {
+    "asset": "/catalog/0ee4556d8482dd25.jpg",
+    "product": "Çamaşır Makinesi",
+    "source": "https://n11scdn.akamaized.net/a1/org/12/24/34/11/IMG-825077988405472500.jpg",
+    "catalogRecord": "/api/v1/categories"
+  },
+  {
+    "asset": "/catalog/6860bef47fd642ec.jpg",
+    "product": "Samsung Galaxy Watch9 40mm Krem",
+    "source": "https://reimg-teknosa-cloud-prod.mncdn.com/mnresize/300/300/productimage/100000063628/100000063628_0_MC/152132735.jpg",
+    "catalogRecord": "/api/v1/products/2678"
+  },
+  {
+    "asset": "/catalog/1590c1e4e50fab06.jpg",
+    "product": "Samsung Galaxy Watch9 44mm Gümüş",
+    "source": "https://reimg-teknosa-cloud-prod.mncdn.com/mnresize/300/300/productimage/100000063656/100000063656_0_MC/152132983.jpg",
+    "catalogRecord": "/api/v1/products/2677"
+  },
+  {
+    "asset": "/catalog/97a63ffacbcc6f69.jpg",
+    "product": "Samsung Galaxy Watch9 40mm Koyu Gri",
+    "source": "https://reimg-teknosa-cloud-prod.mncdn.com/mnresize/300/300/productimage/100000063661/100000063661_0_MC/152132667.jpg",
+    "catalogRecord": "/api/v1/products/2676"
+  }
+]

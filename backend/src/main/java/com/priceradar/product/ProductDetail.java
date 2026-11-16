@@ -11,7 +11,24 @@ public record ProductDetail(
 		String mpn,
 		List<String> categoryPath,
 		List<Offer> offers,
+		List<ComparisonOffer> comparisonOffers,
 		List<PricePoint> priceHistory) {
+
+	public record ComparisonOffer(
+			StoreRef store,
+			Long productId,
+			String title,
+			BigDecimal price,
+			BigDecimal listPrice,
+			String currency,
+			Boolean inStock,
+			Boolean freeShipping,
+			String url,
+			Instant observedAt,
+			String sellerName,
+			int offerCount,
+			String matchType) {
+	}
 
 	public record Offer(
 			String sellerName,

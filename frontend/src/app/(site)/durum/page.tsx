@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -14,10 +16,6 @@ async function readBackendStatus(): Promise<BackendStatus> {
   }
 }
 
-/**
- * The greeting comes from the backend when it is reachable, so the page also
- * works with the frontend running on its own.
- */
 async function readGreeting(): Promise<{ message: string; source: "backend" | "frontend" }> {
   try {
     return { message: (await getHello()).message, source: "backend" };
@@ -40,11 +38,13 @@ const stack = [
   { layer: "Code quality", value: "SonarQube · JaCoCo" },
 ];
 
-export default async function HomePage() {
+export const metadata: Metadata = { title: "Sistem durumu" };
+
+export default async function StatusPage() {
   const [status, greeting] = await Promise.all([readBackendStatus(), readGreeting()]);
 
   return (
-    <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-12 sm:px-6 sm:py-16">
+    <div className="mx-auto w-full max-w-3xl">
       <header className="space-y-2">
         <p className="font-mono text-xs tracking-widest text-muted-foreground uppercase">
           project setup
@@ -116,6 +116,6 @@ export default async function HomePage() {
           ))}
         </dl>
       </section>
-    </main>
+    </div>
   );
 }
