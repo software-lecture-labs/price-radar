@@ -4,8 +4,8 @@ CREATE TABLE users (
     id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     email text NOT NULL UNIQUE CHECK (email = lower(btrim(email)) AND email LIKE '_%@_%'),
     full_name text NOT NULL CHECK (btrim(full_name) <> ''),
-    -- E.164, for example +905321234567.
-    phone text NOT NULL CHECK (phone ~ '^\+[1-9][0-9]{7,14}$'),
+    -- E.164, for example +905321234567. Optional (nullable) for KVKK compliance.
+    phone text CHECK (phone IS NULL OR phone ~ '^\+[1-9][0-9]{7,14}$'),
     password_hash text NOT NULL CHECK (password_hash <> ''),
     role text NOT NULL DEFAULT 'USER' CHECK (role IN ('USER', 'ADMIN')),
     created_at timestamptz NOT NULL DEFAULT now(),

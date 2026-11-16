@@ -8,7 +8,7 @@ import jakarta.validation.constraints.Size;
 public record RegisterRequest(
 		@NotBlank @Size(max = 100) String fullName,
 		@NotBlank @Email @Size(max = 254) String email,
-		@NotBlank @Pattern(regexp = PhoneNumbers.TURKISH_MOBILE, message = "must be a Turkish mobile number") String phone,
+		@Pattern(regexp = "^$|" + PhoneNumbers.TURKISH_MOBILE, message = "must be a Turkish mobile number") String phone,
 		@NotBlank @Size(min = 8, max = 72) @MaxUtf8Bytes(72) String password) {
 
 	@Override

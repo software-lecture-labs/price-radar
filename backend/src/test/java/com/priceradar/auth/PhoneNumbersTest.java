@@ -18,10 +18,17 @@ class PhoneNumbersTest {
 
 	@ParameterizedTest
 	@ValueSource(strings = { "0212 123 45 67", "0532 123 45 6", "0532 123 45 678", "+1 532 123 45 67",
-			"0532 ABC 45 67", "", "++905321234567" })
+			"0532 ABC 45 67", "++905321234567" })
 	void rejectsLandlinesForeignAndMalformedNumbers(String phone) {
 		assertThat(phone).doesNotMatch(PhoneNumbers.TURKISH_MOBILE);
 		assertThatThrownBy(() -> PhoneNumbers.normalize(phone)).isInstanceOf(IllegalArgumentException.class);
+	}
+
+	@org.junit.jupiter.api.Test
+	void returnsNullForNullOrBlank() {
+		assertThat(PhoneNumbers.normalize(null)).isNull();
+		assertThat(PhoneNumbers.normalize("")).isNull();
+		assertThat(PhoneNumbers.normalize("   ")).isNull();
 	}
 
 }

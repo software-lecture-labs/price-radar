@@ -12,9 +12,15 @@ final class PhoneNumbers {
 	private PhoneNumbers() {
 	}
 
-	/** Returns E.164, for example {@code +905321234567}. The input must match {@link #TURKISH_MOBILE}. */
+	/**
+	 * Returns E.164, for example {@code +905321234567}, or {@code null} if the input is null or blank.
+	 * If non-blank, the input must match {@link #TURKISH_MOBILE}.
+	 */
 	static String normalize(String phone) {
-		if (phone == null || !phone.strip().matches(TURKISH_MOBILE)) {
+		if (phone == null || phone.isBlank()) {
+			return null;
+		}
+		if (!phone.strip().matches(TURKISH_MOBILE)) {
 			throw new IllegalArgumentException("Not a Turkish mobile number");
 		}
 		var digits = phone.replaceAll("\\D", "");
