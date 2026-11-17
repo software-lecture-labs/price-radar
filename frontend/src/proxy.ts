@@ -20,6 +20,10 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // Several requests can get here at once with the same refresh token: two tabs, or prefetches right after the
+  // access cookie has expired. That is safe while the backend keeps refresh tokens unchanged. If it starts
+  // rotating them, every request but the first would present a token that was just replaced, get a 401 and
+  // sign the user out below. Rotation then needs the backend to accept the previous token for a few seconds.
   try {
     const { accessToken, accessTokenExpiresAt } = await refreshAccessToken(refreshToken);
     // Also hand the new token to this request, so the page rendering now sees the session.
