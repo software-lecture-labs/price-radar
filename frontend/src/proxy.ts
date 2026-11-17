@@ -2,7 +2,12 @@ import { NextResponse, type NextRequest } from "next/server";
 
 import { refreshAccessToken } from "@/lib/api/auth";
 import { isApiError } from "@/lib/api/problem";
-import { ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE, accessTokenCookie } from "@/lib/auth/cookies";
+import {
+  ACCESS_TOKEN_COOKIE,
+  REFRESH_TOKEN_COOKIE,
+  accessTokenCookie,
+  expiredCookie,
+} from "@/lib/auth/cookies";
 
 /**
  * Renews the short-lived access token from the refresh token before a page renders, because Server Components
@@ -27,7 +32,7 @@ export async function proxy(request: NextRequest) {
       // Revoked or expired: drop it instead of retrying on every request.
       request.cookies.delete(REFRESH_TOKEN_COOKIE);
       const response = NextResponse.next({ request: { headers: request.headers } });
-      response.cookies.delete(REFRESH_TOKEN_COOKIE);
+      response.cookies.set(REFRESH_TOKEN_COOKIE, "", expiredCookie());
       return response;
     }
     // Backend unreachable: keep the refresh token and try again on the next request.
