@@ -23,7 +23,19 @@ adding one constant there.
 
 URLs belong to observations because they can identify a seller-specific offer.
 A product keeps the catalogue values of the first file it was imported from; the
-original values of every file remain in `raw_item` and `raw_document`.
+original values of every file remain in `raw_document`.
+
+The original JSON of a single result is not stored a second time. It is the
+element at `row_index` of the results array inside `raw_document` (`results`, or
+`products` for N11):
+
+```sql
+SELECT o.id, coalesce(
+    f.raw_document #> ARRAY['response', 'data', 'results', o.row_index::text],
+    f.raw_document #> ARRAY['response', 'data', 'products', o.row_index::text]) AS raw_item
+FROM product_observations o
+JOIN source_files f ON f.id = o.source_file_id;
+```
 
 `source_files.fetched_at` and `product_observations.observed_at` use the saved
 envelope's `fetchedAt`, never the import time. `row_index` is the zero-based
@@ -51,7 +63,7 @@ JSON values, not whitespace or key order, so keep the source files on disk.
   and unrelated products; matching needs a separate, reviewed step.
 
 Promotions, installments, badges and other store-specific fields remain in
-`raw_item`. No seller table is created yet: some sources give only a name and
+`raw_document`. No seller table is created yet: some sources give only a name and
 Hepsiburada currently supplies no seller identity.
 
 ## Importing

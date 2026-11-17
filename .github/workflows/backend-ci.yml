@@ -26,6 +26,25 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
+    # A throwaway database on the runner: integration tests need no secret, so
+    # they run on every pull request, forks included. The C locale is the
+    # strictest setting for text matching.
+    services:
+      postgres:
+        image: postgres:18.6-alpine
+        env:
+          POSTGRES_DB: price_radar_test
+          POSTGRES_USER: price_radar
+          POSTGRES_PASSWORD: price_radar
+          POSTGRES_INITDB_ARGS: "--locale=C --encoding=UTF8"
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U price_radar -d price_radar_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
     steps:
       - uses: actions/checkout@v7
         with:
@@ -41,17 +60,19 @@ jobs:
       - name: Build and test
         run: ./mvnw -B --no-transfer-progress verify
 
+      - name: Prepare test database
+        run: >-
+          docker exec ${{ job.services.postgres.id }}
+          psql -U price_radar -d price_radar_test -v ON_ERROR_STOP=1
+          -c "CREATE EXTENSION IF NOT EXISTS pg_trgm"
+          -c "CREATE EXTENSION IF NOT EXISTS unaccent"
+
       - name: Database integration tests
         env:
-          TEST_POSTGRES_URL: ${{ secrets.TEST_POSTGRES_URL }}
-          TEST_POSTGRES_USER: ${{ secrets.TEST_POSTGRES_USER }}
-          TEST_POSTGRES_PASSWORD: ${{ secrets.TEST_POSTGRES_PASSWORD }}
-        run: |
-          if [ -z "$TEST_POSTGRES_URL" ]; then
-            echo "TEST_POSTGRES_URL not configured; skipping database integration tests."
-            exit 0
-          fi
-          ./mvnw -B --no-transfer-progress -Pintegration verify
+          TEST_POSTGRES_URL: jdbc:postgresql://localhost:5432/price_radar_test
+          TEST_POSTGRES_USER: price_radar
+          TEST_POSTGRES_PASSWORD: price_radar
+        run: ./mvnw -B --no-transfer-progress -Pintegration verify
 
       - name: Upload test reports
         if: always()
