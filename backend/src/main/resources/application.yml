@@ -1,0 +1,101 @@
+spring:
+  application:
+    name: price-radar-backend
+
+  profiles:
+    default: dev
+
+  datasource:
+    url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/price_radar}
+    username: ${POSTGRES_USER:price_radar}
+    password: ${POSTGRES_PASSWORD:price_radar}
+    hikari:
+      pool-name: price-radar-pool
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 30000
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 50
+          time_zone: UTC
+        order_inserts: true
+        order_updates: true
+        query:
+          in_clause_parameter_padding: true
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    validate-on-migrate: true
+
+  threads:
+    virtual:
+      enabled: true
+
+  jackson:
+    default-property-inclusion: non_null
+    datatype:
+      datetime:
+        write-dates-as-timestamps: false
+
+server:
+  port: ${SERVER_PORT:8080}
+  shutdown: graceful
+  error:
+    include-message: never
+    include-stacktrace: never
+  compression:
+    enabled: true
+    mime-types: application/json,text/html,text/plain
+  forward-headers-strategy: framework
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+      base-path: /actuator
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: when-authorized
+  info:
+    env:
+      enabled: true
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: alpha
+    tags-sorter: alpha
+    display-request-duration: true
+
+app:
+  security:
+    jwt:
+      # Development key.
+      secret: ${JWT_SECRET:ZGV2LW9ubHktc2VjcmV0LWRvLW5vdC11c2UtaW4tcHJvZHVjdGlvbi0zMi1ieXRlcyE=}
+      issuer: price-radar
+      access-token-ttl: 15m
+      refresh-token-ttl: 30d
+    cors:
+      allowed-origins:
+        - ${FRONTEND_ORIGIN:http://localhost:3000}
+      allowed-methods: [GET, POST, PUT, PATCH, DELETE, OPTIONS]
+      allowed-headers: ["*"]
+      allow-credentials: true
+      max-age: 3600
+
+  ingestion:
+    repository-root: ..
+    raw-directory: ../data/reefapi/raw
