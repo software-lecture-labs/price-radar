@@ -1,16 +1,18 @@
-# Compiled class file
+# --- Secrets & local config -------------------------------------------------
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# --- Java / Maven -----------------------------------------------------------
+target/
 *.class
-
-# Log file
-*.log
-
-# BlueJ files
 *.ctxt
-
-# Mobile Tools for Java (J2ME)
 .mtj.tmp/
+!**/src/main/**/target/
+!**/src/test/**/target/
 
-# Package Files #
+# Packaged artifacts (the Maven wrapper here is script-only, no jar)
 *.jar
 *.war
 *.nar
@@ -18,7 +20,44 @@
 *.zip
 *.tar.gz
 *.rar
+!**/.mvn/wrapper/*.jar
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+# JVM crash logs
 hs_err_pid*
 replay_pid*
+
+# --- Node / Next.js ---------------------------------------------------------
+node_modules/
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
+.turbo/
+
+# --- Logs -------------------------------------------------------------------
+*.log
+npm-debug.log*
+yarn-error.log*
+
+# --- Tooling ----------------------------------------------------------------
+.scannerwork/
+.sonar/
+coverage/
+
+# --- IDEs -------------------------------------------------------------------
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.classpath
+.project
+.settings/
+.factorypath
+
+# --- OS ---------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
