@@ -66,6 +66,16 @@ class UserAccountsDatabaseTest {
 	}
 
 	@Test
+	void accountsCanBeCreatedWithoutPhone() {
+		var created = users.create("mehmet@example.com", "Mehmet Kaya", null, "$2a$12$hash");
+
+		assertThat(created.role()).isEqualTo(Role.USER);
+		assertThat(created.phone()).isNull();
+		assertThat(users.findByEmail("mehmet@example.com")).contains(created);
+		assertThat(users.findById(created.id())).contains(created);
+	}
+
+	@Test
 	void anEmailCanOnlyBeRegisteredOnce() {
 		users.create("ayse@example.com", "Ayşe Yılmaz", "+905321234567", "$2a$12$hash");
 
