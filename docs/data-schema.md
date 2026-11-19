@@ -74,9 +74,9 @@ same database connection as the application (`POSTGRES_URL`, `POSTGRES_USER`,
 and never prints them. Run it from the repository root:
 
 ```powershell
-.	oolseefapiimport.ps1                               # dry run over data/reefapi/raw
-.	oolseefapiimport.ps1 -Source 2026-10-22            # dry run over one fetch
-.	oolseefapiimport.ps1 -Source 2026-10-22 -Commit    # write
+.\tools\reefapi\import.ps1                               # dry run over data/reefapi/raw
+.\tools\reefapi\import.ps1 -Source 2026-10-22            # dry run over one fetch
+.\tools\reefapi\import.ps1 -Source 2026-10-22 -Commit    # write
 ```
 
 `-Source` is a file or folder relative to `data/reefapi/raw` and can be given
@@ -86,8 +86,9 @@ more than once. Only files in `search/` folders are picked up.
   invalid file stops the run with nothing written.
 - Each file is one transaction. A run that stops halfway can be repeated: files
   already imported report `ALREADY_IMPORTED` and are skipped.
-- Without `-Commit` the run is read-only and reports, per file, whether it
-  would be imported and how many products would be new.
+- Without `-Commit`, the importer writes no catalogue data and reports, per file,
+  whether it would be imported and how many products would be new. Backend startup
+  still runs pending Flyway migrations, so even a dry run can change the schema.
 
 The parts:
 

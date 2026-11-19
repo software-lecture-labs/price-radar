@@ -1,5 +1,8 @@
 # Price Radar
 
+Farklı satıcılardaki ürün fiyatlarını tek yerde toplayıp karşılaştırmayı amaçlayan
+bir web uygulaması. Backend Spring Boot, frontend Next.js ile yazılıyor.
+
 Java 25 ve Node.js 24 gerekir. Backend `.env` dosyasındaki Neon bağlantısını
 kullanır; yerel PostgreSQL kurulumu gerekmez.
 
@@ -97,3 +100,17 @@ export TEST_POSTGRES_PASSWORD='YOUR_TEST_PASSWORD'
 
 CI bu testleri her PR'da runner üzerinde açılan geçici bir PostgreSQL ile
 çalıştırır; bunun için secret gerekmez.
+
+## Dal akışı
+
+`dev` entegrasyon dalı, `main` teslim edilen sürümdür.
+
+- Her iş `dev`'den açılan ayrı bir dalda yapılır (`feat/...`, `fix/...`, `chore/...`,
+  `docs/...`) ve PR ile `dev`'e merge edilir.
+- `dev` çalışır ve testleri geçer durumdayken `dev → main` PR'ı ile `main`'e alınır.
+- `dev` ile `main`'i eşitleyen PR'lar (`dev → main`, `main → dev`) "Create a merge commit" ile
+  birleştirilir, squash ile değil. Squash dalın commit'lerini diğer dalın geçmişine taşımaz;
+  bir sonraki eşitleme PR'ında aynı değişiklikler tekrar gelir ve conflict çıkar.
+- `main` ve `dev`'e GitHub web arayüzünden de olsa doğrudan commit atılmaz. Her
+  değişiklik PR ile girer ve en az bir onay ister.
+- Bir PR tek bir işi kapsar. Birbiriyle ilgisi olmayan değişiklikler ayrı PR'larda açılır.
