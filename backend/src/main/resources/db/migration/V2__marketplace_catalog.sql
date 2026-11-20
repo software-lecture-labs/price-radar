@@ -67,7 +67,8 @@ CREATE TABLE product_observations (
     rating numeric CHECK (rating >= 0 AND rating < 'Infinity'::numeric),
     rating_scale numeric(8, 3) CHECK (rating_scale > 0 AND rating_scale < 'Infinity'::numeric),
     review_count integer CHECK (review_count >= 0),
-    raw_item jsonb NOT NULL CHECK (jsonb_typeof(raw_item) = 'object'),
+    -- The original item is not copied here: it is source_files.raw_document's
+    -- results array at row_index.
     imported_at timestamptz NOT NULL DEFAULT now(),
     CHECK (rating_scale IS NULL OR rating IS NULL OR rating <= rating_scale),
     UNIQUE (source_file_id, row_index),

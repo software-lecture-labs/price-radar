@@ -128,11 +128,11 @@ public class MarketplaceImportRepository {
 				INSERT INTO product_observations
 					(store_id, marketplace_product_id, source_file_id, row_index, observed_at, source_url,
 					price, currency, list_price, member_price, seller_external_id, seller_name, seller_is_store,
-					in_stock, free_shipping, sponsored, rating, rating_scale, review_count, raw_item)
+					in_stock, free_shipping, sponsored, rating, rating_scale, review_count)
 				VALUES
 					(:storeId, :productId, :sourceId, :rowIndex, :observedAt, :url,
 					:price, :currency, :listPrice, :memberPrice, :sellerExternalId, :sellerName, :sellerIsStore,
-					:inStock, :freeShipping, :sponsored, :rating, :ratingScale, :reviewCount, CAST(:rawItem AS jsonb))
+					:inStock, :freeShipping, :sponsored, :rating, :ratingScale, :reviewCount)
 				""")
 				.param("storeId", storeId)
 				.param("productId", productId)
@@ -153,7 +153,6 @@ public class MarketplaceImportRepository {
 				.param("rating", offer.rating())
 				.param("ratingScale", offer.ratingScale())
 				.param("reviewCount", offer.reviewCount())
-				.param("rawItem", item.rawJson())
 				.update();
 	}
 
