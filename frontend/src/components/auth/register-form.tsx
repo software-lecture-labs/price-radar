@@ -47,7 +47,7 @@ export function RegisterForm() {
       await new Promise((resolve) => setTimeout(resolve, 800));
       toast.success("Hesabınız başarıyla oluşturuldu! Giriş yapabilirsiniz.");
       setTimeout(() => {
-        router.push(routes.login);
+        router.push(routes.login());
       }, 1000);
     } catch {
       toast.error("Kayıt olurken bir hata oluştu. Lütfen tekrar deneyin.");
@@ -81,7 +81,7 @@ export function RegisterForm() {
           <p className="mt-2 text-sm text-ink-muted">
             Zaten hesabınız var mı?{" "}
             <Link
-              href={routes.login}
+              href={routes.login()}
               className="font-semibold text-ink underline decoration-radar-lime decoration-2 underline-offset-4 transition-colors hover:text-ink-secondary hover:decoration-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
             >
               Giriş yap

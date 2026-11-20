@@ -61,7 +61,7 @@ export function LoginForm() {
           <p className="mt-2 text-sm text-ink-muted">
             Henüz hesabınız yok mu?{" "}
             <Link
-              href={routes.register}
+              href={routes.register()}
               className="font-semibold text-ink underline decoration-radar-lime decoration-2 underline-offset-4 transition-colors hover:text-ink-secondary hover:decoration-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
             >
               Kayıt ol
