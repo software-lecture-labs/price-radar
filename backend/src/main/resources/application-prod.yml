@@ -3,7 +3,6 @@ spring:
     show-sql: false
 
   flyway:
-    # Production schema must never be baselined implicitly.
     baseline-on-migrate: false
     clean-disabled: true
 
@@ -33,5 +32,4 @@ logging:
 app:
   security:
     jwt:
-      # No default on purpose: production must not boot with the dev key.
       secret: ${JWT_SECRET}

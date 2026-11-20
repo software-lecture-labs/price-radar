@@ -1,27 +1,17 @@
 import { publicEnv, serverEnv } from "@/lib/env";
-import { ApiError, type ProblemDetail } from "@/lib/api/problem";
+import { ApiError } from "@/lib/api/problem";
 
 const isServer = typeof window === "undefined";
 
 export interface ApiRequestOptions extends Omit<RequestInit, "body"> {
-  /** Serialized as JSON unless it is already a string or FormData. */
   body?: unknown;
-  /** Bearer token to send; omit for public endpoints. */
   token?: string;
-  /** Query parameters; `undefined` and `null` values are dropped. */
   query?: Record<string, string | number | boolean | undefined | null>;
 }
 
-/**
- * Builds the request URL.
- *
- * On the server there is no origin to be relative to, so the absolute backend
- * URL is used. In the browser a relative path keeps the request same-origin and
- * lets the rewrite in `next.config.ts` forward it.
- */
 function buildUrl(path: string, query?: ApiRequestOptions["query"]): string {
   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
-  const base = isServer ? `${serverEnv.backendUrl}${publicEnv.apiBasePath}` : publicEnv.apiBasePath;
+  const base = isServer ? `${serverEnv.backendUrl}${serverEnv.apiBasePath}` : publicEnv.apiBasePath;
 
   const search = new URLSearchParams();
   for (const [key, value] of Object.entries(query ?? {})) {
@@ -34,19 +24,14 @@ function buildUrl(path: string, query?: ApiRequestOptions["query"]): string {
   return `${base}${normalizedPath}${queryString ? `?${queryString}` : ""}`;
 }
 
-async function toProblem(response: Response): Promise<ProblemDetail> {
+async function toProblem(response: Response): Promise<unknown> {
   try {
-    return (await response.json()) as ProblemDetail;
+    return await response.json();
   } catch {
     return { status: response.status, title: response.statusText };
   }
 }
 
-/**
- * Calls the Price Radar API and returns the parsed body.
- *
- * @throws {ApiError} for any non-2xx response, carrying the problem+json body
- */
 export async function apiFetch<T>(path: string, options: ApiRequestOptions = {}): Promise<T> {
   const { body, token, query, headers, ...rest } = options;
 

@@ -12,15 +12,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import tools.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 
-/**
- * Redis-backed caching: JSON values, string keys, a shared key prefix and a
- * default TTL. Per-cache TTLs can be added later with a
- * {@code RedisCacheManagerBuilderCustomizer}.
- *
- * <p>{@code @EnableCaching} lives here rather than on the application class so
- * that web-slice tests, which do not auto-configure a {@code CacheManager}, are
- * not forced to provide one.
- */
+// Keep caching off the application class so MVC test slices do not need a CacheManager.
 @Configuration
 @EnableCaching
 public class CacheConfig {
@@ -29,8 +21,7 @@ public class CacheConfig {
 
 	@Bean
 	RedisCacheConfiguration defaultCacheConfiguration() {
-		// Default typing is required so cached values deserialize back into their
-		// concrete type; the validator keeps that restricted to our own classes.
+		// Cached values need type metadata to deserialize into their concrete classes.
 		var typeValidator = BasicPolymorphicTypeValidator.builder()
 				.allowIfSubType("com.priceradar.")
 				.allowIfSubType("java.util.")

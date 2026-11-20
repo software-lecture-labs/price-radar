@@ -5,9 +5,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
 /**
- * Base class for tests that need the full application plus real backing
- * services. Subclasses share a single Spring context — and therefore a single
- * set of containers — for the whole test run.
+ * Subclasses share the Spring context and its containers for the test run.
  */
 @SpringBootTest
 @Import(TestcontainersConfiguration.class)

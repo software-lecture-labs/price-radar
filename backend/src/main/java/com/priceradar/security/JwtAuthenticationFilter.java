@@ -15,17 +15,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-/**
- * Populates the {@link SecurityContextHolder} from a {@code Bearer} token.
- *
- * <p>Registered as a bean by {@link SecurityConfig} rather than annotated as a
- * component: as a {@code Filter} it would otherwise be picked up by web-slice
- * tests that do not load the security collaborators it needs.
- *
- * <p>An invalid token is treated as "no authentication" rather than an error:
- * the authorization rules then decide whether the endpoint was public anyway,
- * and protected endpoints fall through to the entry point as a 401.
- */
+// Registered in SecurityConfig so web-slice tests do not load the JWT dependencies.
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	private static final String BEARER_PREFIX = "Bearer ";

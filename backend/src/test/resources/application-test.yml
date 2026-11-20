@@ -1,4 +1,3 @@
-# Connection details come from Testcontainers via @ServiceConnection.
 spring:
   jpa:
     hibernate:
@@ -10,7 +9,7 @@ spring:
 app:
   security:
     jwt:
-      # Test-only key. 32+ bytes once Base64-decoded.
+      # Test-only key.
       secret: dGVzdC1vbmx5LXNpZ25pbmcta2V5LXdpdGgtZW5vdWdoLWVudHJvcHktMzJiCg==
       issuer: price-radar-test
       access-token-ttl: 5m

@@ -18,15 +18,6 @@ import org.springframework.kafka.listener.DeadLetterPublishingRecoverer;
 import org.springframework.kafka.listener.DefaultErrorHandler;
 import org.springframework.kafka.support.ExponentialBackOffWithMaxRetries;
 
-/**
- * Base Kafka topology: one topic for application events, plus a dead-letter
- * topic so listeners added later have somewhere to park a poison record
- * instead of blocking their partition forever.
- *
- * <p>Spring Boot wires the {@link CommonErrorHandler} below into the
- * auto-configured listener container factory, so every {@code @KafkaListener}
- * gets retry with back-off and dead-lettering without extra setup.
- */
 @Configuration
 public class KafkaConfig {
 
@@ -56,8 +47,7 @@ public class KafkaConfig {
 				Map.of(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, ByteArraySerializer.class)));
 		templates.put(Object.class, kafkaTemplate);
 
-		// A negative partition lets Kafka pick one; the source topic travels in the
-		// kafka_dlt-original-topic header.
+		// -1 lets Kafka choose the DLT partition.
 		var recoverer = new DeadLetterPublishingRecoverer(templates,
 				(record, ex) -> new TopicPartition(properties.deadLetterTopic(), -1));
 
