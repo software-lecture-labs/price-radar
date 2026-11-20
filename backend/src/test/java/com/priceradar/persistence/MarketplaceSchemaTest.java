@@ -29,7 +29,7 @@ class MarketplaceSchemaTest {
 	static void migrateSchema() {
 		database = TestDatabase.open();
 		flyway = database.flyway();
-		assertThat(flyway.migrate().migrationsExecuted).isEqualTo(2);
+		assertThat(flyway.migrate().migrationsExecuted).isEqualTo(3);
 	}
 
 	@AfterAll
