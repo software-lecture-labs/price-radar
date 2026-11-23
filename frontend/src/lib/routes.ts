@@ -1,4 +1,6 @@
 export const SEARCH_PARAM = "q";
+export const SORT_PARAM = "sirala";
+export const PAGE_PARAM = "sayfa";
 /** Where to return after signing in. Validate with `safeRedirectPath` before redirecting. */
 export const NEXT_PARAM = "next";
 
