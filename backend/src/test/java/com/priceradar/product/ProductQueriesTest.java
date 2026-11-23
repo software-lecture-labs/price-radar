@@ -31,7 +31,7 @@ class ProductQueriesTest extends MarketplaceDatabaseTest {
 		observe(later, phone, 0, "72999.00", "79999.00");
 		observe(later, phone, 1, "71500.50", null);
 
-		var page = queries.search(null, null, ProductSort.NEWEST, 0, 10);
+		var page = queries.search(null, null, null, ProductSort.NEWEST, 0, 10);
 
 		assertThat(page.totalItems()).isEqualTo(1);
 		var summary = page.items().getFirst();
@@ -52,13 +52,31 @@ class ProductQueriesTest extends MarketplaceDatabaseTest {
 		observe(hbSource, product(hepsiburada, "HB-2", "iPad 11", "Apple"), 1, "27000", null);
 		observe(n11Source, product(n11, "N-1", "Samsung Galaxy Tab S10", "Samsung"), 0, "28000", null);
 
-		assertThat(queries.search("samsung", null, ProductSort.NEWEST, 0, 10).items())
+		assertThat(queries.search("samsung", null, null, ProductSort.NEWEST, 0, 10).items())
 				.extracting(ProductSummary::title)
 				.containsExactly("Samsung Galaxy Tab S10", "Galaxy S25 Ultra");
-		assertThat(queries.search("samsung", "n11", ProductSort.NEWEST, 0, 10).items())
+		assertThat(queries.search("samsung", "n11", null, ProductSort.NEWEST, 0, 10).items())
 				.extracting(ProductSummary::title)
 				.containsExactly("Samsung Galaxy Tab S10");
-		assertThat(queries.search("100%_off", null, ProductSort.NEWEST, 0, 10).totalItems()).isZero();
+		assertThat(queries.search("100%_off", null, null, ProductSort.NEWEST, 0, 10).totalItems()).isZero();
+	}
+
+	@Test
+	void searchFiltersByCategory() {
+		var store = store("teknosa", "Teknosa");
+		var source = source(store, LATER);
+		observe(source, product(store, "1", "Galaxy S25", "Samsung", "Cep Telefonu", null), 0, "45000", null);
+		observe(source, product(store, "2", "Galaxy Buds 3", "Samsung", "Kulaklık", null), 1, "4000", null);
+		observe(source, product(store, "3", "WH-1000XM5", "Sony", "Kulaklık", null), 2, "12000", null);
+
+		var headphones = queries.search(null, null, "Kulaklık", ProductSort.PRICE_ASC, 0, 10);
+
+		assertThat(headphones.items()).extracting(ProductSummary::title)
+				.containsExactly("Galaxy Buds 3", "WH-1000XM5");
+		assertThat(headphones.totalItems()).isEqualTo(2);
+		assertThat(queries.search("galaxy", null, "Kulaklık", ProductSort.NEWEST, 0, 10).items())
+				.extracting(ProductSummary::title)
+				.containsExactly("Galaxy Buds 3");
 	}
 
 	@Test
@@ -81,7 +99,7 @@ class ProductQueriesTest extends MarketplaceDatabaseTest {
 	}
 
 	private List<String> titles(String query) {
-		return queries.search(query, null, ProductSort.NEWEST, 0, 10).items().stream()
+		return queries.search(query, null, null, ProductSort.NEWEST, 0, 10).items().stream()
 				.map(ProductSummary::title)
 				.toList();
 	}
@@ -94,8 +112,8 @@ class ProductQueriesTest extends MarketplaceDatabaseTest {
 		observe(source, product(store, "2", "Telefon", null), 1, "45000", null);
 		observe(source, product(store, "3", "Tablet", null), 2, "20000", null);
 
-		var first = queries.search(null, null, ProductSort.PRICE_ASC, 0, 2);
-		var second = queries.search(null, null, ProductSort.PRICE_ASC, 1, 2);
+		var first = queries.search(null, null, null, ProductSort.PRICE_ASC, 0, 2);
+		var second = queries.search(null, null, null, ProductSort.PRICE_ASC, 1, 2);
 
 		assertThat(first.items()).extracting(ProductSummary::title).containsExactly("Kulaklık", "Tablet");
 		assertThat(second.items()).extracting(ProductSummary::title).containsExactly("Telefon");

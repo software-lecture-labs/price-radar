@@ -30,16 +30,17 @@ public class ProductController {
 	}
 
 	@GetMapping
-	@Operation(summary = "Search products by title or brand")
+	@Operation(summary = "Search products by title or brand, optionally within one store or category")
 	public PageResponse<ProductSummary> search(
 			@RequestParam(name = "q", required = false) @Size(max = 100) String query,
 			@RequestParam(required = false) @Pattern(regexp = "[a-z0-9][a-z0-9_-]*") String store,
+			@RequestParam(required = false) @Size(max = 200) String category,
 			@RequestParam(defaultValue = "newest") @Pattern(regexp = ProductSort.PARAM_PATTERN) String sort,
 			@RequestParam(defaultValue = "0") @Min(0) @Max(10_000) int page,
 			@RequestParam(defaultValue = "24") @Min(1) @Max(100) int size) {
 
-		var trimmed = query == null || query.isBlank() ? null : query.strip();
-		return products.search(trimmed, store, ProductSort.fromParam(sort), page, size);
+		return products.search(trimmedOrNull(query), store, trimmedOrNull(category), ProductSort.fromParam(sort),
+				page, size);
 	}
 
 	@GetMapping("/deals")
@@ -52,6 +53,10 @@ public class ProductController {
 	@Operation(summary = "One product with its current offers and price history")
 	public ProductDetail detail(@PathVariable long id) {
 		return products.findDetail(id).orElseThrow(() -> ResourceNotFoundException.of("Product", id));
+	}
+
+	private static String trimmedOrNull(String value) {
+		return value == null || value.isBlank() ? null : value.strip();
 	}
 
 }

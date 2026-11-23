@@ -59,8 +59,8 @@ public class ProductQueries {
 		this.jdbc = jdbc;
 	}
 
-	public PageResponse<ProductSummary> search(String query, String storeCode, ProductSort sort, int page,
-			int size) {
+	public PageResponse<ProductSummary> search(String query, String storeCode, String category, ProductSort sort,
+			int page, int size) {
 
 		var conditions = new ArrayList<String>();
 		var params = new HashMap<String, Object>();
@@ -71,6 +71,10 @@ public class ProductQueries {
 		if (storeCode != null) {
 			conditions.add("s.code = :store");
 			params.put("store", storeCode);
+		}
+		if (category != null) {
+			conditions.add("p.category = :category");
+			params.put("category", category);
 		}
 
 		var items = jdbc.sql(SUMMARY_SELECT + where(conditions) + "ORDER BY " + sort.orderBy

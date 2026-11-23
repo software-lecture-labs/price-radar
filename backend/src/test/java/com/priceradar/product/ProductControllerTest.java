@@ -35,7 +35,7 @@ class ProductControllerTest {
 
 	@Test
 	void searchTrimsTheQueryAndReturnsAPage() {
-		given(products.search("iphone", "hepsiburada", ProductSort.PRICE_ASC, 1, 12))
+		given(products.search("iphone", "hepsiburada", null, ProductSort.PRICE_ASC, 1, 12))
 				.willReturn(PageResponse.of(List.of(PHONE), 1, 12, 13));
 
 		var body = assertThat(mockMvc.get()
@@ -54,10 +54,22 @@ class ProductControllerTest {
 
 	@Test
 	void blankQueryMeansNoFilter() {
-		given(products.search(null, null, ProductSort.NEWEST, 0, 24))
+		given(products.search(null, null, null, ProductSort.NEWEST, 0, 24))
 				.willReturn(PageResponse.of(List.of(), 0, 24, 0));
 
-		assertThat(mockMvc.get().uri("/api/v1/products?q=%20")).hasStatusOk();
+		assertThat(mockMvc.get().uri("/api/v1/products?q=%20&category=%20")).hasStatusOk();
+	}
+
+	@Test
+	void categoryIsTrimmedAndPassedToTheSearch() {
+		given(products.search(null, null, "Cep Telefonu", ProductSort.NEWEST, 0, 24))
+				.willReturn(PageResponse.of(List.of(PHONE), 0, 24, 1));
+
+		assertThat(mockMvc.get().uri("/api/v1/products?category= Cep Telefonu ")).hasStatusOk()
+				.bodyJson()
+				.extractingPath("$.items[0].category")
+				.asString()
+				.isEqualTo("Cep Telefonu");
 	}
 
 	@Test
