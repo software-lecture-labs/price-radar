@@ -31,3 +31,12 @@ export function parsePage(value: QueryValue): number {
   const page = Number(firstValue(value));
   return Number.isInteger(page) && page >= 1 && page <= MAX_PAGE ? page : 1;
 }
+
+/** Path segments arrive percent-encoded ("Cep%20Telefonu"). Returns null for a malformed one. */
+export function decodeSegment(segment: string): string | null {
+  try {
+    return decodeURIComponent(segment);
+  } catch {
+    return null;
+  }
+}

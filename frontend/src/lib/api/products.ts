@@ -80,6 +80,7 @@ export type ProductSort = "newest" | "price_asc" | "price_desc";
 export interface ProductSearch {
   q?: string;
   store?: string;
+  category?: string;
   sort?: ProductSort;
   /** Zero-based. */
   page?: number;
