@@ -61,7 +61,7 @@ export function LoginForm() {
           <p className="mt-2 text-sm text-ink-muted">
             Henüz hesabınız yok mu?{" "}
             <Link
-              href={routes.register}
+              href={routes.register()}
               className="font-semibold text-ink underline decoration-radar-lime decoration-2 underline-offset-4 transition-colors hover:text-ink-secondary hover:decoration-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
             >
               Kayıt ol
@@ -85,7 +85,7 @@ export function LoginForm() {
               placeholder="ornek@alanadi.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="h-11 rounded-lg border-border-strong/40 bg-white px-3.5 text-sm text-ink placeholder:text-ink-muted/70 transition-colors focus-visible:border-ink focus-visible:ring-2 focus-visible:ring-radar-lime focus-visible:ring-offset-0"
+              className="h-11 rounded-lg border-border-strong/40 bg-white px-3.5 text-sm text-ink transition-colors placeholder:text-ink-muted/70 focus-visible:border-ink focus-visible:ring-2 focus-visible:ring-radar-lime focus-visible:ring-offset-0"
             />
           </div>
 
@@ -104,7 +104,7 @@ export function LoginForm() {
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="h-11 rounded-lg border-border-strong/40 bg-white pr-11 pl-3.5 text-sm text-ink placeholder:text-ink-muted/70 transition-colors focus-visible:border-ink focus-visible:ring-2 focus-visible:ring-radar-lime focus-visible:ring-offset-0"
+                className="h-11 rounded-lg border-border-strong/40 bg-white pr-11 pl-3.5 text-sm text-ink transition-colors placeholder:text-ink-muted/70 focus-visible:border-ink focus-visible:ring-2 focus-visible:ring-radar-lime focus-visible:ring-offset-0"
               />
               <button
                 type="button"
@@ -125,7 +125,7 @@ export function LoginForm() {
           <Button
             type="submit"
             disabled={isLoading}
-            className="mt-3 flex h-11 w-full items-center justify-center rounded-lg bg-radar-lime text-sm font-bold text-ink shadow-xs transition-all hover:bg-[#bde829] active:translate-y-px disabled:pointer-events-none disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink sm:text-base"
+            className="mt-3 flex h-11 w-full items-center justify-center rounded-lg bg-radar-lime text-sm font-bold text-ink shadow-xs transition-all hover:bg-[#bde829] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink active:translate-y-px disabled:pointer-events-none disabled:opacity-60 sm:text-base"
           >
             {isLoading ? "Giriş yapılıyor..." : "Giriş yap"}
           </Button>

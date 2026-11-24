@@ -89,9 +89,8 @@ abstract class MarketplaceDatabaseTest {
 	void observe(Source source, long product, int rowIndex, String price, String listPrice) {
 		jdbc.sql("""
 				INSERT INTO product_observations (store_id, marketplace_product_id, source_file_id, row_index,
-					observed_at, source_url, price, list_price, raw_item)
-				VALUES (:store, :product, :source, :row, :observedAt, 'https://example.com/p', :price, :listPrice,
-					'{}'::jsonb)""")
+					observed_at, source_url, price, list_price)
+				VALUES (:store, :product, :source, :row, :observedAt, 'https://example.com/p', :price, :listPrice)""")
 				.param("store", source.store())
 				.param("product", product)
 				.param("source", source.id())

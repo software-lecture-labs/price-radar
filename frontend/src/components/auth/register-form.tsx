@@ -47,7 +47,7 @@ export function RegisterForm() {
       await new Promise((resolve) => setTimeout(resolve, 800));
       toast.success("Hesabınız başarıyla oluşturuldu! Giriş yapabilirsiniz.");
       setTimeout(() => {
-        router.push(routes.login);
+        router.push(routes.login());
       }, 1000);
     } catch {
       toast.error("Kayıt olurken bir hata oluştu. Lütfen tekrar deneyin.");
@@ -81,7 +81,7 @@ export function RegisterForm() {
           <p className="mt-2 text-sm text-ink-muted">
             Zaten hesabınız var mı?{" "}
             <Link
-              href={routes.login}
+              href={routes.login()}
               className="font-semibold text-ink underline decoration-radar-lime decoration-2 underline-offset-4 transition-colors hover:text-ink-secondary hover:decoration-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
             >
               Giriş yap
@@ -105,7 +105,7 @@ export function RegisterForm() {
               placeholder="Ahmet Yılmaz"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              className="h-11 rounded-lg border-border-strong/40 bg-white px-3.5 text-sm text-ink placeholder:text-ink-muted/70 transition-colors focus-visible:border-ink focus-visible:ring-2 focus-visible:ring-radar-lime focus-visible:ring-offset-0"
+              className="h-11 rounded-lg border-border-strong/40 bg-white px-3.5 text-sm text-ink transition-colors placeholder:text-ink-muted/70 focus-visible:border-ink focus-visible:ring-2 focus-visible:ring-radar-lime focus-visible:ring-offset-0"
             />
           </div>
 
@@ -123,7 +123,7 @@ export function RegisterForm() {
               placeholder="ornek@alanadi.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="h-11 rounded-lg border-border-strong/40 bg-white px-3.5 text-sm text-ink placeholder:text-ink-muted/70 transition-colors focus-visible:border-ink focus-visible:ring-2 focus-visible:ring-radar-lime focus-visible:ring-offset-0"
+              className="h-11 rounded-lg border-border-strong/40 bg-white px-3.5 text-sm text-ink transition-colors placeholder:text-ink-muted/70 focus-visible:border-ink focus-visible:ring-2 focus-visible:ring-radar-lime focus-visible:ring-offset-0"
             />
           </div>
 
@@ -141,7 +141,7 @@ export function RegisterForm() {
               placeholder="05XX XXX XX XX"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              className="h-11 rounded-lg border-border-strong/40 bg-white px-3.5 text-sm text-ink placeholder:text-ink-muted/70 transition-colors focus-visible:border-ink focus-visible:ring-2 focus-visible:ring-radar-lime focus-visible:ring-offset-0"
+              className="h-11 rounded-lg border-border-strong/40 bg-white px-3.5 text-sm text-ink transition-colors placeholder:text-ink-muted/70 focus-visible:border-ink focus-visible:ring-2 focus-visible:ring-radar-lime focus-visible:ring-offset-0"
             />
           </div>
 
@@ -160,7 +160,7 @@ export function RegisterForm() {
                 placeholder="En az 6 karakter"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="h-11 rounded-lg border-border-strong/40 bg-white pr-11 pl-3.5 text-sm text-ink placeholder:text-ink-muted/70 transition-colors focus-visible:border-ink focus-visible:ring-2 focus-visible:ring-radar-lime focus-visible:ring-offset-0"
+                className="h-11 rounded-lg border-border-strong/40 bg-white pr-11 pl-3.5 text-sm text-ink transition-colors placeholder:text-ink-muted/70 focus-visible:border-ink focus-visible:ring-2 focus-visible:ring-radar-lime focus-visible:ring-offset-0"
               />
               <button
                 type="button"
@@ -192,13 +192,15 @@ export function RegisterForm() {
                 placeholder="Şifrenizi tekrar girin"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="h-11 rounded-lg border-border-strong/40 bg-white pr-11 pl-3.5 text-sm text-ink placeholder:text-ink-muted/70 transition-colors focus-visible:border-ink focus-visible:ring-2 focus-visible:ring-radar-lime focus-visible:ring-offset-0"
+                className="h-11 rounded-lg border-border-strong/40 bg-white pr-11 pl-3.5 text-sm text-ink transition-colors placeholder:text-ink-muted/70 focus-visible:border-ink focus-visible:ring-2 focus-visible:ring-radar-lime focus-visible:ring-offset-0"
               />
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword((prev) => !prev)}
                 className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-ink-muted transition-colors hover:text-ink focus-visible:rounded-r-lg focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-ring"
-                aria-label={showConfirmPassword ? "Şifre tekrarını gizle" : "Şifre tekrarını göster"}
+                aria-label={
+                  showConfirmPassword ? "Şifre tekrarını gizle" : "Şifre tekrarını göster"
+                }
               >
                 {showConfirmPassword ? (
                   <EyeOffIcon className="size-5" aria-hidden />
@@ -213,7 +215,7 @@ export function RegisterForm() {
           <Button
             type="submit"
             disabled={isLoading}
-            className="mt-4 flex h-11 w-full items-center justify-center rounded-lg bg-radar-lime text-sm font-bold text-ink shadow-xs transition-all hover:bg-[#bde829] active:translate-y-px disabled:pointer-events-none disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink sm:text-base"
+            className="mt-4 flex h-11 w-full items-center justify-center rounded-lg bg-radar-lime text-sm font-bold text-ink shadow-xs transition-all hover:bg-[#bde829] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink active:translate-y-px disabled:pointer-events-none disabled:opacity-60 sm:text-base"
           >
             {isLoading ? "Hesap oluşturuluyor..." : "Kayıt ol"}
           </Button>
