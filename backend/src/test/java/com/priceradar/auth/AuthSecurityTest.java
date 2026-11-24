@@ -2,13 +2,11 @@ package com.priceradar.auth;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
 import java.time.Instant;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -46,11 +44,6 @@ class AuthSecurityTest {
 
 	@MockitoBean
 	private RateLimiter rateLimiter;
-
-	@BeforeEach
-	void allowAllRequests() {
-		given(rateLimiter.tryAcquire(anyString())).willReturn(true);
-	}
 
 	@Test
 	void signInEndpointsArePublic() {

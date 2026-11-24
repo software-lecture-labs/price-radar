@@ -3,10 +3,12 @@ package com.priceradar.auth;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.BDDMockito.willAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 
@@ -20,6 +22,10 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.support.SimpleTransactionStatus;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionOperations;
 
 import com.priceradar.common.exception.BusinessRuleException;
 import com.priceradar.config.SecurityProperties;
@@ -32,12 +38,13 @@ class AuthServiceTest {
 			new SecurityProperties.Jwt(SECRET, "price-radar-test", Duration.ofMinutes(15), Duration.ofDays(30)),
 			new SecurityProperties.Cors(List.of("http://localhost:3000"), List.of("GET"), List.of("*"), true, 3600));
 
-	// The lowest cost keeps the tests fast; production uses 12.
-	private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(4);
+	private final FakeTransactions transactions = new FakeTransactions();
+	private final PasswordEncoder passwordEncoder = new OutsideTransactionEncoder(transactions);
 	private final JwtService jwtService = new JwtService(PROPERTIES);
 	private final UserRepository users = mock(UserRepository.class);
 	private final RefreshTokenRepository refreshTokens = mock(RefreshTokenRepository.class);
-	private final AuthService auth = new AuthService(users, refreshTokens, passwordEncoder, jwtService, PROPERTIES);
+	private final AuthService auth = new AuthService(users, refreshTokens, passwordEncoder, jwtService, PROPERTIES,
+			transactions);
 
 	@Test
 	void registerNormalizesTheInputAndStoresOnlyAHash() {
@@ -85,6 +92,40 @@ class AuthServiceTest {
 				new RegisterRequest("Ayşe Yılmaz", "ayse@example.com", "05321234567", "correct horse")))
 				.isInstanceOf(BusinessRuleException.class);
 		then(refreshTokens).shouldHaveNoInteractions();
+		assertThat(transactions.committed).isZero();
+	}
+
+	@Test
+	void registerWritesTheAccountAndItsRefreshTokenInOneTransaction() {
+		given(users.create(anyString(), anyString(), anyString(), anyString())).willAnswer(call -> {
+			assertThat(transactions.open).as("account written inside the transaction").isTrue();
+			return account(42, call.getArgument(0), call.getArgument(3), Role.USER);
+		});
+		willAnswer(call -> {
+			assertThat(transactions.open).as("refresh token written inside the transaction").isTrue();
+			return null;
+		}).given(refreshTokens).save(anyLong(), anyString(), any());
+
+		auth.register(new RegisterRequest("Ayşe Yılmaz", "ayse@example.com", "05321234567", "correct horse"));
+
+		then(refreshTokens).should().save(anyLong(), anyString(), any());
+		assertThat(transactions.committed).isEqualTo(1);
+	}
+
+	@Test
+	void loginChecksThePasswordFirstAndThenWritesTheRefreshTokenInATransaction() {
+		given(users.findByEmail("ayse@example.com"))
+				.willReturn(Optional.of(account(42, "ayse@example.com", passwordEncoder.encode("correct horse"),
+						Role.USER)));
+		willAnswer(call -> {
+			assertThat(transactions.open).as("refresh token written inside the transaction").isTrue();
+			return null;
+		}).given(refreshTokens).save(anyLong(), anyString(), any());
+
+		auth.login(new LoginRequest("ayse@example.com", "correct horse"));
+
+		then(refreshTokens).should().save(anyLong(), anyString(), any());
+		assertThat(transactions.committed).isEqualTo(1);
 	}
 
 	@Test
@@ -158,6 +199,52 @@ class AuthServiceTest {
 	private static UserAccount account(long id, String email, String passwordHash, Role role) {
 		return new UserAccount(id, email, "Ayşe Yılmaz", "+905321234567", passwordHash, role,
 				Instant.parse("2026-11-12T10:00:00Z"));
+	}
+
+	/** Runs the work directly and records whether it is running, in place of a real transaction. */
+	private static final class FakeTransactions implements TransactionOperations {
+
+		private boolean open;
+		private int committed;
+
+		@Override
+		public <T> T execute(TransactionCallback<T> action) {
+			open = true;
+			try {
+				var result = action.doInTransaction(new SimpleTransactionStatus());
+				committed++;
+				return result;
+			}
+			finally {
+				open = false;
+			}
+		}
+
+	}
+
+	/** BCrypt that fails the test when it is called while a transaction is open. */
+	private static final class OutsideTransactionEncoder implements PasswordEncoder {
+
+		// The lowest cost keeps the tests fast; production uses 12.
+		private final PasswordEncoder bcrypt = new BCryptPasswordEncoder(4);
+		private final FakeTransactions transactions;
+
+		OutsideTransactionEncoder(FakeTransactions transactions) {
+			this.transactions = transactions;
+		}
+
+		@Override
+		public String encode(CharSequence rawPassword) {
+			assertThat(transactions.open).as("BCrypt must not run inside a transaction").isFalse();
+			return bcrypt.encode(rawPassword);
+		}
+
+		@Override
+		public boolean matches(CharSequence rawPassword, String encodedPassword) {
+			assertThat(transactions.open).as("BCrypt must not run inside a transaction").isFalse();
+			return bcrypt.matches(rawPassword, encodedPassword);
+		}
+
 	}
 
 }

@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.priceradar.security.RateLimitExceededException;
 import com.priceradar.security.RateLimiter;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,21 +33,21 @@ public class AuthController {
 	@ResponseStatus(HttpStatus.CREATED)
 	@Operation(summary = "Create an account and sign in")
 	public AuthResponse register(@Valid @RequestBody RegisterRequest request, HttpServletRequest httpRequest) {
-		requireNotRateLimited(httpRequest);
+		countAttempt("register", httpRequest);
 		return auth.register(request);
 	}
 
 	@PostMapping("/login")
 	@Operation(summary = "Sign in with email and password")
 	public AuthResponse login(@Valid @RequestBody LoginRequest request, HttpServletRequest httpRequest) {
-		requireNotRateLimited(httpRequest);
+		countAttempt("login", httpRequest);
 		return auth.login(request);
 	}
 
 	@PostMapping("/refresh")
 	@Operation(summary = "Exchange a refresh token for a new access token")
 	public AccessTokenResponse refresh(@Valid @RequestBody RefreshRequest request, HttpServletRequest httpRequest) {
-		requireNotRateLimited(httpRequest);
+		countAttempt("refresh", httpRequest);
 		return auth.refresh(request.refreshToken());
 	}
 
@@ -65,22 +64,14 @@ public class AuthController {
 		return auth.currentUser(userId);
 	}
 
-	private void requireNotRateLimited(HttpServletRequest request) {
-		if (!rateLimiter.tryAcquire(clientIp(request))) {
-			throw new RateLimitExceededException("Too many authentication attempts. Please try again later.");
-		}
-	}
-
 	/**
-	 * Returns the client IP, respecting {@code X-Forwarded-For} when behind a reverse proxy. The
-	 * {@code server.forward-headers-strategy=framework} setting ensures Spring validates the header.
+	 * Each endpoint has its own limit per client IP, so refreshing a session does not use up sign-in attempts. The
+	 * address comes from Tomcat, which takes X-Forwarded-For into account only when the request arrives from a trusted
+	 * proxy ({@code server.forward-headers-strategy: native}); a client cannot pick its own address to get a fresh
+	 * limit.
 	 */
-	private static String clientIp(HttpServletRequest request) {
-		var forwarded = request.getHeader("X-Forwarded-For");
-		if (forwarded != null && !forwarded.isBlank()) {
-			return forwarded.split(",")[0].strip();
-		}
-		return request.getRemoteAddr();
+	private void countAttempt(String endpoint, HttpServletRequest request) {
+		rateLimiter.acquire(endpoint + ":" + request.getRemoteAddr());
 	}
 
 }

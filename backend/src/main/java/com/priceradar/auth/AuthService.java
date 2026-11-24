@@ -16,6 +16,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionOperations;
 
 import com.priceradar.common.exception.BusinessRuleException;
 import com.priceradar.config.SecurityProperties;
@@ -25,17 +26,23 @@ import com.priceradar.security.JwtService;
  * Email and password sign-in. A session is a short-lived JWT access token plus an opaque refresh token that can be
  * revoked; only the refresh token's hash is stored.
  *
- * <h2>Refresh token rotation</h2>
- * <p>This implementation intentionally does <strong>not</strong> rotate the refresh token on each use.
- * Rotation adds complexity (token-family tracking, replay-detection, race-condition handling for concurrent
- * requests) that is not warranted at this stage. The current mitigations are:</p>
+ * <p>Register and login hash or check the password with BCrypt before their transaction starts, so no database
+ * connection is held while BCrypt runs. The writes that follow (account, refresh token) commit together.</p>
+ *
+ * <h2>Refresh tokens are not rotated</h2>
+ * <p>A refresh returns a new access token and keeps the same refresh token. This is deliberate. Rotation only adds
+ * protection if reuse of an old token is detected and the whole token family is then revoked, which needs family
+ * tracking and a grace period for two tabs refreshing at once. That is more than this project needs for now.</p>
+ * <p>The cost: a stolen refresh token stays usable until the user logs out or it expires
+ * ({@code app.security.jwt.refresh-token-ttl}). What limits the damage:</p>
  * <ul>
- *     <li>Refresh tokens are stored as SHA-256 hashes — a database leak does not expose usable tokens.</li>
- *     <li>Tokens can be explicitly revoked (logout) and have a bounded TTL.</li>
- *     <li>Access tokens are short-lived (15 min), limiting the window if a refresh token is compromised.</li>
+ * <li>only a SHA-256 hash of each refresh token is stored, so a database leak gives no usable tokens;</li>
+ * <li>access tokens are short-lived ({@code app.security.jwt.access-token-ttl}) and every refresh reads the role
+ * again, so a role change applies at the next refresh;</li>
+ * <li>refresh attempts are rate limited per client IP.</li>
  * </ul>
- * <p>If the threat model changes (e.g. public clients, mobile apps without secure storage), rotation should
- * be revisited.</p>
+ * <p>Rotation should be added if refresh tokens ever end up somewhere scripts can read them, or when clients such as
+ * a mobile app are added.</p>
  */
 @Service
 public class AuthService {
@@ -48,45 +55,36 @@ public class AuthService {
 	private final PasswordEncoder passwordEncoder;
 	private final JwtService jwtService;
 	private final SecurityProperties.Jwt properties;
+	private final TransactionOperations transactions;
 	// Checked when the email is unknown, so a wrong email takes as long as a wrong password.
 	private final String unknownUserHash;
 
 	AuthService(UserRepository users, RefreshTokenRepository refreshTokens, PasswordEncoder passwordEncoder,
-			JwtService jwtService, SecurityProperties securityProperties) {
+			JwtService jwtService, SecurityProperties securityProperties, TransactionOperations transactions) {
 		this.users = users;
 		this.refreshTokens = refreshTokens;
 		this.passwordEncoder = passwordEncoder;
 		this.jwtService = jwtService;
 		this.properties = securityProperties.jwt();
+		this.transactions = transactions;
 		this.unknownUserHash = passwordEncoder.encode("unknown-user-" + RANDOM.nextLong());
 	}
 
-	/**
-	 * BCrypt is computed <em>before</em> the transaction so the DB connection is not held during the ~300 ms hash
-	 * calculation.
-	 */
 	public AuthResponse register(RegisterRequest request) {
 		var passwordHash = passwordEncoder.encode(request.password());
-		return doRegister(request, passwordHash);
+		return transactions.execute(status -> {
+			UserAccount user;
+			try {
+				user = users.create(normalizeEmail(request.email()), request.fullName().strip(),
+						PhoneNumbers.normalize(request.phone()), passwordHash);
+			}
+			catch (DuplicateKeyException ex) {
+				throw new BusinessRuleException("An account with this email already exists.");
+			}
+			return signIn(user);
+		});
 	}
 
-	@Transactional
-	AuthResponse doRegister(RegisterRequest request, String passwordHash) {
-		UserAccount user;
-		try {
-			user = users.create(normalizeEmail(request.email()), request.fullName().strip(),
-					PhoneNumbers.normalize(request.phone()), passwordHash);
-		}
-		catch (DuplicateKeyException ex) {
-			throw new BusinessRuleException("An account with this email already exists.");
-		}
-		return signIn(user);
-	}
-
-	/**
-	 * BCrypt verification is performed <em>before</em> the transaction so the DB connection is not held during the
-	 * ~300 ms hash comparison.
-	 */
 	public AuthResponse login(LoginRequest request) {
 		var user = users.findByEmail(normalizeEmail(request.email()));
 		var hash = user.map(UserAccount::passwordHash).orElse(unknownUserHash);
@@ -94,12 +92,7 @@ public class AuthService {
 		if (user.isEmpty() || !passwordMatches) {
 			throw new BadCredentialsException("Invalid email or password");
 		}
-		return doLogin(user.get());
-	}
-
-	@Transactional
-	AuthResponse doLogin(UserAccount user) {
-		return signIn(user);
+		return transactions.execute(status -> signIn(user.get()));
 	}
 
 	/** Issues a new access token; the role is read again, so a role change applies from the next refresh. */

@@ -5,22 +5,26 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.verifyNoInteractions;
 
+import java.time.Duration;
 import java.time.Instant;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
+import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 import com.priceradar.common.exception.BusinessRuleException;
+import com.priceradar.security.RateLimitExceededException;
 import com.priceradar.security.RateLimiter;
 
 @WebMvcTest(AuthController.class)
@@ -40,11 +44,6 @@ class AuthControllerTest {
 
 	@MockitoBean
 	private RateLimiter rateLimiter;
-
-	@BeforeEach
-	void allowAllRequests() {
-		given(rateLimiter.tryAcquire(anyString())).willReturn(true);
-	}
 
 	@Test
 	void registerCreatesTheAccountAndSignsIn() {
@@ -165,12 +164,51 @@ class AuthControllerTest {
 	}
 
 	@Test
-	void rateLimitedRequestsGet429() {
-		given(rateLimiter.tryAcquire(anyString())).willReturn(false);
+	void attemptsAreCountedPerEndpointAndTheAddressTomcatResolved() {
+		given(auth.login(any())).willReturn(SIGNED_IN);
+		given(auth.register(any())).willReturn(SIGNED_IN);
 
 		assertThat(post("/api/v1/auth/login", """
+				{"email": "ayse@example.com", "password": "correct horse"}""")
+				.with(fromAddress("203.0.113.7"))
+				.header("X-Forwarded-For", "198.51.100.1")).hasStatusOk();
+		assertThat(post("/api/v1/auth/register", """
+				{"fullName": "Ayşe Yılmaz", "email": "ayse@example.com", "phone": "05321234567",
+				 "password": "correct horse"}""").with(fromAddress("203.0.113.7"))).hasStatus(201);
+		assertThat(post("/api/v1/auth/refresh", """
+				{"refreshToken": "refresh-token"}""").with(fromAddress("203.0.113.7"))).hasStatusOk();
+
+		then(rateLimiter).should().acquire("login:203.0.113.7");
+		then(rateLimiter).should().acquire("register:203.0.113.7");
+		then(rateLimiter).should().acquire("refresh:203.0.113.7");
+		then(rateLimiter).shouldHaveNoMoreInteractions();
+	}
+
+	@Test
+	void tooManyAttemptsAre429WithRetryAfter() {
+		willThrow(new RateLimitExceededException(Duration.ofSeconds(90))).given(rateLimiter).acquire(anyString());
+
+		var result = assertThat(post("/api/v1/auth/login", """
 				{"email": "ayse@example.com", "password": "correct horse"}""")).hasStatus(429);
+
+		result.headers().hasValue(HttpHeaders.RETRY_AFTER, "90");
+		result.bodyJson().extractingPath("$.title").asString().isEqualTo("Too many requests");
 		verifyNoInteractions(auth);
+	}
+
+	@Test
+	void logoutIsNotRateLimited() {
+		assertThat(post("/api/v1/auth/logout", """
+				{"refreshToken": "refresh-token"}""")).hasStatus(204);
+
+		verifyNoInteractions(rateLimiter);
+	}
+
+	private static RequestPostProcessor fromAddress(String address) {
+		return request -> {
+			request.setRemoteAddr(address);
+			return request;
+		};
 	}
 
 	private MockMvcTester.MockMvcRequestBuilder post(String uri, String json) {

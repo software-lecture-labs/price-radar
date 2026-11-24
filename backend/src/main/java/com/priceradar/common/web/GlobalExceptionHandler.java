@@ -44,8 +44,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	}
 
 	@ExceptionHandler(RateLimitExceededException.class)
-	ProblemDetail handleRateLimit(RateLimitExceededException ex) {
-		return problem(HttpStatus.TOO_MANY_REQUESTS, "Too many requests", ex.getMessage(), TYPE_RATE_LIMIT);
+	ResponseEntity<ProblemDetail> handleRateLimit(RateLimitExceededException ex) {
+		return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+				.header(HttpHeaders.RETRY_AFTER, String.valueOf(ex.retryAfterSeconds()))
+				.body(problem(HttpStatus.TOO_MANY_REQUESTS, "Too many requests", ex.getMessage(), TYPE_RATE_LIMIT));
 	}
 
 	@ExceptionHandler(ConstraintViolationException.class)

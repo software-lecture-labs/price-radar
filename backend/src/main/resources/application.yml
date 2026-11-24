@@ -54,7 +54,10 @@ server:
   compression:
     enabled: true
     mime-types: application/json,text/html,text/plain
-  forward-headers-strategy: framework
+  # Tomcat applies X-Forwarded-* headers only from trusted proxies (private and loopback addresses by default,
+  # server.tomcat.remoteip.internal-proxies), such as the Next.js server. "framework" would trust them from any
+  # client, which would let a client pick its own IP and get around the sign-in rate limit.
+  forward-headers-strategy: native
 
 management:
   endpoints:
@@ -88,6 +91,10 @@ app:
       issuer: price-radar
       access-token-ttl: 15m
       refresh-token-ttl: 30d
+    rate-limit:
+      # Per endpoint (register, login, refresh) and client IP.
+      max-attempts: 20
+      window: 15m
     cors:
       allowed-origins:
         - ${FRONTEND_ORIGIN:http://localhost:3000}
