@@ -2,7 +2,12 @@ import { NextResponse, type NextRequest } from "next/server";
 
 import { refreshAccessToken } from "@/lib/api/auth";
 import { isApiError } from "@/lib/api/problem";
-import { ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE, accessTokenCookie } from "@/lib/auth/cookies";
+import {
+  ACCESS_TOKEN_COOKIE,
+  REFRESH_TOKEN_COOKIE,
+  accessTokenCookie,
+  expiredCookie,
+} from "@/lib/auth/cookies";
 
 /**
  * Renews the short-lived access token from the refresh token before a page renders, because Server Components
@@ -15,6 +20,10 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // Several requests can get here at once with the same refresh token: two tabs, or prefetches right after the
+  // access cookie has expired. That is safe while the backend keeps refresh tokens unchanged. If it starts
+  // rotating them, every request but the first would present a token that was just replaced, get a 401 and
+  // sign the user out below. Rotation then needs the backend to accept the previous token for a few seconds.
   try {
     const { accessToken, accessTokenExpiresAt } = await refreshAccessToken(refreshToken);
     // Also hand the new token to this request, so the page rendering now sees the session.
@@ -27,7 +36,7 @@ export async function proxy(request: NextRequest) {
       // Revoked or expired: drop it instead of retrying on every request.
       request.cookies.delete(REFRESH_TOKEN_COOKIE);
       const response = NextResponse.next({ request: { headers: request.headers } });
-      response.cookies.delete(REFRESH_TOKEN_COOKIE);
+      response.cookies.set(REFRESH_TOKEN_COOKIE, "", expiredCookie());
       return response;
     }
     // Backend unreachable: keep the refresh token and try again on the next request.

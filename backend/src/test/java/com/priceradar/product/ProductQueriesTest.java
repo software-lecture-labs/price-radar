@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -58,6 +59,31 @@ class ProductQueriesTest extends MarketplaceDatabaseTest {
 				.extracting(ProductSummary::title)
 				.containsExactly("Samsung Galaxy Tab S10");
 		assertThat(queries.search("100%_off", null, ProductSort.NEWEST, 0, 10).totalItems()).isZero();
+	}
+
+	@Test
+	void searchIgnoresCaseOfTurkishLetters() {
+		var store = store("trendyol", "Trendyol");
+		var source = source(store, LATER);
+		observe(source, product(store, "1", "ŞAMPUAN 500 ML", "ELİDOR"), 0, "120", null);
+		observe(source, product(store, "2", "Çilek Aromalı Su", "Uludağ"), 1, "25", null);
+		observe(source, product(store, "3", "Nemlendirici Krem", "NIVEA"), 2, "90", null);
+
+		assertThat(titles("şampuan")).containsExactly("ŞAMPUAN 500 ML");
+		assertThat(titles("ŞamPuan")).containsExactly("ŞAMPUAN 500 ML");
+		assertThat(titles("elidor")).containsExactly("ŞAMPUAN 500 ML");
+		assertThat(titles("ÇİLEK")).containsExactly("Çilek Aromalı Su");
+		assertThat(titles("ULUDAĞ")).containsExactly("Çilek Aromalı Su");
+		// Users type dotted and dotless i interchangeably, so both must find either spelling.
+		assertThat(titles("nivea")).containsExactly("Nemlendirici Krem");
+		assertThat(titles("nıvea")).containsExactly("Nemlendirici Krem");
+		assertThat(titles("AROMALI")).containsExactly("Çilek Aromalı Su");
+	}
+
+	private List<String> titles(String query) {
+		return queries.search(query, null, ProductSort.NEWEST, 0, 10).items().stream()
+				.map(ProductSummary::title)
+				.toList();
 	}
 
 	@Test

@@ -7,6 +7,7 @@ import {
   ACCESS_TOKEN_COOKIE,
   REFRESH_TOKEN_COOKIE,
   accessTokenCookie,
+  expiredCookie,
   refreshTokenCookie,
 } from "@/lib/auth/cookies";
 
@@ -29,8 +30,8 @@ export async function startSession(tokens: AuthTokens): Promise<void> {
 export async function endSession(): Promise<string | undefined> {
   const store = await cookies();
   const refreshToken = store.get(REFRESH_TOKEN_COOKIE)?.value;
-  store.delete(ACCESS_TOKEN_COOKIE);
-  store.delete(REFRESH_TOKEN_COOKIE);
+  store.set(ACCESS_TOKEN_COOKIE, "", expiredCookie());
+  store.set(REFRESH_TOKEN_COOKIE, "", expiredCookie());
   return refreshToken;
 }
 

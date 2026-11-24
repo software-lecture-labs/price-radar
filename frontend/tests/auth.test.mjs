@@ -1,7 +1,12 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { accessTokenCookie, refreshTokenCookie } from "../src/lib/auth/cookies.ts";
+import {
+  ACCESS_TOKEN_COOKIE,
+  REFRESH_TOKEN_COOKIE,
+  accessTokenCookie,
+  refreshTokenCookie,
+} from "../src/lib/auth/cookies.ts";
 import { safeRedirectPath } from "../src/lib/auth/redirect.ts";
 import { validateLogin, validateRegistration } from "../src/lib/auth/validation.ts";
 
@@ -115,4 +120,35 @@ test("session cookies are HttpOnly and the access cookie ends before its token",
     refreshTokenCookie("2026-12-12T10:00:00Z").expires.toISOString(),
     "2026-12-12T10:00:00.000Z",
   );
+});
+
+test("outside production the cookies keep their bare names, because localhost is plain HTTP", () => {
+  assert.equal(ACCESS_TOKEN_COOKIE, "pr_access");
+  assert.equal(REFRESH_TOKEN_COOKIE, "pr_refresh");
+  assert.equal(accessTokenCookie("2026-11-12T10:15:00Z").secure, false);
+});
+
+test("in production the cookies carry the __Host- prefix and are also removed as Secure", async () => {
+  const previous = process.env.NODE_ENV;
+  process.env.NODE_ENV = "production";
+  try {
+    // The query string loads a second copy of the module, which reads NODE_ENV again.
+    const production = await import("../src/lib/auth/cookies.ts?production");
+    assert.equal(production.ACCESS_TOKEN_COOKIE, "__Host-pr_access");
+    assert.equal(production.REFRESH_TOKEN_COOKIE, "__Host-pr_refresh");
+
+    const expired = production.expiredCookie();
+    assert.equal(expired.expires.getTime(), 0);
+    for (const options of [production.accessTokenCookie("2026-11-12T10:15:00Z"), expired]) {
+      assert.equal(options.secure, true);
+      assert.equal(options.path, "/");
+      assert.equal("domain" in options, false);
+    }
+  } finally {
+    if (previous === undefined) {
+      delete process.env.NODE_ENV;
+    } else {
+      process.env.NODE_ENV = previous;
+    }
+  }
 });
