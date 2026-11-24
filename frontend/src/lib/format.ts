@@ -14,8 +14,9 @@ export function formatLongDate(iso: string): string {
   return longDate.format(new Date(iso));
 }
 
-/** +905321234567 → +90 532 123 45 67; anything else is returned unchanged. */
-export function formatPhone(e164: string): string {
+/** +905321234567 → +90 532 123 45 67; null/empty returns "-"; anything else is returned unchanged. */
+export function formatPhone(e164?: string | null): string {
+  if (!e164) return "-";
   const match = /^\+90(\d{3})(\d{3})(\d{2})(\d{2})$/.exec(e164);
   return match ? `+90 ${match.slice(1).join(" ")}` : e164;
 }

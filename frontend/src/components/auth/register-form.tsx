@@ -118,14 +118,14 @@ export function RegisterForm({ next }: { next: string }) {
           {/* Telefon numarası input */}
           <div className="space-y-2">
             <Label htmlFor="register-phone" className="text-sm font-medium text-ink">
-              Telefon numarası
+              Telefon numarası{" "}
+              <span className="text-xs font-normal text-ink-muted">(İsteğe bağlı)</span>
             </Label>
             <Input
               id="register-phone"
               name="phone"
               type="tel"
               autoComplete="tel"
-              required
               placeholder="05XX XXX XX XX"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}

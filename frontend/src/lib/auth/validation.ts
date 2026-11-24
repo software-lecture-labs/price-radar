@@ -74,9 +74,7 @@ export function validateRegistration(
     errors.email = "Geçerli bir e-posta adresi girin.";
   }
 
-  if (!phone) {
-    errors.phone = "Telefon numaranızı girin.";
-  } else if (!TURKISH_MOBILE_PATTERN.test(phone)) {
+  if (phone && !TURKISH_MOBILE_PATTERN.test(phone)) {
     errors.phone = "05XX XXX XX XX biçiminde bir cep telefonu numarası girin.";
   }
 
