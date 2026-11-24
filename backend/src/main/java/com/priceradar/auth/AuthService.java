@@ -24,6 +24,18 @@ import com.priceradar.security.JwtService;
 /**
  * Email and password sign-in. A session is a short-lived JWT access token plus an opaque refresh token that can be
  * revoked; only the refresh token's hash is stored.
+ *
+ * <h2>Refresh token rotation</h2>
+ * <p>This implementation intentionally does <strong>not</strong> rotate the refresh token on each use.
+ * Rotation adds complexity (token-family tracking, replay-detection, race-condition handling for concurrent
+ * requests) that is not warranted at this stage. The current mitigations are:</p>
+ * <ul>
+ *     <li>Refresh tokens are stored as SHA-256 hashes — a database leak does not expose usable tokens.</li>
+ *     <li>Tokens can be explicitly revoked (logout) and have a bounded TTL.</li>
+ *     <li>Access tokens are short-lived (15 min), limiting the window if a refresh token is compromised.</li>
+ * </ul>
+ * <p>If the threat model changes (e.g. public clients, mobile apps without secure storage), rotation should
+ * be revisited.</p>
  */
 @Service
 public class AuthService {
@@ -49,12 +61,21 @@ public class AuthService {
 		this.unknownUserHash = passwordEncoder.encode("unknown-user-" + RANDOM.nextLong());
 	}
 
-	@Transactional
+	/**
+	 * BCrypt is computed <em>before</em> the transaction so the DB connection is not held during the ~300 ms hash
+	 * calculation.
+	 */
 	public AuthResponse register(RegisterRequest request) {
+		var passwordHash = passwordEncoder.encode(request.password());
+		return doRegister(request, passwordHash);
+	}
+
+	@Transactional
+	AuthResponse doRegister(RegisterRequest request, String passwordHash) {
 		UserAccount user;
 		try {
 			user = users.create(normalizeEmail(request.email()), request.fullName().strip(),
-					PhoneNumbers.normalize(request.phone()), passwordEncoder.encode(request.password()));
+					PhoneNumbers.normalize(request.phone()), passwordHash);
 		}
 		catch (DuplicateKeyException ex) {
 			throw new BusinessRuleException("An account with this email already exists.");
@@ -62,7 +83,10 @@ public class AuthService {
 		return signIn(user);
 	}
 
-	@Transactional
+	/**
+	 * BCrypt verification is performed <em>before</em> the transaction so the DB connection is not held during the
+	 * ~300 ms hash comparison.
+	 */
 	public AuthResponse login(LoginRequest request) {
 		var user = users.findByEmail(normalizeEmail(request.email()));
 		var hash = user.map(UserAccount::passwordHash).orElse(unknownUserHash);
@@ -70,7 +94,12 @@ public class AuthService {
 		if (user.isEmpty() || !passwordMatches) {
 			throw new BadCredentialsException("Invalid email or password");
 		}
-		return signIn(user.get());
+		return doLogin(user.get());
+	}
+
+	@Transactional
+	AuthResponse doLogin(UserAccount user) {
+		return signIn(user);
 	}
 
 	/** Issues a new access token; the role is read again, so a role change applies from the next refresh. */

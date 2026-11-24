@@ -20,6 +20,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import com.priceradar.common.exception.BusinessRuleException;
 import com.priceradar.common.exception.ResourceNotFoundException;
+import com.priceradar.security.RateLimitExceededException;
 
 import jakarta.validation.ConstraintViolationException;
 
@@ -29,6 +30,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	private static final URI TYPE_VALIDATION = URI.create("https://priceradar.dev/problems/validation");
 	private static final URI TYPE_NOT_FOUND = URI.create("https://priceradar.dev/problems/not-found");
 	private static final URI TYPE_CONFLICT = URI.create("https://priceradar.dev/problems/conflict");
+	private static final URI TYPE_RATE_LIMIT = URI.create("https://priceradar.dev/problems/rate-limit");
 	private static final URI TYPE_INTERNAL = URI.create("https://priceradar.dev/problems/internal");
 
 	@ExceptionHandler(ResourceNotFoundException.class)
@@ -39,6 +41,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(BusinessRuleException.class)
 	ProblemDetail handleBusinessRule(BusinessRuleException ex) {
 		return problem(HttpStatus.CONFLICT, "Request conflicts with current state", ex.getMessage(), TYPE_CONFLICT);
+	}
+
+	@ExceptionHandler(RateLimitExceededException.class)
+	ProblemDetail handleRateLimit(RateLimitExceededException ex) {
+		return problem(HttpStatus.TOO_MANY_REQUESTS, "Too many requests", ex.getMessage(), TYPE_RATE_LIMIT);
 	}
 
 	@ExceptionHandler(ConstraintViolationException.class)

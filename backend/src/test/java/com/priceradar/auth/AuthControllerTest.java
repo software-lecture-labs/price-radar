@@ -2,12 +2,14 @@ package com.priceradar.auth;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.verifyNoInteractions;
 
 import java.time.Instant;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
@@ -19,6 +21,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
 import com.priceradar.common.exception.BusinessRuleException;
+import com.priceradar.security.RateLimiter;
 
 @WebMvcTest(AuthController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -34,6 +37,14 @@ class AuthControllerTest {
 
 	@MockitoBean
 	private AuthService auth;
+
+	@MockitoBean
+	private RateLimiter rateLimiter;
+
+	@BeforeEach
+	void allowAllRequests() {
+		given(rateLimiter.tryAcquire(anyString())).willReturn(true);
+	}
 
 	@Test
 	void registerCreatesTheAccountAndSignsIn() {
@@ -151,6 +162,15 @@ class AuthControllerTest {
 		body.extractingPath("$.id").asNumber().isEqualTo(42);
 		body.extractingPath("$.phone").asString().isEqualTo("+905321234567");
 		body.doesNotHavePath("$.passwordHash");
+	}
+
+	@Test
+	void rateLimitedRequestsGet429() {
+		given(rateLimiter.tryAcquire(anyString())).willReturn(false);
+
+		assertThat(post("/api/v1/auth/login", """
+				{"email": "ayse@example.com", "password": "correct horse"}""")).hasStatus(429);
+		verifyNoInteractions(auth);
 	}
 
 	private MockMvcTester.MockMvcRequestBuilder post(String uri, String json) {

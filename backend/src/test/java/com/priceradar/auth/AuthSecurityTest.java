@@ -2,11 +2,13 @@ package com.priceradar.auth;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
 import java.time.Instant;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -20,6 +22,7 @@ import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
 import com.priceradar.config.SecurityProperties;
 import com.priceradar.security.JwtService;
+import com.priceradar.security.RateLimiter;
 import com.priceradar.security.SecurityConfig;
 
 /** The real filter chain: which auth endpoints are public and what an anonymous caller gets. */
@@ -40,6 +43,14 @@ class AuthSecurityTest {
 
 	@MockitoBean
 	private AuthService auth;
+
+	@MockitoBean
+	private RateLimiter rateLimiter;
+
+	@BeforeEach
+	void allowAllRequests() {
+		given(rateLimiter.tryAcquire(anyString())).willReturn(true);
+	}
 
 	@Test
 	void signInEndpointsArePublic() {
