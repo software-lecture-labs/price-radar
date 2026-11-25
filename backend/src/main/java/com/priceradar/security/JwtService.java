@@ -1,6 +1,7 @@
 package com.priceradar.security;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -32,15 +33,22 @@ public class JwtService {
 	}
 
 	public String issueAccessToken(String subject, Collection<String> roles) {
-		var now = Instant.now();
-		return Jwts.builder()
+		return issue(subject, roles).value();
+	}
+
+	/** JWT timestamps have second precision, so the returned expiry is truncated to match the token's. */
+	public AccessToken issue(String subject, Collection<String> roles) {
+		var now = Instant.now().truncatedTo(ChronoUnit.SECONDS);
+		var expiresAt = now.plus(properties.accessTokenTtl());
+		var value = Jwts.builder()
 				.issuer(properties.issuer())
 				.subject(subject)
 				.claim(CLAIM_ROLES, List.copyOf(roles))
 				.issuedAt(Date.from(now))
-				.expiration(Date.from(now.plus(properties.accessTokenTtl())))
+				.expiration(Date.from(expiresAt))
 				.signWith(signingKey)
 				.compact();
+		return new AccessToken(value, expiresAt);
 	}
 
 	public Claims parse(String token) {
@@ -65,6 +73,9 @@ public class JwtService {
 			authorities.add(authority);
 		}
 		return List.copyOf(authorities);
+	}
+
+	public record AccessToken(String value, Instant expiresAt) {
 	}
 
 }

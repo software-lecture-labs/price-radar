@@ -5,8 +5,11 @@ import java.util.Comparator;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -17,6 +20,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import com.priceradar.common.exception.BusinessRuleException;
 import com.priceradar.common.exception.ResourceNotFoundException;
+import com.priceradar.security.RateLimitExceededException;
 
 import jakarta.validation.ConstraintViolationException;
 
@@ -26,6 +30,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	private static final URI TYPE_VALIDATION = URI.create("https://priceradar.dev/problems/validation");
 	private static final URI TYPE_NOT_FOUND = URI.create("https://priceradar.dev/problems/not-found");
 	private static final URI TYPE_CONFLICT = URI.create("https://priceradar.dev/problems/conflict");
+	private static final URI TYPE_RATE_LIMIT = URI.create("https://priceradar.dev/problems/rate-limit");
 	private static final URI TYPE_INTERNAL = URI.create("https://priceradar.dev/problems/internal");
 
 	@ExceptionHandler(ResourceNotFoundException.class)
@@ -36,6 +41,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(BusinessRuleException.class)
 	ProblemDetail handleBusinessRule(BusinessRuleException ex) {
 		return problem(HttpStatus.CONFLICT, "Request conflicts with current state", ex.getMessage(), TYPE_CONFLICT);
+	}
+
+	@ExceptionHandler(RateLimitExceededException.class)
+	ResponseEntity<ProblemDetail> handleRateLimit(RateLimitExceededException ex) {
+		return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+				.header(HttpHeaders.RETRY_AFTER, String.valueOf(ex.retryAfterSeconds()))
+				.body(problem(HttpStatus.TOO_MANY_REQUESTS, "Too many requests", ex.getMessage(), TYPE_RATE_LIMIT));
 	}
 
 	@ExceptionHandler(ConstraintViolationException.class)
@@ -66,19 +78,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 				"The request could not be completed.", TYPE_INTERNAL);
 	}
 
+	// MethodArgumentNotValidException carries its own body, so createProblemDetail is never called for it.
 	@Override
-	protected ProblemDetail createProblemDetail(Exception ex, org.springframework.http.HttpStatusCode status,
-			String defaultDetail, String detailMessageCode, Object[] detailMessageArguments, WebRequest request) {
+	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+			HttpHeaders headers, HttpStatusCode status, WebRequest request) {
 
-		var problemDetail = super.createProblemDetail(ex, status, defaultDetail, detailMessageCode,
-				detailMessageArguments, request);
-
-		if (ex instanceof MethodArgumentNotValidException validationException) {
-			problemDetail.setType(TYPE_VALIDATION);
-			problemDetail.setTitle("Validation failed");
-			problemDetail.setProperty("errors", fieldErrors(validationException));
-		}
-		return problemDetail;
+		var problemDetail = ex.getBody();
+		problemDetail.setType(TYPE_VALIDATION);
+		problemDetail.setTitle("Validation failed");
+		problemDetail.setProperty("errors", fieldErrors(ex));
+		return handleExceptionInternal(ex, problemDetail, headers, status, request);
 	}
 
 	private static Map<String, String> fieldErrors(MethodArgumentNotValidException ex) {

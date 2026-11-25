@@ -6,6 +6,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 import java.time.Duration;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +33,16 @@ class JwtServiceTest {
 		assertThat(claims.getSubject()).isEqualTo("42");
 		assertThat(claims.getIssuer()).isEqualTo("price-radar-test");
 		assertThat(jwtService.rolesOf(claims)).containsExactly("ROLE_USER", "ROLE_ADMIN");
+	}
+
+	@Test
+	void issueReportsTheTokensOwnExpiry() {
+		var issued = jwtService.issue("42", List.of("ROLE_USER"));
+
+		var expiration = jwtService.parse(issued.value()).getExpiration().toInstant();
+		assertThat(issued.expiresAt()).isEqualTo(expiration);
+		assertThat(issued.expiresAt()).isBetween(Instant.now().plus(Duration.ofMinutes(5)).minusSeconds(2),
+				Instant.now().plus(Duration.ofMinutes(5)));
 	}
 
 	@Test
