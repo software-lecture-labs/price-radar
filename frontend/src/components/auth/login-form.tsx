@@ -5,35 +5,31 @@ import { EyeIcon, EyeOffIcon, RadarIcon } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 
+import { login } from "@/app/actions/auth";
+import { errorProps, FieldError } from "@/components/auth/field-error";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { publicEnv } from "@/lib/env";
-import { routes } from "@/lib/routes";
+import { NEXT_PARAM, routes } from "@/lib/routes";
 
-export function LoginForm() {
+/** @param next where to go after signing in; already checked with `safeRedirectPath` */
+export function LoginForm({ next }: { next: string }) {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [showPassword, setShowPassword] = React.useState(false);
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [state, formAction, isLoading] = React.useActionState(login, undefined);
+  const errors = state?.fieldErrors;
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  React.useEffect(() => {
+    if (state?.message) toast.error(state.message);
+  }, [state]);
+
+  // Dispatched by hand rather than with <form action>, which would clear the fields after a failed attempt.
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!email || !password) {
-      toast.error("Lütfen e-posta adresinizi ve şifrenizi girin.");
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      // Simüle edilen giriş işlemi
-      await new Promise((resolve) => setTimeout(resolve, 800));
-      toast.success("Giriş başarılı! Yönlendiriliyorsunuz...");
-    } catch {
-      toast.error("Giriş yapılırken bir hata oluştu. Lütfen tekrar deneyin.");
-    } finally {
-      setIsLoading(false);
-    }
+    const formData = new FormData(e.currentTarget);
+    React.startTransition(() => formAction(formData));
   };
 
   return (
@@ -61,7 +57,7 @@ export function LoginForm() {
           <p className="mt-2 text-sm text-ink-muted">
             Henüz hesabınız yok mu?{" "}
             <Link
-              href={routes.register()}
+              href={routes.register(next === routes.home ? undefined : next)}
               className="font-semibold text-ink underline decoration-radar-lime decoration-2 underline-offset-4 transition-colors hover:text-ink-secondary hover:decoration-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
             >
               Kayıt ol
@@ -71,6 +67,8 @@ export function LoginForm() {
 
         {/* Giriş Formu */}
         <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+          <input type="hidden" name={NEXT_PARAM} value={next} />
+
           {/* E-posta adresi input */}
           <div className="space-y-2">
             <Label htmlFor="email" className="text-sm font-medium text-ink">
@@ -85,8 +83,10 @@ export function LoginForm() {
               placeholder="ornek@alanadi.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              {...errorProps("email-error", errors?.email)}
               className="h-11 rounded-lg border-border-strong/40 bg-white px-3.5 text-sm text-ink transition-colors placeholder:text-ink-muted/70 focus-visible:border-ink focus-visible:ring-2 focus-visible:ring-radar-lime focus-visible:ring-offset-0"
             />
+            <FieldError id="email-error" message={errors?.email} />
           </div>
 
           {/* Şifre input ve sağında görünürlük ikonu */}
@@ -104,6 +104,7 @@ export function LoginForm() {
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                {...errorProps("password-error", errors?.password)}
                 className="h-11 rounded-lg border-border-strong/40 bg-white pr-11 pl-3.5 text-sm text-ink transition-colors placeholder:text-ink-muted/70 focus-visible:border-ink focus-visible:ring-2 focus-visible:ring-radar-lime focus-visible:ring-offset-0"
               />
               <button
@@ -119,6 +120,7 @@ export function LoginForm() {
                 )}
               </button>
             </div>
+            <FieldError id="password-error" message={errors?.password} />
           </div>
 
           {/* Formun en altında genişliği kaplayan 'Giriş yap' butonu */}

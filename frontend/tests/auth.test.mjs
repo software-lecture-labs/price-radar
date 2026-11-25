@@ -43,6 +43,14 @@ test("each invalid registration field gets its own Turkish message", () => {
   assert.deepEqual(Object.keys(result.errors).sort(), ["email", "fullName", "password", "phone"]);
 });
 
+test("phone number is optional during registration", () => {
+  for (const phone of ["", "   ", null, undefined]) {
+    const result = validateRegistration({ ...valid, phone });
+    assert.equal(result.ok, true, `phone=${phone}`);
+    assert.equal(result.data.phone, "");
+  }
+});
+
 test("accepts the same Turkish mobile formats as the backend", () => {
   for (const phone of ["05321234567", "+90 532 123 45 67", "0 (532) 123 45 67", "532-123-45-67"]) {
     assert.equal(validateRegistration({ ...valid, phone }).ok, true, phone);

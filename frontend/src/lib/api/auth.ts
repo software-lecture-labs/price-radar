@@ -7,8 +7,8 @@ export interface UserProfile {
   id: number;
   email: string;
   fullName: string;
-  /** E.164, for example +905321234567. */
-  phone: string;
+  /** E.164, for example +905321234567. Nullable when not provided. */
+  phone: string | null;
   role: Role;
   createdAt: string;
 }
